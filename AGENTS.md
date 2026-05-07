@@ -17,14 +17,14 @@ in `docs/`.
 
 All implementation specs are in `docs/` (gitignored). Read them in order:
 
-| Spec | Priority | File |
-|------|----------|------|
-| 001 | P0 | `docs/spec-001-bootstrap-cleanup.md` |
-| 002 | P0 | `docs/spec-002-mui-component-migration.md` |
-| 003 | P0 | `docs/spec-003-dynamic-data-shared-utils.md` |
-| 004 | P1 | `docs/spec-004-performance-type-safety.md` |
-| 005 | P2 | `docs/spec-005-production-hardening.md` |
-| 006 | P3 | `docs/spec-006-polish-theme-system.md` |
+| Spec | Priority | File                                         |
+| ---- | -------- | -------------------------------------------- |
+| 001  | P0       | `docs/spec-001-bootstrap-cleanup.md`         |
+| 002  | P0       | `docs/spec-002-mui-component-migration.md`   |
+| 003  | P0       | `docs/spec-003-dynamic-data-shared-utils.md` |
+| 004  | P1       | `docs/spec-004-performance-type-safety.md`   |
+| 005  | P2       | `docs/spec-005-production-hardening.md`      |
+| 006  | P3       | `docs/spec-006-polish-theme-system.md`       |
 
 ## Constitution
 
