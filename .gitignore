@@ -4,3 +4,5 @@
 .turbo
 /.opencode
 /docs
+.env
+.env.local
