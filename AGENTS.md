@@ -4,7 +4,7 @@
 
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
-in `docs/`.
+in `docs/` and the active implementation plan at `specs/001-bootstrap-cleanup/plan.md`.
 
 ## Project Context
 
