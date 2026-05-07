@@ -2,10 +2,25 @@
 
 **Feature Branch**: `001-bootstrap-cleanup`  
 **Created**: 2026-05-07  
-**Status**: Draft  
+**Status**: Clarified
 **Input**: User description: "Complete Phase 0 — Bootstrap & Cleanup for the Masjid Prayer Time Display app. Greenfield migration from Tailwind CSS + shadcn/ui to MUI v7 only."
 
-## User Scenarios & Testing *(mandatory)*
+## Clarifications
+
+### Session 2026-05-07
+
+- Q: Yarn Classic (v1) or Yarn Berry (v2+)? → A: Yarn Berry (v4+) with `nodeLinker: node-modules` in `.yarnrc.yml` for Vite/MUI compatibility
+- Q: Font loading via @fontsource or Google Fonts CDN? → A: Google Fonts CDN in index.html with preconnect hints for performance
+- Q: Delete all files in src/styles/ or preserve some? → A: Delete ALL files in src/styles/ — MUI handles all styling via ThemeProvider and CssBaseline; the index.css import in main.tsx is replaced with MUI imports
+- Q: Broken build after removing shadcn/Tailwind acceptable? → A: Yes. Phase 0 is intentionally a "clean slate" phase. The app will not compile until Spec 002 migrates components to MUI
+- Q: Preserve any custom font loading from fonts.css? → A: No. All font loading moves to index.html via Google Fonts `<link>` tags. Delete fonts.css entirely
+- Q: Check in .yarnrc.yml and .yarn/ directory? → A: Check in .yarnrc.yml. Add .yarn/install-state.gz and .yarn/cache to .gitignore (zero-install pattern not used)
+- Q: Does pnpm-lock.yaml exist to delete? → A: If it exists, delete it. If not (only pnpm-workspace.yaml), delete the workspace file only
+- Q: Add or modify tsconfig.json? → A: If none exists, create minimal one with `strict: true`. If one exists, verify `strict: true` is set. No other compiler option changes
+- Q: Keep figmaAssetResolver plugin in vite.config.ts? → A: Keep it. Only remove the Tailwind plugin
+- Q: Pin MUI/Emotion to exact versions or use ranges? → A: Keep exact versions (MUI 7.3.5, Emotion 11.14.0/11.14.1) for reproducible builds
+
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 — Clean Dependency Foundation (Priority: P1)
 
@@ -18,7 +33,7 @@ As a developer setting up this project, I want all unnecessary dependencies remo
 **Acceptance Scenarios**:
 
 1. **Given** the project has pnpm-workspace.yaml and 50+ dependencies, **When** the developer runs the cleanup, **Then** pnpm artifacts are deleted, yarn.lock is generated, and only MUI/React/motion/lucide-react/date-fns dependencies remain
-2. **Given** 48 shadcn/ui component files exist in src/app/components/ui/, **When** the cleanup runs, **Then** the entire ui/ directory is deleted along with all @radix-ui/* packages
+2. **Given** 48 shadcn/ui component files exist in src/app/components/ui/, **When** the cleanup runs, **Then** the entire ui/ directory is deleted along with all @radix-ui/\* packages
 3. **Given** Tailwind CSS is configured via @tailwindcss/vite plugin, **When** the cleanup runs, **Then** the Tailwind plugin is removed from vite.config.ts, tailwind.css is deleted, and postcss.config.mjs is deleted
 
 ---
@@ -51,7 +66,7 @@ As a developer maintaining this codebase, I want all unused files, duplicate con
 
 1. **Given** InfoPanels.tsx exists but is never imported, **When** the cleanup runs, **Then** the file is deleted
 2. **Given** default_shadcn_theme.css duplicates theme.css, **When** the cleanup runs, **Then** the duplicate is deleted
-3. **Given** src/styles/ contains tailwind.css, fonts.css, and globals.css, **When** the cleanup runs, **Then** tailwind.css and globals.css are deleted; fonts.css content is replaced by MUI CssBaseline font loading
+3. **Given** src/styles/ contains tailwind.css, fonts.css, globals.css, theme.css, and index.css, **When** the cleanup runs, **Then** the entire src/styles/ directory is emptied/deleted; font loading moves to Google Fonts CDN in index.html
 
 ---
 
@@ -59,33 +74,36 @@ As a developer maintaining this codebase, I want all unused files, duplicate con
 
 - What happens when a developer accidentally imports from a deleted shadcn/ui file? The import will fail at compile time — this is intentional and will be caught when components are migrated in Spec 002.
 - What happens if yarn.lock conflicts with an existing pnpm-lock.yaml? Both lockfiles should not coexist; pnpm-lock.yaml must be deleted first.
-- What happens to CSS custom properties defined in theme.css? They should be preserved as they provide useful design tokens that the MUI theme can reference.
+- What happens to CSS custom properties defined in theme.css? They are deleted — the MUI theme in muiTheme.ts will define equivalent values via the theme palette.
 - What happens to the `figmaAssetResolver()` Vite plugin? It must be kept — it resolves Figma asset imports used by existing components.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
-- **FR-001**: The project MUST use yarn as the sole package manager with a yarn.lock file and no pnpm artifacts
+- **FR-001**: The project MUST use Yarn Berry (v4+) as the sole package manager with `nodeLinker: node-modules` in `.yarnrc.yml`, a valid yarn.lock, and no pnpm artifacts
 - **FR-002**: The project MUST have zero Tailwind CSS dependencies (@tailwindcss/vite, tailwindcss, tw-animate-css, tailwind-merge removed from package.json)
 - **FR-003**: The project MUST have zero shadcn/ui component files (entire src/app/components/ui/ directory deleted)
-- **FR-004**: The project MUST have zero @radix-ui/* dependencies (all 20+ packages removed)
+- **FR-004**: The project MUST have zero @radix-ui/\* dependencies (all 20+ packages removed)
 - **FR-005**: The project MUST remove unused dependencies: recharts, react-dnd, react-dnd-html5-backend, react-slick, react-hook-form, canvas-confetti, react-popper, @popperjs/core, react-responsive-masonry, react-router, next-themes, clsx, class-variance-authority, cmdk, input-otp, vaul, sonner, react-day-picker, embla-carousel-react, react-resizable-panels
-- **FR-006**: The project MUST delete dead files: InfoPanels.tsx, globals.css, default_shadcn_theme.css, postcss.config.mjs, pnpm-workspace.yaml, src/styles/tailwind.css
+- **FR-006**: The project MUST delete all files in src/styles/ (tailwind.css, globals.css, theme.css, fonts.css, index.css) and delete dead files: InfoPanels.tsx, default_shadcn_theme.css, postcss.config.mjs, pnpm-workspace.yaml
 - **FR-007**: The project MUST create src/app/theme/muiTheme.ts with a dark emerald/gold palette (primary: #D4AF37, background: #0a1f0a, text: white/gray-400)
 - **FR-008**: The project MUST create src/app/theme/ThemeProviderWrapper.tsx that provides ThemeProvider + CssBaseline + Emotion cache
 - **FR-009**: The project MUST update main.tsx to wrap the app in ThemeProviderWrapper
-- **FR-010**: The project MUST update vite.config.ts to remove the Tailwind CSS plugin and keep only @vitejs/plugin-react
+- **FR-010**: The project MUST update vite.config.ts to remove the Tailwind CSS plugin, keeping both @vitejs/plugin-react and the figmaAssetResolver() plugin
 - **FR-011**: The project MUST keep these dependencies: @mui/material, @mui/icons-material, @emotion/react, @emotion/styled, motion, lucide-react, date-fns
 - **FR-012**: The project MUST keep the figmaAssetResolver() Vite plugin for resolving Figma asset imports
-- **FR-013**: Google Fonts (Open Sans, Noto Naskh Arabic) MUST be loaded via link tags in index.html or MUI CssBaseline, replacing the CSS @import approach
+- **FR-013**: Google Fonts (Open Sans, Noto Naskh Arabic) MUST be loaded via `<link>` tags in index.html with preconnect hints, replacing the CSS @import approach
+- **FR-014**: The project MUST keep exact pinned versions for MUI (7.3.5) and Emotion (11.14.0/11.14.1) for reproducible builds
+- **FR-015**: The project MUST have a tsconfig.json with `strict: true` enabled (create if missing, verify if existing)
+- **FR-016**: The project MUST add .yarn/install-state.gz and .yarn/cache to .gitignore while checking in .yarnrc.yml
 
 ### Key Entities
 
 - **MUI Theme**: Centralized design configuration containing palette (dark emerald/gold), typography (Open Sans, Noto Naskh Arabic), component overrides for the mosque display aesthetic
 - **ThemeProviderWrapper**: React component that wraps the app tree with MUI ThemeProvider, CssBaseline (dark mode), and Emotion CacheProvider
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 
@@ -95,14 +113,17 @@ As a developer maintaining this codebase, I want all unused files, duplicate con
 - **SC-004**: The MUI theme renders with correct dark palette when the app loads (verifiable by inspecting CSS custom properties or MUI theme in browser DevTools)
 - **SC-005**: No Tailwind CSS artifacts remain — searching for "tailwind" in package.json returns zero results
 - **SC-006**: The Vite dev server starts without plugin errors (component render errors are acceptable at this phase)
+- **SC-007**: tsconfig.json exists with `strict: true` enabled
+- **SC-008**: .yarnrc.yml exists with `nodeLinker: node-modules` and is tracked in git
 
 ## Assumptions
 
-- The application components (Header, PrayerCard, etc.) will be visually broken after this phase because Tailwind utility classes are removed — this is expected and will be fixed in Spec 002
-- The Vite build may produce TypeScript errors due to missing Tailwind types — this is acceptable at this phase
-- The CSS custom properties in theme.css will be preserved as they may be referenced by the MUI theme or future components
+- The application components (Header, PrayerCard, etc.) will not compile after this phase because Tailwind utility classes and shadcn imports are removed — this is intentionally a "clean slate" phase. The app will not be functional until Spec 002 migrates components to MUI
+- The Vite build WILL produce TypeScript errors after this phase — this is acceptable and expected
+- All files in src/styles/ are deleted (tailwind.css, globals.css, theme.css, fonts.css, index.css) — MUI handles all styling via ThemeProvider and CssBaseline
+- The CSS custom properties in theme.css are NOT preserved — they are deleted along with the rest of src/styles/. The MUI theme will define equivalent values
 - The src/app/components/figma/ImageWithFallback.tsx file will be kept as it may be used by future components
-- The `motion` library (Framer Motion) is kept because 8+ components use it for animations
-- The `lucide-react` library is kept because components use icons not available in @mui/icons-material (Sunrise, Sunset, CalendarClock, Languages)
-- The `date-fns` library is kept for future Hijri date calculation and date formatting
-- The app will not be visually functional until Spec 002 completes the MUI component migration
+- The figmaAssetResolver() Vite plugin is kept — only the Tailwind plugin is removed
+- MUI and Emotion versions are pinned exactly (7.3.5 / 11.14.0 / 11.14.1) for reproducible builds
+- Yarn Berry v4+ with nodeLinker: node-modules is used (not Yarn Classic, not PnP)
+- .yarnrc.yml is checked in; .yarn/cache and .yarn/install-state.gz are gitignored
