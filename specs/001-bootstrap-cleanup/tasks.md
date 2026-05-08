@@ -97,7 +97,7 @@
 
 - [x] T016 [US3] Verify no Tailwind/Radix/shadcn references remain — run `grep -rn "tailwind\|@tailwindcss\|@radix-ui\|shadcn\|from.*['\"]clsx['\"]\|from.*['\"]tailwind-merge['\"]" src/ --include="*.ts" --include="*.tsx"` (should return CLEAN or only match ImageWithFallback.tsx which is expected). Also verify all dependency versions in package.json are exact-pinned (no ranges like `^` or `~`)
 - [x] T017 [US3] Verify `yarn build` runs — Vite config must work without plugin errors; TypeScript errors in component files are expected and acceptable
-- [x] T018 [US3] Create `tsconfig.json` at project root with strict TypeScript config (target ES2020, moduleResolution bundler, jsx react-jsx, strict: true, noUnusedLocals, noUnusedParameters, noUncheckedIndexedAccess, path alias @/* → ./src/*)
+- [x] T018 [US3] Create `tsconfig.json` at project root with strict TypeScript config (target ES2020, moduleResolution bundler, jsx react-jsx, strict: true, noUnusedLocals, noUnusedParameters, noUncheckedIndexedAccess, path alias @/_→ ./src/_)
 - [x] T019 [US3] Create `tsconfig.node.json` at project root with Vite config TypeScript settings (target ES2022, moduleResolution bundler, include vite.config.ts)
 
 **Checkpoint**: All dead code verified removed, build infrastructure works
@@ -108,7 +108,7 @@
 
 **Purpose**: Final atomic commit of all Phase 0 changes
 
-- [ ] T020 Stage all changes and commit as single atomic commit with message `feat(001): Phase 0 — bootstrap cleanup and MUI theme setup`
+- [x] T020 Stage all changes and commit as single atomic commit with message `feat(001): Phase 0 — bootstrap cleanup and MUI theme setup`
 
 ---
 
