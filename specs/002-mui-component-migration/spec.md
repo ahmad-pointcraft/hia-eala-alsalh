@@ -2,7 +2,7 @@
 
 **Feature Branch**: `002-mui-component-migration`
 **Created**: 2026-05-08
-**Status**: Clarified
+**Status**: Checklisted (gaps addressed)
 **Input**: User description: "Migrate all 12 React components from Tailwind CSS utility classes to MUI v7 sx prop styling."
 
 ## Clarifications
@@ -193,34 +193,42 @@ As a developer, I want the root App component to use MUI Box/Stack for layout in
 ### Edge Cases
 
 - What happens when a component previously using `className` for Tailwind receives no className after migration? It should render purely via MUI `sx` prop styling with no visual regression.
-- What happens when RTL is toggled mid-render? All MUI components should respond to the `dir` attribute and logical CSS properties (marginInline, paddingInline instead of marginLeft/right).
+- What happens when RTL is toggled mid-render? All MUI components should respond to the `dir` attribute and logical CSS properties (marginInline, paddingInline instead of marginLeft/right). Each component's root element MUST carry the `dir` prop.
 - What happens when responsive breakpoints are hit? Components should smoothly transition between xs/sm/md/lg layouts without conflicting size rules.
 - What happens when the `ImageWithFallback.tsx` component (in figma/) still uses Tailwind classes? It should be migrated alongside the other components since it's imported by components in scope.
 - What happens to components using `translations: any`? The type should be properly defined or imported, but full type safety is Spec 004 scope — this spec should at minimum avoid introducing new `any` types.
+- What happens when a component uses both Tailwind `className` AND inline `style={{ fontFamily }}`? Both MUST be consolidated into the MUI `sx` prop — the inline style takes visual priority, so its values MUST be preserved in the `sx` prop when merging.
+- What happens when MUI Paper/Card default styles conflict with the dark emerald theme? MUI theme overrides in `muiTheme.ts` (already configured in Spec 001: `backgroundImage: 'none'`, custom `backgroundColor`) handle most defaults. Any remaining conflicts MUST be overridden via `sx` prop or theme component overrides.
+- What happens to `className` props used for non-styling purposes (e.g., Framer Motion targeting via `className`)? If Framer Motion targets elements by className, those classNames MUST be replaced with `ref`-based targeting or `motion(Component)` wrappers instead.
 
 ## Requirements _(mandatory)_
 
 ### Functional Requirements
 
-- **FR-001**: All 12 application components (App, Header, PrayerCard, CountdownBar, MasjidInfo, HadithPanel, WeatherWidget, AnnouncementsTicker, FundraisingOverlay, EventModeDisplay, IslamicGeometricOverlay, ImageCarousel) MUST render using only MUI components and the `sx` prop for styling — zero Tailwind CSS utility classes or inline `className` strings for styling purposes
+- **FR-001**: All 12 application components (App, Header, PrayerCard, CountdownBar, MasjidInfo, HadithPanel, WeatherWidget, AnnouncementsTicker, FundraisingOverlay, EventModeDisplay, IslamicGeometricOverlay, ImageCarousel) MUST render using only MUI components and the `sx` prop for styling — zero Tailwind CSS utility classes or inline `className` strings for styling purposes. Semantic HTML elements (`<img>`, `<svg>`, `<canvas>`) are acceptable where MUI has no equivalent. All styled containers (`<div>`, `<span>`) MUST be replaced with their MUI counterparts (Box, Typography). The following Tailwind utility categories MUST be fully replaced: layout (flex, grid, items-center, justify-*), spacing (p-*, m-*, gap-*), sizing (w-*, h-*), typography (text-*, font-*, tracking-*), borders (border-*), effects (backdrop-blur-*, shadow-*), transitions (transition-*), visibility (hidden, inline), and positioning (absolute, relative, fixed, inset-*)
 - **FR-002**: The Header component MUST use MUI AppBar and Toolbar as its container, with MUI Button or IconButton for interactive elements
 - **FR-003**: Prayer cards MUST use MUI Card or Paper as their container, arranged in a responsive grid using MUI Grid2 (not Stack — Stack is 1D only) with breakpoints: 2 columns (xs), 3 columns (sm), 6 columns (lg)
-- **FR-004**: The active prayer card MUST display with a gold border, gold glow shadow effect (rgba(212, 175, 55, 0.5)), and scale transformation — visually matching the original Tailwind implementation
-- **FR-005**: All responsive sizing MUST use MUI's responsive breakpoints ({ xs, sm, md, lg }) consistently — no conflicting size values for the same element at the same breakpoint
-- **FR-006**: RTL (right-to-left) layout MUST be preserved using MUI's `dir` prop on containers and logical CSS properties (marginInline, paddingInline, insetInline) instead of physical left/right properties
-- **FR-007**: Icons from `@mui/icons-material` MUST be used where direct equivalents exist: Cloud (WeatherWidget), ChevronLeft/ChevronRight (ImageCarousel), Close (FundraisingOverlay, replacing X from lucide-react)
-- **FR-008**: Icons from `lucide-react` MUST be kept for prayer-specific and unique icons where MUI lacks a visually equivalent icon: Sunrise (Fajr), Sunset (Maghrib), CloudSun (Dhuhr), Moon (Isha), Star (fallback), CalendarClock (Header), Languages (Header), Heart (Header), Megaphone (AnnouncementsTicker), Droplets (WeatherWidget)
-- **FR-009**: All Framer Motion (`motion/react`) animations MUST be preserved — motion components can wrap MUI components (e.g., `motion(Box)`, `motion(Card)`) or coexist with MUI layout
+- **FR-004**: The active prayer card MUST display with a gold border (`1px solid #D4AF37`), gold glow shadow effect (`0 0 30px rgba(212, 175, 55, 0.5)`), and scale transformation (1.05 at xs/sm, 1.10 at lg) — visually matching the original Tailwind implementation
+- **FR-005**: All responsive sizing MUST use MUI's responsive breakpoints ({ xs, sm, md, lg }) consistently — no conflicting size values for the same element at the same breakpoint. Specific numeric values (font sizes, padding, gaps) are implementation-defined but MUST follow the original Tailwind responsive behavior. The `md` breakpoint is optional per component but MUST NOT be skipped if it was used in the original Tailwind implementation
+- **FR-006**: RTL (right-to-left) layout MUST be preserved using MUI's `dir` prop on each component's root container and logical CSS properties instead of physical left/right properties. Specifically: `marginLeft`/`marginRight` → `marginInline`, `paddingLeft`/`paddingRight` → `paddingInline`, `left`/`right` → `insetInline`, `textAlign: 'left'`/`'right'` → `textAlign: 'start'`/`'end'`. The `dir` prop MUST be on each component's root element (not only on the app root) so components respond to mid-render language toggle. Conditional `text-left`/`text-right` patterns MUST be replaced with `textAlign: 'start'`/`'end'` (MUI logical properties handle direction automatically)
+- **FR-007**: Icons from `@mui/icons-material` MUST be used where direct equivalents exist, using named imports only (tree-shaking compatible, no barrel `import *`). The explicit migration mapping is: `Cloud` (lucide) → `Cloud` (MUI, WeatherWidget), `ChevronLeft`/`ChevronRight` (lucide) → `ChevronLeft`/`ChevronRight` (MUI, ImageCarousel), `X` (lucide) → `Close` (MUI, FundraisingOverlay), `Calendar` (lucide) → `CalendarMonth` (MUI, EventModeDisplay), `Clock` (lucide) → `AccessTime` (MUI, EventModeDisplay), `MapPin` (lucide) → `LocationOn` (MUI, EventModeDisplay), `Users` (lucide) → `Groups` (MUI, EventModeDisplay)
+- **FR-008**: Icons from `lucide-react` MUST be kept for prayer-specific and unique icons where MUI lacks a visually equivalent icon, using named imports only (tree-shaking compatible). The complete retention list: Sunrise (Fajr), Sun (Asr), Sunset (Maghrib), CloudSun (Dhuhr), Moon (Isha), Star (fallback) for prayer icons; CalendarClock (Header), Languages (Header + App), Heart (Header), Megaphone (AnnouncementsTicker), Droplets (WeatherWidget) for specialized icons. FR-007 and FR-008 are mutually exclusive — every icon in the codebase MUST appear in exactly one list
+- **FR-009**: All Framer Motion (`motion/react`) animations MUST be preserved — existing `motion.div` wrappers MAY remain where the inner content is replaced with MUI components, or MAY be changed to `motion(Box)` / `motion(Component)` for consistency. Animation timing (duration, easing, delay) MUST match the original values exactly
 - **FR-010**: The FundraisingOverlay MUST use MUI Backdrop for the overlay layer and Paper for the content card (not Dialog — to avoid focus trap and modal behavior that conflicts with the auto-closing timer), LinearProgress for the donation progress bar, and a close button using Close icon from `@mui/icons-material`
 - **FR-011**: The CountdownBar and WeatherWidget MUST render side by side in a 2-column grid at lg breakpoint, stacking vertically at xs/sm
 - **FR-012**: The AnnouncementsTicker MUST use MUI Paper as its container (not AppBar — AppBar is semantically top-positioned), fixed at the bottom of the viewport with logo on one end and megaphone icon on the other, text scrolling via requestAnimationFrame
 - **FR-013**: The EventModeDisplay MUST use MUI Paper or Card for the event card with decorative corner elements, Chip for the event type badge, and a pulsing CTA button with the gold gradient
-- **FR-014**: The IslamicGeometricOverlay MUST preserve all SVG patterns, rotation animations, gold accent glows, corner radial gradients, and floating particle animations — only the wrapper div elements MUST be replaced with MUI Box (SVG content stays as-is)
+- **FR-014**: The IslamicGeometricOverlay MUST preserve all SVG patterns, rotation animations, gold accent glows, corner radial gradients, and floating particle animations — only the wrapper div elements MUST be replaced with MUI Box (SVG content stays as-is). Floating particle positions MUST be computed via `useMemo` (not `Math.random()` in render) to prevent re-randomization on every render cycle. Particle count SHOULD be reduced from 12 to 6 for performance
 - **FR-015**: The ImageCarousel MUST use MUI IconButton for navigation arrows, and dot indicators must use MUI's `sx` prop for active/inactive states (gold elongated for active, white/semi-transparent for inactive)
 - **FR-016**: The root App component MUST use MUI Box for layout containers with `sx` prop for the diagonal grid background pattern, and Stack for vertical/horizontal flow layouts
 - **FR-017**: The `ImageWithFallback.tsx` component in `src/app/components/figma/` MUST also be migrated to use MUI `sx` prop styling instead of Tailwind classes
-- **FR-018**: Font family resolution MUST use the centralized MUI theme typography instead of inline `style={{ fontFamily }}` objects — components should reference `theme.typography` values via the `sx` prop
-- **FR-019**: All component props interfaces MUST NOT use `any` type — use the existing `Language` type and proper translation interfaces or `Record<string, string>` where full typing is deferred to Spec 004
+- **FR-018**: Font family resolution MUST use the centralized MUI theme typography instead of inline `style={{ fontFamily }}` objects — all 51 instances of `style={{ fontFamily }}` across components MUST be replaced with `sx={{ fontFamily: 'theme.typography.body1.fontFamily' }}` or the appropriate theme typography variant. Components MUST NOT use inline `style` props for font resolution
+- **FR-019**: All component props interfaces MUST NOT use `any` type — use the existing `Language` type and proper translation interfaces or `Record<string, string>` where full typing is deferred to Spec 004. The `prayerIcons` mapping in PrayerCard (currently `Record<string, any>`) MUST be typed as `Record<string, React.ComponentType<{ className?: string }>>`
+- **FR-020**: The following HTML → MUI element mapping MUST be applied consistently: `<div>` with styling → Box, `<div>` with text content → Typography, `<span>` with styling → Box component="span", `<span>` with text → Typography component="span", `<button>` → Button or IconButton, `<img>` → keep as `<img>` (no MUI equivalent), `<svg>` → keep as-is (decorative SVG content per FR-014)
+- **FR-021**: Container component selection MUST follow these rules: Paper for elevated surfaces with borders (CountdownBar, WeatherWidget, HadithPanel, AnnouncementsTicker, FundraisingOverlay content, EventModeDisplay card), Card for interactive card-like items (PrayerCard), Box for structural layout containers (App root, IslamicGeometricOverlay wrappers), AppBar/Toolbar exclusively for the Header top bar
+- **FR-022**: Theme tokens MUST be used for colors defined in `muiTheme.ts`: `primary.main` for gold (#D4AF37), `primary.light` for gold-light (#FFD700), `background.default` for dark bg (#0a1f0a), `background.paper` for card bg, `text.primary` for white, `text.secondary` for gray-400. One-off colors not in the theme (e.g., `rgba(0,0,0,0.4)`, `rgba(212,175,55,0.3)`) MAY use direct values in `sx`
+- **FR-023**: After migration, all Tailwind-related dead code MUST be removed: unused `className` string assignments, conditional className template literals that are no longer needed, and any Tailwind-specific utility functions. Components MUST NOT retain empty `className=""` attributes
+- **FR-024**: Arabic numeral conversion (0→٠, 1→١, ... 9→٩) MUST be applied consistently to ALL numeric displays: prayer times (PrayerCard), countdown timer (CountdownBar), Hijri dates (MasjidInfo), temperature (WeatherWidget), and fundraising amounts (FundraisingOverlay). The inline `toArabicNumerals` function is used per-component until consolidation in Spec 003
 
 ### Key Entities
 
@@ -232,11 +240,11 @@ As a developer, I want the root App component to use MUI Box/Stack for layout in
 
 ### Measurable Outcomes
 
-- **SC-001**: Zero Tailwind CSS utility classes remain in any component — searching for `className=` in component files returns zero matches for Tailwind patterns (bg-, text-, px-, py-, flex, grid, border-, rounded-, etc.)
+- **SC-001**: Zero Tailwind CSS utility classes remain in any component — a search for `className=` in `src/app/components/` and `src/app/App.tsx` MUST return zero matches containing Tailwind patterns. The grep pattern is: `(bg-|text-\[|px-\[|py-\[|p-\d|m-\d|flex |grid |border-|rounded-|backdrop-|shadow-|hidden |transition-|tracking-|font-bold|font-mono|items-|justify-|gap-|w-\d|h-\d|inset-|absolute |relative |overflow-)`
 - **SC-002**: All 12 components render visually matching the original Figma design when viewed on a 1920x1080 display in dark mode — the dark emerald/gold Islamic theme is preserved
-- **SC-003**: The app builds successfully with `yarn build` producing no new TypeScript errors beyond pre-existing ones
+- **SC-003**: The app builds successfully with `yarn build` producing zero TypeScript errors. Since Spec 001 intentionally left components broken (Tailwind removed), "pre-existing errors" means the migration MUST resolve all build errors introduced by Spec 001's cleanup
 - **SC-004**: RTL mode renders correctly with all text, layouts, and scroll directions reversed for Arabic language
-- **SC-005**: Responsive behavior works at all four breakpoints (xs: <600px, sm: 600-900px, md: 900-1200px, lg: >1200px) without conflicting size rules
+- **SC-005**: Responsive behavior works at all four breakpoints (xs: 375px and 600px, sm: 640px and 900px, md: 960px and 1200px, lg: 1440px and 1920px) without conflicting size rules. Each breakpoint boundary MUST be tested to verify layout transitions are smooth
 - **SC-006**: All Framer Motion animations (fade, scale, slide, rotate, pulse) execute at the same timing and visual effect as the original implementation
 - **SC-007**: The bundle size remains under 500KB gzipped after migration
 
@@ -251,4 +259,10 @@ As a developer, I want the root App component to use MUI Box/Stack for layout in
 - Hardcoded prayer times, weather data, and fundraising amounts remain as placeholders — dynamic data is Spec 003 scope
 - The `figma/ImageWithFallback.tsx` component is in scope for migration since it uses Tailwind classes
 - Multiple `setInterval` timers across components (Header clock, CountdownBar countdown, MasjidInfo clock) are noted — consolidation to a single timer is Spec 004 scope (Article IX)
-- `NodeJS.Timeout` type usage in App.tsx should be replaced with `ReturnType<typeof setTimeout>` for browser compatibility
+- `NodeJS.Timeout` type usage in App.tsx MUST be replaced with `ReturnType<typeof setTimeout>` for browser compatibility
+- Tailwind arbitrary value syntax (e.g., `text-[24px]`, `px-[20px]`) maps directly to sx numeric values (e.g., `fontSize: 24, paddingInline: 20`)
+- Tailwind opacity modifier syntax (e.g., `bg-black/30`, `border-[#D4AF37]/30`) maps to `rgba()` values (e.g., `rgba(0,0,0,0.3)`, `rgba(212,175,55,0.3)`)
+- Tailwind responsive prefixes (e.g., `sm:text-sm`, `lg:w-16`) map to sx breakpoint objects (e.g., `fontSize: { xs: '10px', sm: '14px' }`)
+- Tailwind hidden/visible patterns (`hidden sm:inline`) map to sx display toggling (`display: { xs: 'none', sm: 'inline' }`)
+- MUI Paper/Card default styles (elevation shadows, background images) are already overridden in `muiTheme.ts` component defaults — no additional global overrides needed
+- Kiosk error resilience (Article VII) — error boundaries and offline recovery — are out of scope for this component migration spec; the structural component replacements do not affect kiosk resilience behavior
