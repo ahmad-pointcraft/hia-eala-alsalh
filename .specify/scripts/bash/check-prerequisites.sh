@@ -26,6 +26,7 @@ JSON_MODE=false
 REQUIRE_TASKS=false
 INCLUDE_TASKS=false
 PATHS_ONLY=false
+SKIP_PLAN=false
 
 for arg in "$@"; do
     case "$arg" in
@@ -41,6 +42,9 @@ for arg in "$@"; do
         --paths-only)
             PATHS_ONLY=true
             ;;
+        --skip-plan)
+            SKIP_PLAN=true
+            ;;
         --help|-h)
             cat << 'EOF'
 Usage: check-prerequisites.sh [OPTIONS]
@@ -52,6 +56,7 @@ OPTIONS:
   --require-tasks     Require tasks.md to exist (for implementation phase)
   --include-tasks     Include tasks.md in AVAILABLE_DOCS list
   --paths-only        Only output path variables (no prerequisite validation)
+  --skip-plan         Skip plan.md existence check (for checklist phase)
   --help, -h          Show this help message
 
 EXAMPLES:
@@ -119,7 +124,7 @@ if [[ ! -d "$FEATURE_DIR" ]]; then
     exit 1
 fi
 
-if [[ ! -f "$IMPL_PLAN" ]]; then
+if ! $SKIP_PLAN && [[ ! -f "$IMPL_PLAN" ]]; then
     echo "ERROR: plan.md not found in $FEATURE_DIR" >&2
     echo "Run /speckit.plan first to create the implementation plan." >&2
     exit 1
