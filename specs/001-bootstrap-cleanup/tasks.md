@@ -19,9 +19,9 @@
 
 **Purpose**: Switch from pnpm to Yarn Berry, establish clean package manager baseline
 
-- [ ] T001 Delete `pnpm-workspace.yaml` and `pnpm-lock.yaml` (if exists) from project root
-- [ ] T002 Remove `pnpm` field and `pnpm` overrides section from `package.json`, set `packageManager` field to `"yarn@4.9.2"` in `package.json`
-- [ ] T003 Create `.yarnrc.yml` with `nodeLinker: node-modules` at project root; append yarn entries (`.yarn/*`, `!.yarn/patches`, `!.yarn/releases`, `.pnp.*`) to `.gitignore`
+- [x] T001 Delete `pnpm-workspace.yaml` and `pnpm-lock.yaml` (if exists) from project root
+- [x] T002 Remove `pnpm` field and `pnpm` overrides section from `package.json`, set `packageManager` field to `"yarn@4.9.2"` in `package.json`
+- [x] T003 Create `.yarnrc.yml` with `nodeLinker: node-modules` at project root; append yarn entries (`.yarn/*`, `!.yarn/patches`, `!.yarn/releases`, `.pnp.*`) to `.gitignore`
 
 **Checkpoint**: pnpm artifacts removed, yarn config ready
 
@@ -51,7 +51,7 @@
 
 ### Implementation for User Story 1
 
-- [ ] T009 [US1] Remove all dead dependencies from `package.json` — delete: @tailwindcss/vite, tailwindcss, tw-animate-css, tailwind-merge, all 26 @radix-ui/react-* packages, class-variance-authority, cmdk, input-otp, vaul, sonner, react-day-picker, embla-carousel-react, react-resizable-panels, recharts, react-dnd, react-dnd-html5-backend, react-slick, react-hook-form, canvas-confetti, react-popper, @popperjs/core, react-responsive-masonry, react-router, next-themes, clsx. Keep: @mui/material, @mui/icons-material, @emotion/react, @emotion/styled, motion, lucide-react, date-fns (as dependencies), react/react-dom (as peerDependencies with optional: true), @vitejs/plugin-react, typescript, vite (as devDependencies)
+- [ ] T009 [US1] Remove all dead dependencies from `package.json` — delete: @tailwindcss/vite, tailwindcss, tw-animate-css, tailwind-merge, all 26 @radix-ui/react-\* packages, class-variance-authority, cmdk, input-otp, vaul, sonner, react-day-picker, embla-carousel-react, react-resizable-panels, recharts, react-dnd, react-dnd-html5-backend, react-slick, react-hook-form, canvas-confetti, react-popper, @popperjs/core, react-responsive-masonry, react-router, next-themes, clsx. Keep: @mui/material, @mui/icons-material, @emotion/react, @emotion/styled, motion, lucide-react, date-fns (as dependencies), react/react-dom (as peerDependencies with optional: true), @vitejs/plugin-react, typescript, vite (as devDependencies)
 - [ ] T010 [US1] Run `corepack enable && corepack prepare yarn@stable --activate && yarn install` to generate fresh `yarn.lock`
 
 **Checkpoint**: Clean dependency tree — `yarn install` succeeds, package.json has 7 prod deps
@@ -97,7 +97,7 @@
 
 - [ ] T016 [US3] Verify no Tailwind/Radix/shadcn references remain — run `grep -rn "tailwind\|@tailwindcss\|@radix-ui\|shadcn\|from.*['\"]clsx['\"]\|from.*['\"]tailwind-merge['\"]" src/ --include="*.ts" --include="*.tsx"` (should return CLEAN or only match ImageWithFallback.tsx which is expected). Also verify all dependency versions in package.json are exact-pinned (no ranges like `^` or `~`)
 - [ ] T017 [US3] Verify `yarn build` runs — Vite config must work without plugin errors; TypeScript errors in component files are expected and acceptable
-- [ ] T018 [US3] Create `tsconfig.json` at project root with strict TypeScript config (target ES2020, moduleResolution bundler, jsx react-jsx, strict: true, noUnusedLocals, noUnusedParameters, noUncheckedIndexedAccess, path alias @/* → ./src/*)
+- [ ] T018 [US3] Create `tsconfig.json` at project root with strict TypeScript config (target ES2020, moduleResolution bundler, jsx react-jsx, strict: true, noUnusedLocals, noUnusedParameters, noUncheckedIndexedAccess, path alias @/_→ ./src/_)
 - [ ] T019 [US3] Create `tsconfig.node.json` at project root with Vite config TypeScript settings (target ES2022, moduleResolution bundler, include vite.config.ts)
 
 **Checkpoint**: All dead code verified removed, build infrastructure works
