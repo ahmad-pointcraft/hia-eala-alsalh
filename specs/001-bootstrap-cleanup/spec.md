@@ -84,18 +84,18 @@ As a developer maintaining this codebase, I want all unused files, duplicate con
 - **FR-001**: The project MUST use Yarn Berry (v4+) as the sole package manager with `nodeLinker: node-modules` in `.yarnrc.yml`, a valid yarn.lock, and no pnpm artifacts. The `packageManager` field in package.json MUST be set to the latest stable Yarn Berry version (e.g., `yarn@4.9.2`). The `pnpm` overrides field MUST be removed from package.json
 - **FR-002**: The project MUST have zero Tailwind CSS dependencies (@tailwindcss/vite, tailwindcss, tw-animate-css, tailwind-merge removed from package.json)
 - **FR-003**: The project MUST have zero shadcn/ui component files (entire src/app/components/ui/ directory deleted)
-- **FR-004**: The project MUST have zero @radix-ui/\* dependencies (all 20+ packages removed)
+- **FR-004**: The project MUST have zero @radix-ui/* dependencies (all 26 packages removed)
 - **FR-005**: The project MUST remove unused dependencies: recharts, react-dnd, react-dnd-html5-backend, react-slick, react-hook-form, canvas-confetti, react-popper, @popperjs/core, react-responsive-masonry, react-router, next-themes, clsx, class-variance-authority, cmdk, input-otp, vaul, sonner, react-day-picker, embla-carousel-react, react-resizable-panels. The project MUST also remove the `pnpm` field (overrides section) from package.json
 - **FR-006**: The project MUST delete all files in src/styles/ (tailwind.css, globals.css, theme.css, fonts.css, index.css) and delete dead files: InfoPanels.tsx, default_shadcn_theme.css, postcss.config.mjs, pnpm-workspace.yaml
-- **FR-007**: The project MUST create src/app/theme/muiTheme.ts with a dark emerald/gold palette (primary: #D4AF37, background: #0a1f0a, text: white/gray-400)
+- **FR-007**: The project MUST create src/app/theme/muiTheme.ts with a dark emerald/gold palette (primary: #D4AF37, background: #0a1f0a, text: white/#9ca3af), including typography configuration (Open Sans, Noto Naskh Arabic) and baseline component overrides (CssBaseline, Paper, Card, Button, Chip, Divider) via module augmentation for extended palette types
 - **FR-008**: The project MUST create src/app/theme/ThemeProviderWrapper.tsx that provides ThemeProvider + CssBaseline. No explicit Emotion CacheProvider is needed — MUI v7 auto-manages the Emotion cache internally
 - **FR-009**: The project MUST update main.tsx to remove the `import "./styles/index.css"` CSS import and wrap the app in ThemeProviderWrapper
 - **FR-010**: The project MUST update vite.config.ts to remove the Tailwind CSS plugin, keeping both @vitejs/plugin-react and the figmaAssetResolver() plugin
 - **FR-011**: The project MUST keep these dependencies: @mui/material, @mui/icons-material, @emotion/react, @emotion/styled, motion, lucide-react, date-fns. React and react-dom MUST remain as peerDependencies (with `optional: true` in peerDependenciesMeta)
 - **FR-012**: The project MUST keep the figmaAssetResolver() Vite plugin for resolving Figma asset imports
 - **FR-013**: Google Fonts (Open Sans, Noto Naskh Arabic) MUST be loaded via `<link>` tags in index.html with preconnect hints, replacing the CSS @import approach. The Google Fonts URL MUST include weights 300;400;500;600;700 for Open Sans and 400;500;600;700 for Noto Naskh Arabic, with `display=swap`
-- **FR-014**: The project MUST keep exact pinned versions for MUI (7.3.5) and Emotion (11.14.0/11.14.1) for reproducible builds
-- **FR-015**: The project MUST have a tsconfig.json with `strict: true` enabled (create if missing, verify if existing). A companion tsconfig.node.json MUST also be created for Vite configuration
+- **FR-014**: All dependencies MUST use exact pinned versions for reproducible builds: MUI (7.3.5), Emotion (11.14.0/11.14.1), motion, lucide-react, date-fns, vite, typescript, @vitejs/plugin-react
+- **FR-015**: The project MUST have a tsconfig.json with `strict: true` enabled, plus `noUnusedLocals`, `noUnusedParameters`, and `noUncheckedIndexedAccess` (create if missing, verify if existing). A companion tsconfig.node.json MUST also be created for Vite configuration
 - **FR-016**: The project MUST add .yarn/install-state.gz and .yarn/cache to .gitignore while checking in .yarnrc.yml
 
 ### Key Entities
@@ -107,7 +107,7 @@ As a developer maintaining this codebase, I want all unused files, duplicate con
 
 ### Measurable Outcomes
 
-- **SC-001**: The project has exactly 7 production dependencies (down from 55+) plus react/react-dom as peerDependencies and 2 dev dependencies (typescript, @vitejs/plugin-react — vite itself is also a devDependency for a total of 3)
+- **SC-001**: The project has exactly 7 production dependencies (down from 55+), react/react-dom as peerDependencies, and 3 dev dependencies (typescript, @vitejs/plugin-react, vite)
 - **SC-002**: Running `yarn install` completes without errors and generates a valid yarn.lock
 - **SC-003**: The shadcn/ui directory (48 files) is completely removed — zero .tsx files remain in src/app/components/ui/
 - **SC-004**: The MUI theme renders with correct dark palette when the app loads (verifiable by inspecting CSS custom properties or MUI theme in browser DevTools)
