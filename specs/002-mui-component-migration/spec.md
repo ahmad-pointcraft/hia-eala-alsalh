@@ -2,8 +2,18 @@
 
 **Feature Branch**: `002-mui-component-migration`
 **Created**: 2026-05-08
-**Status**: Draft
+**Status**: Clarified
 **Input**: User description: "Migrate all 12 React components from Tailwind CSS utility classes to MUI v7 sx prop styling."
+
+## Clarifications
+
+### Session 2026-05-08
+
+- Q: Should we keep lucide-react for prayer-specific icons (Sunrise, Sunset, CloudSun, Moon, Star) or find MUI equivalents? → A: Keep lucide-react for prayer-specific icons — MUI lacks exact equivalents for Sunrise, Sunset, CloudSun. MUI icons (WbSunny, Brightness3, CloudQueue) are close but visually different enough to warrant keeping the lucide originals
+- Q: Should the AnnouncementsTicker use MUI AppBar or Paper? → A: Use Paper with fixed positioning — AppBar is semantically a top-positioned element; Paper is the correct MUI component for a bottom-positioned ticker bar
+- Q: Should the IslamicGeometricOverlay SVGs be kept as-is or migrated to MUI components? → A: Keep all SVG patterns and animations as-is — only replace wrapper div elements with MUI Box. SVG decorative patterns are not component-level concerns
+- Q: Should the FundraisingOverlay use MUI Dialog or custom Backdrop+Paper? → A: Use Backdrop + Paper — MUI Dialog adds modal behavior (focus trap, aria role) that conflicts with the auto-closing timed overlay. Backdrop + Paper provides full control over the glass morphism effect
+- Q: Should the prayer cards grid use MUI Grid2 or Stack? → A: Use Grid2 — it supports responsive column counts (xs:2, sm:3, lg:6). Stack is 1D only and cannot achieve the multi-column responsive layout
 
 ## User Scenarios & Testing _(mandatory)_
 
@@ -194,18 +204,18 @@ As a developer, I want the root App component to use MUI Box/Stack for layout in
 
 - **FR-001**: All 12 application components (App, Header, PrayerCard, CountdownBar, MasjidInfo, HadithPanel, WeatherWidget, AnnouncementsTicker, FundraisingOverlay, EventModeDisplay, IslamicGeometricOverlay, ImageCarousel) MUST render using only MUI components and the `sx` prop for styling — zero Tailwind CSS utility classes or inline `className` strings for styling purposes
 - **FR-002**: The Header component MUST use MUI AppBar and Toolbar as its container, with MUI Button or IconButton for interactive elements
-- **FR-003**: Prayer cards MUST use MUI Card or Paper as their container, arranged in a responsive grid using MUI Grid2 with breakpoints: 2 columns (xs), 3 columns (sm), 6 columns (lg)
+- **FR-003**: Prayer cards MUST use MUI Card or Paper as their container, arranged in a responsive grid using MUI Grid2 (not Stack — Stack is 1D only) with breakpoints: 2 columns (xs), 3 columns (sm), 6 columns (lg)
 - **FR-004**: The active prayer card MUST display with a gold border, gold glow shadow effect (rgba(212, 175, 55, 0.5)), and scale transformation — visually matching the original Tailwind implementation
 - **FR-005**: All responsive sizing MUST use MUI's responsive breakpoints ({ xs, sm, md, lg }) consistently — no conflicting size values for the same element at the same breakpoint
 - **FR-006**: RTL (right-to-left) layout MUST be preserved using MUI's `dir` prop on containers and logical CSS properties (marginInline, paddingInline, insetInline) instead of physical left/right properties
-- **FR-007**: Icons from `@mui/icons-material` MUST be used where direct equivalents exist: Cloud, ChevronLeft, ChevronRight, Close (replacing X), Campaign or Notifications (replacing Megaphone where appropriate)
-- **FR-008**: Icons from `lucide-react` MUST be kept only where MUI lacks a direct equivalent: Sunrise, Sunset, CloudSun, CalendarClock, Languages
+- **FR-007**: Icons from `@mui/icons-material` MUST be used where direct equivalents exist: Cloud (WeatherWidget), ChevronLeft/ChevronRight (ImageCarousel), Close (FundraisingOverlay, replacing X from lucide-react)
+- **FR-008**: Icons from `lucide-react` MUST be kept for prayer-specific and unique icons where MUI lacks a visually equivalent icon: Sunrise (Fajr), Sunset (Maghrib), CloudSun (Dhuhr), Moon (Isha), Star (fallback), CalendarClock (Header), Languages (Header), Heart (Header), Megaphone (AnnouncementsTicker), Droplets (WeatherWidget)
 - **FR-009**: All Framer Motion (`motion/react`) animations MUST be preserved — motion components can wrap MUI components (e.g., `motion(Box)`, `motion(Card)`) or coexist with MUI layout
-- **FR-010**: The FundraisingOverlay MUST use MUI Backdrop for the overlay layer, LinearProgress for the donation progress bar, and a close button using Close icon from `@mui/icons-material`
+- **FR-010**: The FundraisingOverlay MUST use MUI Backdrop for the overlay layer and Paper for the content card (not Dialog — to avoid focus trap and modal behavior that conflicts with the auto-closing timer), LinearProgress for the donation progress bar, and a close button using Close icon from `@mui/icons-material`
 - **FR-011**: The CountdownBar and WeatherWidget MUST render side by side in a 2-column grid at lg breakpoint, stacking vertically at xs/sm
-- **FR-012**: The AnnouncementsTicker MUST remain fixed at the bottom of the viewport with logo on one end and megaphone icon on the other, text scrolling via requestAnimationFrame
+- **FR-012**: The AnnouncementsTicker MUST use MUI Paper as its container (not AppBar — AppBar is semantically top-positioned), fixed at the bottom of the viewport with logo on one end and megaphone icon on the other, text scrolling via requestAnimationFrame
 - **FR-013**: The EventModeDisplay MUST use MUI Paper or Card for the event card with decorative corner elements, Chip for the event type badge, and a pulsing CTA button with the gold gradient
-- **FR-014**: The IslamicGeometricOverlay MUST preserve all SVG patterns, rotation animations, gold accent glows, corner radial gradients, and floating particle animations
+- **FR-014**: The IslamicGeometricOverlay MUST preserve all SVG patterns, rotation animations, gold accent glows, corner radial gradients, and floating particle animations — only the wrapper div elements MUST be replaced with MUI Box (SVG content stays as-is)
 - **FR-015**: The ImageCarousel MUST use MUI IconButton for navigation arrows, and dot indicators must use MUI's `sx` prop for active/inactive states (gold elongated for active, white/semi-transparent for inactive)
 - **FR-016**: The root App component MUST use MUI Box for layout containers with `sx` prop for the diagonal grid background pattern, and Stack for vertical/horizontal flow layouts
 - **FR-017**: The `ImageWithFallback.tsx` component in `src/app/components/figma/` MUST also be migrated to use MUI `sx` prop styling instead of Tailwind classes
