@@ -78,10 +78,10 @@
 
 ### Implementation for User Story 2
 
-- [ ] T012 [P] [US2] Create `src/app/theme/muiTheme.ts` with dark emerald/gold palette (primary: #D4AF37, background: #0a1f0a, text: white/#9ca3af), typography (Open Sans + Noto Naskh Arabic), component overrides (CssBaseline, Paper, Card, Button, Chip, Divider), custom gold palette extension via module augmentation
-- [ ] T013 [P] [US2] Create `src/app/theme/ThemeProviderWrapper.tsx` — React component accepting `children: ReactNode`, wrapping with `<ThemeProvider theme={muiTheme}>` + `<CssBaseline enableColorScheme />` (no explicit Emotion CacheProvider — MUI v7 auto-manages)
-- [ ] T014 [US2] Update `src/main.tsx` — remove `import "./styles/index.css"`, add `import ThemeProviderWrapper from './app/theme/ThemeProviderWrapper'`, wrap `<App />` with `<ThemeProviderWrapper>`
-- [ ] T015 [US2] Update `index.html` — add `<link rel="preconnect" href="https://fonts.googleapis.com">`, `<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>`, and Google Fonts CSS link for `Open Sans:wght@300;400;500;600;700` + `Noto+Naskh+Arabic:wght@400;500;600;700` with `display=swap`
+- [x] T012 [P] [US2] Create `src/app/theme/muiTheme.ts` with dark emerald/gold palette (primary: #D4AF37, background: #0a1f0a, text: white/#9ca3af), typography (Open Sans + Noto Naskh Arabic), component overrides (CssBaseline, Paper, Card, Button, Chip, Divider), custom gold palette extension via module augmentation
+- [x] T013 [P] [US2] Create `src/app/theme/ThemeProviderWrapper.tsx` — React component accepting `children: ReactNode`, wrapping with `<ThemeProvider theme={muiTheme}>` + `<CssBaseline enableColorScheme />` (no explicit Emotion CacheProvider — MUI v7 auto-manages)
+- [x] T014 [US2] Update `src/main.tsx` — remove `import "./styles/index.css"`, add `import ThemeProviderWrapper from './app/theme/ThemeProviderWrapper'`, wrap `<App />` with `<ThemeProviderWrapper>`
+- [x] T015 [US2] Update `index.html` — add `<link rel="preconnect" href="https://fonts.googleapis.com">`, `<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>`, and Google Fonts CSS link for `Open Sans:wght@300;400;500;600;700` + `Noto+Naskh+Arabic:wght@400;500;600;700` with `display=swap`
 
 **Checkpoint**: MUI theme infrastructure complete — theme exports valid object, provider wraps app
 
