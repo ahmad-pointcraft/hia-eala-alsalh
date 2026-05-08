@@ -51,8 +51,8 @@
 
 ### Implementation for User Story 1
 
-- [ ] T009 [US1] Remove all dead dependencies from `package.json` — delete: @tailwindcss/vite, tailwindcss, tw-animate-css, tailwind-merge, all 26 @radix-ui/react-\* packages, class-variance-authority, cmdk, input-otp, vaul, sonner, react-day-picker, embla-carousel-react, react-resizable-panels, recharts, react-dnd, react-dnd-html5-backend, react-slick, react-hook-form, canvas-confetti, react-popper, @popperjs/core, react-responsive-masonry, react-router, next-themes, clsx. Keep: @mui/material, @mui/icons-material, @emotion/react, @emotion/styled, motion, lucide-react, date-fns (as dependencies), react/react-dom (as peerDependencies with optional: true), @vitejs/plugin-react, typescript, vite (as devDependencies)
-- [ ] T010 [US1] Run `corepack enable && corepack prepare yarn@stable --activate && yarn install` to generate fresh `yarn.lock`
+- [x] T009 [US1] Remove all dead dependencies from `package.json` — delete: @tailwindcss/vite, tailwindcss, tw-animate-css, tailwind-merge, all 26 @radix-ui/react-\* packages, class-variance-authority, cmdk, input-otp, vaul, sonner, react-day-picker, embla-carousel-react, react-resizable-panels, recharts, react-dnd, react-dnd-html5-backend, react-slick, react-hook-form, canvas-confetti, react-popper, @popperjs/core, react-responsive-masonry, react-router, next-themes, clsx. Keep: @mui/material, @mui/icons-material, @emotion/react, @emotion/styled, motion, lucide-react, date-fns (as dependencies), react/react-dom (as peerDependencies with optional: true), @vitejs/plugin-react, typescript, vite (as devDependencies)
+- [x] T010 [US1] Run `corepack enable && corepack prepare yarn@stable --activate && yarn install` to generate fresh `yarn.lock`
 
 **Checkpoint**: Clean dependency tree — `yarn install` succeeds, package.json has 7 prod deps
 
