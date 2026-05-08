@@ -33,11 +33,11 @@
 
 **⚠️ CRITICAL**: All tasks in this phase can run in parallel (different files, no dependencies)
 
-- [ ] T004 [P] [US3] Delete entire `src/app/components/ui/` directory (48 shadcn component files)
-- [ ] T005 [P] [US3] Delete entire `src/styles/` directory (5 files: tailwind.css, fonts.css, theme.css, index.css, globals.css)
-- [ ] T006 [P] [US3] Delete `postcss.config.mjs` from project root
-- [ ] T007 [P] [US3] Delete `default_shadcn_theme.css` from project root
-- [ ] T008 [P] [US3] Delete `src/app/components/InfoPanels.tsx`
+- [x] T004 [P] [US3] Delete entire `src/app/components/ui/` directory (48 shadcn component files)
+- [x] T005 [P] [US3] Delete entire `src/styles/` directory (5 files: tailwind.css, fonts.css, theme.css, index.css, globals.css)
+- [x] T006 [P] [US3] Delete `postcss.config.mjs` from project root
+- [x] T007 [P] [US3] Delete `default_shadcn_theme.css` from project root
+- [x] T008 [P] [US3] Delete `src/app/components/InfoPanels.tsx`
 
 **Checkpoint**: All dead files removed, only active source files remain
 
