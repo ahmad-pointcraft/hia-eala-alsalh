@@ -64,7 +64,7 @@
 
 **Independent Test**: Vite dev server starts without plugin errors
 
-- [ ] T011 [US1] Update `vite.config.ts` — remove `import tailwindcss from "@tailwindcss/vite"` import and `tailwindcss()` from plugins array; keep `figmaAssetResolver()` and `react()` plugins
+- [x] T011 [US1] Update `vite.config.ts` — remove `import tailwindcss from "@tailwindcss/vite"` import and `tailwindcss()` from plugins array; keep `figmaAssetResolver()` and `react()` plugins
 
 **Checkpoint**: Vite config clean — only figmaAssetResolver + react plugins remain
 
