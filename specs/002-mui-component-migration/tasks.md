@@ -89,15 +89,15 @@
 
 **Purpose**: Validate all success criteria and functional requirements
 
-- [ ] T016 Run `yarn build` — verify zero TypeScript errors (SC-003). All translations: any replaced with Record<string, string>, prayerIcons typed, NodeJS.Timeout replaced
-- [ ] T017 Visual QA — verify all 12 components render at 1920x1080 in dark mode with the dark emerald/gold Islamic theme preserved (SC-002). Test both EN and AR modes
-- [ ] T018 Verify event mode toggle — normal mode fades out with scale-down, event mode fades in, CTA button pulses, geometric overlay appears
-- [ ] T019 Verify fundraising overlay — opens on schedule, shows collected/goal/donors stats with Arabic numerals in AR mode, progress bar renders gold gradient, 10-second countdown auto-closes, close button works
-- [ ] T020 Verify responsive layout at all breakpoints (SC-005) — test at 375px, 600px, 640px, 900px, 960px, 1200px, 1440px, 1920px. Prayer cards: 2 cols at xs, 3 at sm, 6 at lg. Countdown+weather: stacked at xs, side-by-side at lg
-- [ ] T021 Search for remaining Tailwind classes (SC-001) — grep with pattern `(bg-|text-\[|px-\[|py-\[|p-\d|m-\d|flex |grid |border-|rounded-|backdrop-|shadow-|hidden |transition-|tracking-|font-bold|font-mono|items-|justify-|gap-|w-\d|h-\d|inset-|absolute |relative |overflow-)` across `src/app/components/` and `src/app/App.tsx` — must return zero matches
-- [ ] T022 Verify zero inline style={{ fontFamily }} remain (FR-018) — grep `style={{ fontFamily` across all component files — must return zero matches
-- [ ] T023 Verify Arabic numerals on all numeric displays (FR-024) — switch to AR mode and confirm: prayer times (PrayerCard), countdown HH:MM:SS (CountdownBar), Hijri/Gregorian dates (MasjidInfo), temperature + humidity (WeatherWidget), collected/goal/donors/progress (FundraisingOverlay) all show ٠١٢٣٤٥٦٧٨٩ digits
-- [ ] T024 Verify no dead Tailwind code remains (FR-023) — grep for empty className="" and dead Tailwind template literals across all component files — must return zero matches. Confirm no unused Tailwind-related imports
+- [X] T016 Run `yarn build` — verify zero TypeScript errors (SC-003). All translations: any replaced with Record<string, string>, prayerIcons typed, NodeJS.Timeout replaced
+- [X] T017 Visual QA — verify all 12 components render at 1920x1080 in dark mode with the dark emerald/gold Islamic theme preserved (SC-002). Test both EN and AR modes
+- [X] T018 Verify event mode toggle — normal mode fades out with scale-down, event mode fades in, CTA button pulses, geometric overlay appears
+- [X] T019 Verify fundraising overlay — opens on schedule, shows collected/goal/donors stats with Arabic numerals in AR mode, progress bar renders gold gradient, 10-second countdown auto-closes, close button works
+- [X] T020 Verify responsive layout at all breakpoints (SC-005) — test at 375px, 600px, 640px, 900px, 960px, 1200px, 1440px, 1920px. Prayer cards: 2 cols at xs, 3 at sm, 6 at lg. Countdown+weather: stacked at xs, side-by-side at lg
+- [X] T021 Search for remaining Tailwind classes (SC-001) — grep with pattern `(bg-|text-\[|px-\[|py-\[|p-\d|m-\d|flex |grid |border-|rounded-|backdrop-|shadow-|hidden |transition-|tracking-|font-bold|font-mono|items-|justify-|gap-|w-\d|h-\d|inset-|absolute |relative |overflow-)` across `src/app/components/` and `src/app/App.tsx` — must return zero matches
+- [X] T022 Verify zero inline style={{ fontFamily }} remain (FR-018) — grep `style={{ fontFamily` across all component files — must return zero matches
+- [X] T023 Verify Arabic numerals on all numeric displays (FR-024) — switch to AR mode and confirm: prayer times (PrayerCard), countdown HH:MM:SS (CountdownBar), Hijri/Gregorian dates (MasjidInfo), temperature + humidity (WeatherWidget), collected/goal/donors/progress (FundraisingOverlay) all show ٠١٢٣٤٥٦٧٨٩ digits
+- [X] T024 Verify no dead Tailwind code remains (FR-023) — grep for empty className="" and dead Tailwind template literals across all component files — must return zero matches. Confirm no unused Tailwind-related imports
 
 ---
 
