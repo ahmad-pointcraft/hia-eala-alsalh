@@ -21,7 +21,7 @@
 
 **Independent Test**: Import helpers.ts and prayerTimes.ts in a test file — verify toArabicNumerals('123') returns '١٢٣', getFontFamily('ar') returns Noto Naskh, getCurrentPrayer returns correct prayer for a given time
 
-- [ ] T001 [P] [US3] Create `src/app/utils/helpers.ts` — export `toArabicNumerals(text: string): string` using unicode escapes \u0660–\u0669; export `getFontFamily(language: Language): string` returning '"Noto Naskh Arabic", serif' for ar and '"Open Sans", sans-serif' for en; export `isRTL(language: Language): boolean`; export `getDirection(language: Language): 'rtl' | 'ltr'`; import Language from './translations'
+- [ ] T001 [P] [US3] Create `src/app/utils/helpers.ts` — export `toArabicNumerals(text: string): string` using unicode escapes \u0660–\u0669; export `getFontFamily(language: Language): string` returning `'"Noto Naskh Arabic", serif'` for ar and `'"Open Sans", sans-serif'` for en (note: this standardizes the font string — current components inconsistently use quotes around font names; the shared version uses the correct CSS form with inner double quotes); export `isRTL(language: Language): boolean`; export `getDirection(language: Language): 'rtl' | 'ltr'`; import Language from './translations'
 - [ ] T002 [P] [US3] Create `src/app/utils/prayerTimes.ts` — export type `PrayerKey = 'Fajr' | 'Sunrise' | 'Dhuhr' | 'Asr' | 'Maghrib' | 'Isha'`; export interface `PrayerTime { key: PrayerKey; name: string; time: string; iqamaTime: string }`; export interface `NextPrayer extends PrayerTime { isTomorrow: boolean }`; export `parseTimeToMinutes(time: string): number` (internal helper, HH:MM → minutes from midnight); export `getCurrentPrayer(prayers: PrayerTime[], now: Date): PrayerTime | null` (returns last prayer whose time ≤ current minutes, or null if before Fajr); export `getNextPrayer(prayers: PrayerTime[], now: Date): NextPrayer` (returns next prayer after current time, wraps to prayers[0] with isTomorrow=true after Isha); export `getTimeToNextPrayer(prayers: PrayerTime[], now: Date): number` (returns seconds until next prayer, adds 24*60*60 if isTomorrow)
 
 **Checkpoint**: Both files exist, no build errors. Functions have correct signatures per data-model.md.
@@ -78,7 +78,7 @@
 
 **Independent Test**: App runs for 30 minutes without growing memory in devtools profiler
 
-- [ ] T014 [US5] Update `src/app/App.tsx` fundraising timer — ensure `useRef<ReturnType<typeof setTimeout> | null>(null)` is used; add `clearTimeout(fundraisingTimerRef.current)` before each `setTimeout` call in the recursive schedule to prevent stacking; in the cleanup function, clear the ref; remove the `isNearPrayerTime` function from App.tsx (it references the old `prayerTimesInMinutes` array which can be replaced by importing from prayerTimes.ts or keeping inline since it's schedule-specific logic)
+- [ ] T014 [US5] Update `src/app/App.tsx` fundraising timer — (1) Remove `prayerTimesInMinutes` array (lines 31–37) entirely — duplicated data replaced by `prayers` array already typed as `PrayerTime[]`; (2) Remove `isNearPrayerTime` function (lines 39–51) — replace calls with `getTimeToNextPrayer(prayers, new Date()) > 10 * 60` (more than 10 minutes until next prayer); (3) Ensure `useRef<ReturnType<typeof setTimeout> | null>(null)` is used; (4) Add `clearTimeout(fundraisingTimerRef.current)` before each `setTimeout` call to prevent stacking; (5) In cleanup, clear the ref; import `getTimeToNextPrayer` from `./utils/prayerTimes`
 
 **Checkpoint**: Only one fundraising timeout active at any time. Cleanup clears on unmount. No stacking on re-renders.
 
@@ -97,6 +97,7 @@
 - [ ] T021 Verify dynamic prayer highlighting — open app, confirm active prayer matches actual time of day (SC-001)
 - [ ] T022 Verify dynamic countdown — countdown shows time until actual next prayer, not hardcoded 16:15 (SC-002)
 - [ ] T023 Verify bundle size — `yarn build` output remains under 500KB gzipped (SC-007)
+- [ ] T024 Verify no unused imports — `grep -rn "import.*from" src/` spot-check that removed utility functions don't leave orphaned imports behind (FR-012); `yarn build` should also catch unused type imports in strict mode
 
 ---
 

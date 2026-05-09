@@ -109,6 +109,7 @@ export const toArabicNumerals = (text: string): string => {
 };
 
 export const getFontFamily = (language: Language): string => {
+  // Standardized: inner double quotes required for CSS font-family with spaces
   return language === 'ar' ? '"Noto Naskh Arabic", serif' : '"Open Sans", sans-serif';
 };
 
@@ -130,7 +131,7 @@ export const getDirection = (language: Language): 'rtl' | 'ltr' => {
 
 ### New File: src/app/utils/prayerTimes.ts
 
-**Exports**: `PrayerKey`, `PrayerTime`, `getCurrentPrayer`, `getNextPrayer`, `getTimeToNextPrayer`
+**Exports**: `PrayerKey`, `PrayerTime`, `NextPrayer`, `getCurrentPrayer`, `getNextPrayer`, `getTimeToNextPrayer`
 
 **Types**:
 
@@ -142,6 +143,10 @@ export interface PrayerTime {
   name: string;
   time: string;       // HH:MM format
   iqamaTime: string;  // HH:MM format or '—'
+}
+
+export interface NextPrayer extends PrayerTime {
+  isTomorrow: boolean;
 }
 ```
 
@@ -166,7 +171,7 @@ export const getCurrentPrayer = (prayers: PrayerTime[], now: Date): PrayerTime |
   return current;
 };
 
-export const getNextPrayer = (prayers: PrayerTime[], now: Date): PrayerTime & { isTomorrow: boolean } => {
+export const getNextPrayer = (prayers: PrayerTime[], now: Date): NextPrayer => {
   const currentMinutes = now.getHours() * 60 + now.getMinutes();
   for (const prayer of prayers) {
     if (parseTimeToMinutes(prayer.time) > currentMinutes) {
