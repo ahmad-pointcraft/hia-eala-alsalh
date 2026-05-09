@@ -102,21 +102,22 @@ As a developer, I want the fundraising timer to properly clean up all scheduled 
 
 ### Functional Requirements
 
-- **FR-001**: System MUST compute the current active prayer based on actual wall-clock time, not a hardcoded string
-- **FR-002**: System MUST compute the next upcoming prayer based on actual wall-clock time
+- **FR-001**: System MUST compute the current active prayer as the prayer whose time has most recently passed (e.g., at 13:00 with Dhuhr at 12:45, Dhuhr is active)
+- **FR-002**: System MUST compute the next upcoming prayer based on actual wall-clock time, wrapping to tomorrow's Fajr after Isha
 - **FR-003**: System MUST compute the countdown duration (HH:MM:SS) as the time difference between now and the next prayer time
 - **FR-004**: System MUST extract `toArabicNumerals()` into a single shared utility module, removing all 5 duplicated copies
 - **FR-005**: System MUST extract `getFontFamily()` and `isRTL()` into a single shared utility module, removing all 7 duplicated copies
 - **FR-006**: System MUST extract `getDirection()` as a convenience function returning `'rtl'` or `'ltr'`
 - **FR-007**: System MUST define a `PrayerTime` interface with `key`, `name`, `time`, and `iqamaTime` fields
-- **FR-008**: System MUST define a `Translations` type derived from the existing translations object structure
-- **FR-009**: System MUST replace all `translations: Record<string, string>` and `translations: any` with `translations: Translations` in component props
-- **FR-010**: System MUST replace `prayerIcons: Record<string, React.ComponentType<{ className?: string }>>` with a properly typed constant
+- **FR-008**: System MUST derive the `Translations` type from the existing translations object via `typeof translations['en']` for automatic type inference
+- **FR-009**: System MUST replace all `translations: Record<string, string>` with `translations: Translations` in component props
+- **FR-010**: System MUST type `prayerIcons` as a properly typed constant using the `PrayerTime` key union
 - **FR-011**: System MUST fix the fundraising timer to use a tracked ref pattern where all scheduled timeouts are properly cleared on unmount
 - **FR-012**: System MUST remove all unused imports from components
-- **FR-013**: System MUST handle the "after Isha" edge case by treating Fajr of the next day as the next prayer
+- **FR-013**: System MUST handle the "after Isha" edge case by wrapping to tomorrow's Fajr (next-day computation)
 - **FR-014**: System MUST update the current prayer computation every second (tied to the existing clock interval)
 - **FR-015**: System MUST keep prayer time data in a single source of truth — the prayer schedule array in App.tsx or a shared module
+- **FR-016**: WeatherWidget and FundraisingOverlay hardcoded values (temperature, donation amounts) are explicitly out of scope — those are API integration tasks deferred to Spec 004
 
 ### Key Entities
 
@@ -136,13 +137,23 @@ As a developer, I want the fundraising timer to properly clean up all scheduled 
 - **SC-006**: The build passes with zero TypeScript errors after type strengthening
 - **SC-007**: Production bundle remains under 500KB gzipped
 
+## Clarifications
+
+### Session 2026-05-09
+
+- Q: How should getCurrentPrayer determine the "active" prayer? → A: The prayer whose time has most recently passed. At 13:00 with Dhuhr at 12:45, Dhuhr is active.
+- Q: How should getNextPrayer handle after Isha? → A: Wrap to tomorrow's Fajr with next-day date computation.
+- Q: Should Translations type be derived via typeof or hand-written? → A: Use `type Translations = typeof translations['en']` for automatic type inference from the source of truth.
+- Q: Should WeatherWidget/FundraisingOverlay hardcoded values be addressed here? → A: No — those are API integration tasks deferred to Spec 004. This spec only addresses prayer time dynamics and code deduplication.
+
 ## Assumptions
 
 - Prayer times are currently hardcoded in App.tsx and will remain hardcoded in this spec — dynamic API-fetched prayer times are out of scope
 - The prayer schedule includes 6 entries: Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha — this is the standard Hanafi schedule
-- "Current prayer" means the prayer whose time window we are in (from prayer time until the next prayer starts)
+- "Current prayer" = the prayer whose time has most recently passed (confirmed in Clarifications)
 - Sunrise is included for display but is not a mandatory prayer — it may or may not be highlighted the same way
-- After Isha (last prayer), Fajr of the next day is the next prayer — the countdown will show hours until tomorrow's Fajr
-- The existing translations object structure is the source of truth for the Translations type
+- After Isha (last prayer), Fajr of the next day is the next prayer — the countdown will show hours until tomorrow's Fajr (confirmed in Clarifications)
+- The existing translations object structure is the source of truth for the Translations type — derived via `typeof` (confirmed in Clarifications)
 - The fundraising timer fix only addresses cleanup — the scheduling interval (1 min initial, 10 min recurring) remains unchanged
+- WeatherWidget temperature and FundraisingOverlay donation amounts remain hardcoded — API integration is Spec 004 scope (confirmed in Clarifications)
 - Unused imports: `Languages` was already removed from App.tsx in Spec 002, and `logoSvg` was already removed from MasjidInfo — FR-012 covers any remaining unused imports found during this spec's implementation
