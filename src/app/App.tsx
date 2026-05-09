@@ -15,12 +15,20 @@ import { IslamicGeometricOverlay } from "./components/IslamicGeometricOverlay";
 import { EventModeDisplay } from "./components/EventModeDisplay";
 import { ImageCarousel } from "./components/ImageCarousel";
 import { translations, Language } from "./utils/translations";
+import { getCurrentPrayer, getNextPrayer } from "./utils/prayerTimes";
+import type { PrayerTime } from "./utils/prayerTimes";
 
 export default function App() {
   const [showFundraising, setShowFundraising] = useState(false);
   const [eventMode, setEventMode] = useState(false);
   const [language, setLanguage] = useState<Language>("en");
+  const [currentTime, setCurrentTime] = useState(new Date());
   const fundraisingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const carouselImages = [
     "https://images.unsplash.com/photo-1564769625905-50e93615e769?w=800&h=600&fit=crop",
@@ -82,7 +90,7 @@ export default function App() {
 
   const t = translations[language];
 
-  const prayers = [
+  const prayers: PrayerTime[] = [
     { name: t.prayers.fajr, key: "Fajr", time: "05:30", iqamaTime: "05:45" },
     { name: t.prayers.sunrise, key: "Sunrise", time: "06:52", iqamaTime: "\u2014" },
     { name: t.prayers.dhuhr, key: "Dhuhr", time: "12:45", iqamaTime: "13:00" },
@@ -91,7 +99,8 @@ export default function App() {
     { name: t.prayers.isha, key: "Isha", time: "20:45", iqamaTime: "21:00" },
   ];
 
-  const currentPrayer = "Dhuhr";
+  const activePrayer = getCurrentPrayer(prayers, currentTime);
+  const nextPrayer = getNextPrayer(prayers, currentTime);
 
   const toggleLanguage = () => {
     setLanguage((prev) => (prev === "en" ? "ar" : "en"));
@@ -166,12 +175,12 @@ export default function App() {
                 >
                   <Grid container spacing={{ xs: 1, sm: 1.5 }} sx={{ mb: { xs: 1, sm: 1.5 } }}>
                     <Grid size={{ xs: 12, lg: 6 }}>
-                      <CountdownBar
-                        nextPrayer={t.prayers.asr}
-                        nextPrayerTime="16:15"
-                        language={language}
-                        nextPrayerLabel={t.nextPrayer}
-                      />
+                        <CountdownBar
+                          nextPrayer={nextPrayer.name}
+                          nextPrayerTime={nextPrayer.time}
+                          language={language}
+                          nextPrayerLabel={t.nextPrayer}
+                        />
                     </Grid>
                     <Grid size={{ xs: 12, lg: 6 }}>
                       <WeatherWidget
@@ -236,7 +245,7 @@ export default function App() {
                             name={prayer.name}
                             time={prayer.time}
                             iqamaTime={prayer.iqamaTime}
-                            isActive={prayer.key === currentPrayer}
+                            isActive={prayer.key === activePrayer?.key}
                             language={language}
                             iqamaLabel={t.iqama}
                             prayerKey={prayer.key}
