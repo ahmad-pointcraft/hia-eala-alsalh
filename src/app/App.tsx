@@ -15,7 +15,7 @@ import { IslamicGeometricOverlay } from "./components/IslamicGeometricOverlay";
 import { EventModeDisplay } from "./components/EventModeDisplay";
 import { ImageCarousel } from "./components/ImageCarousel";
 import { translations, Language } from "./utils/translations";
-import { getCurrentPrayer, getNextPrayer } from "./utils/prayerTimes";
+import { getCurrentPrayer, getNextPrayer, getTimeToNextPrayer } from "./utils/prayerTimes";
 import type { PrayerTime } from "./utils/prayerTimes";
 
 export default function App() {
@@ -36,58 +36,6 @@ export default function App() {
     "https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&h=600&fit=crop",
   ];
 
-  const prayerTimesInMinutes = [
-    { name: "Fajr", time: 5 * 60 + 30 },
-    { name: "Dhuhr", time: 12 * 60 + 45 },
-    { name: "Asr", time: 16 * 60 + 15 },
-    { name: "Maghrib", time: 19 * 60 + 28 },
-    { name: "Isha", time: 20 * 60 + 45 },
-  ];
-
-  const isNearPrayerTime = () => {
-    const now = new Date();
-    const currentMinutes =
-      now.getHours() * 60 + now.getMinutes();
-
-    for (const prayer of prayerTimesInMinutes) {
-      const timeDiff = Math.abs(currentMinutes - prayer.time);
-      if (timeDiff <= 10) {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  useEffect(() => {
-    const scheduleFundraising = () => {
-      fundraisingTimerRef.current = setTimeout(
-        () => {
-          if (!isNearPrayerTime()) {
-            setShowFundraising(true);
-          }
-          scheduleFundraising();
-        },
-        10 * 60 * 1000,
-      );
-    };
-
-    fundraisingTimerRef.current = setTimeout(
-      () => {
-        if (!isNearPrayerTime()) {
-          setShowFundraising(true);
-        }
-        scheduleFundraising();
-      },
-      1 * 60 * 1000,
-    );
-
-    return () => {
-      if (fundraisingTimerRef.current) {
-        clearTimeout(fundraisingTimerRef.current);
-      }
-    };
-  }, []);
-
   const t = translations[language];
 
   const prayers: PrayerTime[] = [
@@ -101,6 +49,42 @@ export default function App() {
 
   const activePrayer = getCurrentPrayer(prayers, currentTime);
   const nextPrayer = getNextPrayer(prayers, currentTime);
+
+  useEffect(() => {
+    const scheduleFundraising = () => {
+      if (fundraisingTimerRef.current) {
+        clearTimeout(fundraisingTimerRef.current);
+      }
+      fundraisingTimerRef.current = setTimeout(
+        () => {
+          if (getTimeToNextPrayer(prayers, new Date()) > 10 * 60) {
+            setShowFundraising(true);
+          }
+          scheduleFundraising();
+        },
+        10 * 60 * 1000,
+      );
+    };
+
+    if (fundraisingTimerRef.current) {
+      clearTimeout(fundraisingTimerRef.current);
+    }
+    fundraisingTimerRef.current = setTimeout(
+      () => {
+        if (getTimeToNextPrayer(prayers, new Date()) > 10 * 60) {
+          setShowFundraising(true);
+        }
+        scheduleFundraising();
+      },
+      1 * 60 * 1000,
+    );
+
+    return () => {
+      if (fundraisingTimerRef.current) {
+        clearTimeout(fundraisingTimerRef.current);
+      }
+    };
+  }, [prayers]);
 
   const toggleLanguage = () => {
     setLanguage((prev) => (prev === "en" ? "ar" : "en"));

@@ -78,7 +78,7 @@
 
 **Independent Test**: App runs for 30 minutes without growing memory in devtools profiler
 
-- [ ] T014 [US5] Update `src/app/App.tsx` fundraising timer — (1) Remove `prayerTimesInMinutes` array (lines 31–37) entirely — duplicated data replaced by `prayers` array already typed as `PrayerTime[]`; (2) Remove `isNearPrayerTime` function (lines 39–51) — replace calls with `getTimeToNextPrayer(prayers, new Date()) > 10 * 60` (more than 10 minutes until next prayer); (3) Ensure `useRef<ReturnType<typeof setTimeout> | null>(null)` is used; (4) Add `clearTimeout(fundraisingTimerRef.current)` before each `setTimeout` call to prevent stacking; (5) In cleanup, clear the ref; import `getTimeToNextPrayer` from `./utils/prayerTimes`
+- [X] T014 [US5] Update `src/app/App.tsx` fundraising timer — (1) Remove `prayerTimesInMinutes` array (lines 31–37) entirely — duplicated data replaced by `prayers` array already typed as `PrayerTime[]`; (2) Remove `isNearPrayerTime` function (lines 39–51) — replace calls with `getTimeToNextPrayer(prayers, new Date()) > 10 * 60` (more than 10 minutes until next prayer); (3) Ensure `useRef<ReturnType<typeof setTimeout> | null>(null)` is used; (4) Add `clearTimeout(fundraisingTimerRef.current)` before each `setTimeout` call to prevent stacking; (5) In cleanup, clear the ref; import `getTimeToNextPrayer` from `./utils/prayerTimes`
 
 **Checkpoint**: Only one fundraising timeout active at any time. Cleanup clears on unmount. No stacking on re-renders.
 
