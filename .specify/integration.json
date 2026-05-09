@@ -1,15 +1,18 @@
 {
-  "version": "0.8.7.dev0",
+  "version": "0.8.8.dev0",
   "integration_state_schema": 1,
   "installed_integrations": [
-    "opencode"
+    "agy"
   ],
   "integration_settings": {
-    "opencode": {
+    "agy": {
       "script": "sh",
-      "invoke_separator": "."
+      "parsed_options": {
+        "skills": true
+      },
+      "invoke_separator": "-"
     }
   },
-  "integration": "opencode",
-  "default_integration": "opencode"
+  "integration": "agy",
+  "default_integration": "agy"
 }
