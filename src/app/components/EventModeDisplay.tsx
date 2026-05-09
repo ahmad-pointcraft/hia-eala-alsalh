@@ -1,158 +1,173 @@
 import { motion } from 'motion/react';
-import { Calendar, Clock, MapPin, Users } from 'lucide-react';
+import Paper from '@mui/material/Paper';
+import Chip from '@mui/material/Chip';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import CalendarMonth from '@mui/icons-material/CalendarMonth';
+import AccessTime from '@mui/icons-material/AccessTime';
+import LocationOn from '@mui/icons-material/LocationOn';
+import Groups from '@mui/icons-material/Groups';
 import { Language } from '../utils/translations';
 
 interface EventModeDisplayProps {
   language: Language;
-  translations: any;
+  translations: Record<string, string>;
 }
 
 export function EventModeDisplay({ language, translations }: EventModeDisplayProps) {
   const isRTL = language === 'ar';
-  const fontFamily = language === 'ar' ? 'Noto Naskh Arabic, serif' : 'Open Sans, sans-serif';
+  const fontFamily = language === 'ar' ? '"Noto Naskh Arabic", serif' : '"Open Sans", sans-serif';
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
-      className="absolute inset-0 flex items-center justify-center px-3 sm:px-6 lg:px-8 py-3 sm:py-4"
+      style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '12px' }}
       dir={isRTL ? 'rtl' : 'ltr'}
     >
-      {/* Main Event Card */}
       <motion.div
         initial={{ scale: 0.9, opacity: 0, y: 50 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: -50 }}
-        transition={{ duration: 0.6, ease: "easeInOut" }}
-        className="relative max-w-6xl w-full"
+        transition={{ duration: 0.6, ease: 'easeInOut' }}
+        style={{ position: 'relative', maxWidth: '1152px', width: '100%' }}
       >
-        {/* Glowing border effect */}
-        <div className="absolute -inset-1 bg-gradient-to-r from-[#D4AF37] via-[#FFD700] to-[#D4AF37] rounded-xl opacity-30 blur-xl"></div>
+        <Box sx={{ position: 'absolute', inset: -1, background: 'linear-gradient(to right, #D4AF37, #FFD700, #D4AF37)', borderRadius: 3, opacity: 0.3, filter: 'blur(20px)' }} />
 
-        <div className="relative bg-black/60 backdrop-blur-xl border-t-2 border-b-2 border-[#D4AF37]/50 rounded-xl p-4 sm:p-6 lg:p-8">
-          {/* Decorative corner ornaments - hidden on mobile */}
-          <div className="hidden sm:block absolute top-4 left-4 w-12 h-12 border-t-2 border-[#D4AF37]/40"></div>
-          <div className="hidden sm:block absolute top-4 right-4 w-12 h-12 border-t-2 border-[#D4AF37]/40"></div>
-          <div className="hidden sm:block absolute bottom-4 left-4 w-12 h-12 border-b-2 border-[#D4AF37]/40"></div>
-          <div className="hidden sm:block absolute bottom-4 right-4 w-12 h-12 border-b-2 border-[#D4AF37]/40"></div>
+        <Paper sx={{ position: 'relative', bgcolor: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(16px)', borderTop: '2px solid rgba(212,175,55,0.5)', borderBottom: '2px solid rgba(212,175,55,0.5)', borderRadius: 3, p: { xs: 2, sm: 3, lg: 4 } }}>
+          <Box sx={{ display: { xs: 'none', sm: 'block' }, position: 'absolute', top: 16, left: 16, width: 48, height: 48, borderTop: '2px solid rgba(212,175,55,0.4)' }} />
+          <Box sx={{ display: { xs: 'none', sm: 'block' }, position: 'absolute', top: 16, right: 16, width: 48, height: 48, borderTop: '2px solid rgba(212,175,55,0.4)' }} />
+          <Box sx={{ display: { xs: 'none', sm: 'block' }, position: 'absolute', bottom: 16, left: 16, width: 48, height: 48, borderBottom: '2px solid rgba(212,175,55,0.4)' }} />
+          <Box sx={{ display: { xs: 'none', sm: 'block' }, position: 'absolute', bottom: 16, right: 16, width: 48, height: 48, borderBottom: '2px solid rgba(212,175,55,0.4)' }} />
 
-          {/* Event Type Badge */}
           <motion.div
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="text-center mb-3 sm:mb-4"
+            style={{ textAlign: 'center', marginBottom: '12px' }}
           >
-            <span className="inline-block px-3 sm:px-4 py-1 sm:py-1.5 bg-[#D4AF37]/20 border border-[#D4AF37]/50 rounded-full text-[#D4AF37] text-xs sm:text-sm uppercase tracking-wider font-bold" style={{ fontFamily }}>
-              {translations.event.badge}
-            </span>
+            <Chip
+              label={translations.event.badge}
+              sx={{
+                bgcolor: 'rgba(212,175,55,0.2)',
+                color: 'primary.main',
+                borderColor: 'rgba(212,175,55,0.5)',
+                fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                fontWeight: 'bold',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em',
+                fontFamily,
+              }}
+            />
           </motion.div>
 
-          {/* Event Title and Speaker - Combined */}
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="text-center mb-4 sm:mb-6"
+            style={{ textAlign: 'center', marginBottom: '16px' }}
           >
-            <h1 className="text-xl sm:text-3xl lg:text-5xl text-[#D4AF37] mb-2 sm:mb-3 leading-tight" style={{ fontFamily }}>
+            <Typography sx={{ color: 'primary.main', fontSize: { xs: '1.25rem', sm: '1.875rem', lg: '3rem' }, mb: { xs: 1, sm: 1.5 }, lineHeight: 1.2, fontFamily }}>
               {translations.event.title}
-            </h1>
-            <p className="text-gray-300 text-sm sm:text-base mb-1" style={{ fontFamily }}>{translations.event.guestSpeaker}</p>
-            <p className="text-white text-lg sm:text-2xl lg:text-3xl font-bold" style={{ fontFamily }}>
+            </Typography>
+            <Typography sx={{ color: 'grey.300', fontSize: { xs: '0.875rem', sm: '1rem' }, mb: 0.5, fontFamily }}>{translations.event.guestSpeaker}</Typography>
+            <Typography sx={{ color: 'text.primary', fontSize: { xs: '1.125rem', sm: '1.5rem', lg: '1.875rem' }, fontWeight: 'bold', fontFamily }}>
               {translations.event.speakerName}
-            </p>
-            <p className="text-gray-400 text-xs sm:text-sm mt-1" style={{ fontFamily }}>
+            </Typography>
+            <Typography sx={{ color: 'grey.400', fontSize: { xs: '0.75rem', sm: '0.875rem' }, mt: 0.5, fontFamily }}>
               {translations.event.speakerTitle}
-            </p>
+            </Typography>
           </motion.div>
 
-          {/* Event Details Grid */}
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.6 }}
-            className="grid grid-cols-3 gap-2 sm:gap-4 lg:gap-6 mb-4 sm:mb-6"
           >
-            <div className="flex flex-col items-center p-3 sm:p-4 bg-black/40 rounded-lg border border-[#D4AF37]/20">
-              <Calendar className="w-6 h-6 sm:w-8 sm:h-8 text-[#D4AF37] mb-1 sm:mb-2" />
-              <p className="text-gray-400 text-[10px] sm:text-xs uppercase tracking-wider mb-1" style={{ fontFamily }}>{translations.event.date}</p>
-              <p className="text-white text-sm sm:text-lg lg:text-xl font-bold" style={{ fontFamily }}>{translations.event.tonight}</p>
-              <p className="text-gray-300 text-[10px] sm:text-xs" style={{ fontFamily }}>{translations.event.dateValue}</p>
-            </div>
-
-            <div className="flex flex-col items-center p-3 sm:p-4 bg-black/40 rounded-lg border border-[#D4AF37]/20">
-              <Clock className="w-6 h-6 sm:w-8 sm:h-8 text-[#D4AF37] mb-1 sm:mb-2" />
-              <p className="text-gray-400 text-[10px] sm:text-xs uppercase tracking-wider mb-1" style={{ fontFamily }}>{translations.event.time}</p>
-              <p className="text-white text-sm sm:text-lg lg:text-xl font-bold" style={{ fontFamily }}>{translations.event.timeValue}</p>
-              <p className="text-gray-300 text-[10px] sm:text-xs" style={{ fontFamily }}>{translations.event.afterPrayer}</p>
-            </div>
-
-            <div className="flex flex-col items-center p-3 sm:p-4 bg-black/40 rounded-lg border border-[#D4AF37]/20">
-              <MapPin className="w-6 h-6 sm:w-8 sm:h-8 text-[#D4AF37] mb-1 sm:mb-2" />
-              <p className="text-gray-400 text-[10px] sm:text-xs uppercase tracking-wider mb-1" style={{ fontFamily }}>{translations.event.location}</p>
-              <p className="text-white text-sm sm:text-lg lg:text-xl font-bold" style={{ fontFamily }}>{translations.event.locationValue}</p>
-              <p className="text-gray-300 text-[10px] sm:text-xs" style={{ fontFamily }}>{translations.event.floor}</p>
-            </div>
+            <Grid container spacing={{ xs: 1, sm: 2, lg: 3 }} sx={{ mb: { xs: 2, sm: 3 } }}>
+              {[
+                { icon: <CalendarMonth />, label: translations.event.date, value: translations.event.tonight, sub: translations.event.dateValue },
+                { icon: <AccessTime />, label: translations.event.time, value: translations.event.timeValue, sub: translations.event.afterPrayer },
+                { icon: <LocationOn />, label: translations.event.location, value: translations.event.locationValue, sub: translations.event.floor },
+              ].map((item, idx) => (
+                <Grid key={idx} size={4}>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: { xs: 1.5, sm: 2 }, bgcolor: 'rgba(0,0,0,0.4)', borderRadius: 1, border: '1px solid rgba(212,175,55,0.2)' }}>
+                    <Box sx={{ color: 'primary.main', mb: { xs: 0.5, sm: 1 }, '& svg': { width: { xs: 24, sm: 32 }, height: { xs: 24, sm: 32 } } }}>
+                      {item.icon}
+                    </Box>
+                    <Typography sx={{ color: 'grey.400', fontSize: { xs: '10px', sm: '0.75rem' }, textTransform: 'uppercase', letterSpacing: '0.05em', mb: 0.5, fontFamily }}>{item.label}</Typography>
+                    <Typography sx={{ color: 'text.primary', fontSize: { xs: '0.875rem', sm: '1.125rem', lg: '1.25rem' }, fontWeight: 'bold', fontFamily }}>{item.value}</Typography>
+                    <Typography sx={{ color: 'grey.300', fontSize: { xs: '10px', sm: '0.75rem' }, fontFamily }}>{item.sub}</Typography>
+                  </Box>
+                </Grid>
+              ))}
+            </Grid>
           </motion.div>
 
-          {/* Event Description */}
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.7 }}
-            className="bg-black/30 rounded-lg p-3 sm:p-5 lg:p-6 border border-[#D4AF37]/20 mb-3 sm:mb-5"
           >
-            <p className="text-gray-300 text-xs sm:text-sm lg:text-base leading-relaxed text-center" style={{ fontFamily }}>
-              {translations.event.description}
-            </p>
+            <Paper sx={{ bgcolor: 'rgba(0,0,0,0.3)', borderRadius: 1, p: { xs: 1.5, sm: 2.5, lg: 3 }, border: '1px solid rgba(212,175,55,0.2)', mb: { xs: 2, sm: 2.5 } }}>
+              <Typography sx={{ color: 'grey.300', fontSize: { xs: '0.75rem', sm: '0.875rem', lg: '1rem' }, lineHeight: 1.625, textAlign: 'center', fontFamily }}>
+                {translations.event.description}
+              </Typography>
+            </Paper>
           </motion.div>
 
-          {/* Call to Action */}
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.8 }}
-            className="text-center"
+            style={{ textAlign: 'center' }}
           >
             <motion.div
-              animate={{
-                scale: [1, 1.05, 1],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-              className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-[#D4AF37] to-[#FFD700] rounded-full text-black font-bold text-sm sm:text-base lg:text-lg shadow-[0_0_30px_rgba(212,175,55,0.5)]"
-              style={{ fontFamily }}
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
             >
-              <Users className="w-5 h-5 sm:w-6 sm:h-6" />
-              <span>{translations.event.cta}</span>
+              <Button
+                startIcon={<Groups />}
+                sx={{
+                  background: 'linear-gradient(to right, #D4AF37, #FFD700)',
+                  borderRadius: 50,
+                  color: 'black',
+                  fontWeight: 'bold',
+                  fontSize: { xs: '0.875rem', sm: '1rem', lg: '1.125rem' },
+                  px: { xs: 3, sm: 4 },
+                  py: { xs: 1.5, sm: 2 },
+                  boxShadow: '0 0 30px rgba(212,175,55,0.5)',
+                  textTransform: 'none',
+                  fontFamily,
+                }}
+              >
+                {translations.event.cta}
+              </Button>
             </motion.div>
           </motion.div>
 
-          {/* Light rays effect */}
           <motion.div
-            className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none"
-            animate={{
-              opacity: [0.1, 0.2, 0.1],
-            }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
+            style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', height: '100%', pointerEvents: 'none' }}
+            animate={{ opacity: [0.1, 0.2, 0.1] }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
           >
-            <div
-              className="absolute top-0 left-1/2 -translate-x-1/2 w-[150%] h-full"
-              style={{
+            <Box
+              sx={{
+                position: 'absolute',
+                top: 0,
+                left: '50%',
+                transform: 'translateX(-50%)',
+                width: '150%',
+                height: '100%',
                 background: 'radial-gradient(ellipse at top, rgba(212, 175, 55, 0.15) 0%, transparent 60%)',
               }}
             />
           </motion.div>
-        </div>
+        </Paper>
       </motion.div>
     </motion.div>
   );
