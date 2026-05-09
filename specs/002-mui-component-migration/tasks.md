@@ -34,8 +34,8 @@
 
 **Independent Test**: Render prayer cards grid — 6 cards display, active card has gold glow + scale, responsive at xs/sm/lg, Arabic numerals in AR mode
 
-- [ ] T003 [P] [US2] Rewrite PrayerCard.tsx in `src/app/components/PrayerCard.tsx` — outer div → Card with conditional sx for active/inactive; active: border 1px solid primary.main, boxShadow 0 0 30px rgba(212,175,55,0.5), transform { xs: scale(1.05), lg: scale(1.10) }; inactive: bgcolor background.paper, border rgba(212,175,55,0.3); text divs → Typography; keep lucide icons (Sunrise, Sun, Sunset, CloudSun, Moon, Star); prayerIcons type: Record<string, any> → Record<string, React.ComponentType<{ className?: string }>>; replace style={{ fontFamily }} with sx={{ fontFamily }}; Arabic numerals via toArabicNumerals() for prayer time + iqama time; dir prop on Card root; remove all className strings
-- [ ] T004 [US2] Verify PrayerCard active/inactive states — active card has gold border, glow shadow, scale 1.05/1.10; inactive cards are subtle; 2 columns at xs, 3 at sm, 6 at lg; Arabic numerals render when language=ar
+- [X] T003 [P] [US2] Rewrite PrayerCard.tsx in `src/app/components/PrayerCard.tsx` — outer div → Card with conditional sx for active/inactive; active: border 1px solid primary.main, boxShadow 0 0 30px rgba(212,175,55,0.5), transform { xs: scale(1.05), lg: scale(1.10) }; inactive: bgcolor background.paper, border rgba(212,175,55,0.3); text divs → Typography; keep lucide icons (Sunrise, Sun, Sunset, CloudSun, Moon, Star); prayerIcons type: Record<string, any> → Record<string, React.ComponentType<{ className?: string }>>; replace style={{ fontFamily }} with sx={{ fontFamily }}; Arabic numerals via toArabicNumerals() for prayer time + iqama time; dir prop on Card root; remove all className strings
+- [X] T004 [US2] Verify PrayerCard active/inactive states — active card has gold border, glow shadow, scale 1.05/1.10; inactive cards are subtle; 2 columns at xs, 3 at sm, 6 at lg; Arabic numerals render when language=ar
 
 **Checkpoint**: PrayerCard uses MUI Card/CardContent, active glow works, responsive grid works, no any types
 
