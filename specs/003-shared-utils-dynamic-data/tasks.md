@@ -88,16 +88,16 @@
 
 **Purpose**: Validate all success criteria and functional requirements
 
-- [ ] T015 Run `yarn build` — verify zero TypeScript errors (SC-006). All components compile with Translations type, PrayerKey union, shared imports
-- [ ] T016 Grep for duplicate `toArabicNumerals` — `grep -rn "const toArabicNumerals" src/` must return exactly 1 match (in helpers.ts only) (SC-003)
-- [ ] T017 Grep for duplicate `fontFamily` logic — `grep -rn "const fontFamily = language" src/` must return zero matches (SC-004)
-- [ ] T018 Grep for duplicate `isRTL` const — `grep -rn "const isRTL = language" src/` must return zero matches (SC-004)
-- [ ] T019 Grep for old type — `grep -rn "translations: Record<string, string>" src/` must return zero matches (SC-005)
-- [ ] T020 Grep for old prayerIcons type — `grep -rn "Record<string, React.ComponentType" src/` must return zero matches (replaced with Record<PrayerKey, ...>)
-- [ ] T021 Verify dynamic prayer highlighting — open app, confirm active prayer matches actual time of day (SC-001)
-- [ ] T022 Verify dynamic countdown — countdown shows time until actual next prayer, not hardcoded 16:15 (SC-002)
-- [ ] T023 Verify bundle size — `yarn build` output remains under 500KB gzipped (SC-007)
-- [ ] T024 Verify no unused imports — `grep -rn "import.*from" src/` spot-check that removed utility functions don't leave orphaned imports behind (FR-012); `yarn build` should also catch unused type imports in strict mode
+- [X] T015 Run `yarn build` — verify zero TypeScript errors (SC-006). All components compile with Translations type, PrayerKey union, shared imports
+- [X] T016 Grep for duplicate `toArabicNumerals` — `grep -rn "const toArabicNumerals" src/` must return exactly 1 match (in helpers.ts only) (SC-003)
+- [X] T017 Grep for duplicate `fontFamily` logic — `grep -rn "const fontFamily = language" src/` must return zero matches (SC-004)
+- [X] T018 Grep for duplicate `isRTL` const — `grep -rn "const isRTL = language" src/` must return zero matches (SC-004)
+- [X] T019 Grep for old type — `grep -rn "translations: Record<string, string>" src/` must return zero matches (SC-005)
+- [X] T020 Grep for old prayerIcons type — `grep -rn "Record<string, React.ComponentType" src/` must return zero matches (replaced with Record<PrayerKey, ...>)
+- [X] T021 Verify dynamic prayer highlighting — open app, confirm active prayer matches actual time of day (SC-001)
+- [X] T022 Verify dynamic countdown — countdown shows time until actual next prayer, not hardcoded 16:15 (SC-002)
+- [X] T023 Verify bundle size — `yarn build` output remains under 500KB gzipped (SC-007)
+- [X] T024 Verify no unused imports — `grep -rn "import.*from" src/` spot-check that removed utility functions don't leave orphaned imports behind (FR-012); `yarn build` should also catch unused type imports in strict mode
 
 ---
 
