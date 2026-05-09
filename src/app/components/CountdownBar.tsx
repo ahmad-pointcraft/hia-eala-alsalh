@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Language } from '../utils/translations';
+import { Paper, Box, Typography } from '@mui/material';
 
 interface CountdownBarProps {
   nextPrayer: string;
@@ -45,18 +46,29 @@ export function CountdownBar({ nextPrayer, nextPrayerTime, language, nextPrayerL
   const prayerText = language === 'ar' ? `${nextPrayer} بعد` : `${nextPrayer} in`;
 
   return (
-    <div className="w-full bg-black/30 backdrop-blur-sm border border-[#D4AF37]/30 rounded-lg p-2 sm:p-3 lg:p-4" dir={isRTL ? 'rtl' : 'ltr'}>
-      <div className="flex items-center justify-between gap-2 sm:gap-4">
+    <Paper
+      dir={isRTL ? 'rtl' : 'ltr'}
+      sx={{
+        width: '100%',
+        bgcolor: 'background.paper',
+        backdropFilter: 'blur(4px)',
+        border: '1px solid',
+        borderColor: 'rgba(212,175,55,0.3)',
+        borderRadius: 2,
+        p: { xs: 1, sm: 1.5, lg: 2 }
+      }}
+    >
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: { xs: 1, sm: 2 } }}>
         {/* Prayer Info */}
-        <div className="text-white font-bold text-[14px]" style={{ fontFamily }}>
+        <Typography sx={{ color: 'text.primary', fontWeight: 'bold', fontSize: '14px', fontFamily }}>
           {prayerText}
-        </div>
+        </Typography>
 
         {/* Countdown */}
-        <div className="text-[#D4AF37] font-mono font-bold tracking-wider text-[16px]">
+        <Typography sx={{ color: 'primary.main', fontFamily: 'monospace', fontWeight: 'bold', letterSpacing: '0.05em', fontSize: '16px' }}>
           {displayCountdown}
-        </div>
-      </div>
-    </div>
+        </Typography>
+      </Box>
+    </Paper>
   );
 }

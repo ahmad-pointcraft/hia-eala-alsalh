@@ -1,8 +1,9 @@
 import { Language } from "../utils/translations";
+import { Paper, Typography, Box } from '@mui/material';
 
 interface HadithPanelProps {
   language: Language;
-  translations: any;
+  translations: Record<string, string>;
 }
 
 export function HadithPanel({
@@ -16,35 +17,66 @@ export function HadithPanel({
       : "Open Sans, sans-serif";
 
   return (
-    <div
-      className="w-full bg-black/30 backdrop-blur-sm border border-[#D4AF37]/30 rounded-lg p-1.5 px-[10px] py-[5px] mx-[0px] mt-[0px] mb-[10px]"
+    <Paper
+      sx={{
+        width: '100%',
+        bgcolor: 'background.paper',
+        backdropFilter: 'blur(4px)',
+        border: '1px solid',
+        borderColor: 'rgba(212,175,55,0.3)',
+        borderRadius: 2,
+        p: 0.75,
+        px: '10px',
+        py: '5px',
+        mx: 0,
+        mt: 0,
+        mb: '10px'
+      }}
       dir={isRTL ? "rtl" : "ltr"}
     >
-      <div className="flex flex-col gap-1 lg:gap-2">
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 0.5, lg: 1 } }}>
         {/* Title - Top Left (Top Right for Arabic) */}
-        <div
-          className={`text-[#D4AF37] uppercase tracking-wider font-bold ${isRTL ? "text-right" : "text-left"} text-[10px]`}
-          style={{ fontFamily }}
+        <Typography
+          sx={{
+            color: 'primary.main',
+            textTransform: 'uppercase',
+            letterSpacing: '0.05em',
+            fontWeight: 'bold',
+            textAlign: 'start',
+            fontSize: '10px',
+            fontFamily
+          }}
         >
           {translations.hadithOfTheDay}
-        </div>
+        </Typography>
 
         {/* Hadith Text - Center, Full Width */}
-        <p
-          className="text-white italic leading-snug text-center w-full text-[24px]"
-          style={{ fontFamily }}
+        <Typography
+          sx={{
+            color: 'text.primary',
+            fontStyle: 'italic',
+            lineHeight: 1.375,
+            textAlign: 'center',
+            width: '100%',
+            fontSize: '24px',
+            fontFamily
+          }}
         >
           {translations.hadithText}
-        </p>
+        </Typography>
 
         {/* Source - Bottom Right (Bottom Left for Arabic) */}
-        <p
-          className={`text-gray-400 ${isRTL ? "text-left" : "text-right"} text-[11px]`}
-          style={{ fontFamily }}
+        <Typography
+          sx={{
+            color: 'text.secondary',
+            textAlign: 'end',
+            fontSize: '11px',
+            fontFamily
+          }}
         >
           {translations.hadithSource}
-        </p>
-      </div>
-    </div>
+        </Typography>
+      </Box>
+    </Paper>
   );
 }
