@@ -7,17 +7,14 @@ import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 import Close from '@mui/icons-material/Close';
 import { Language } from '../utils/translations';
+import type { Translations } from '../utils/translations';
+import { toArabicNumerals, getFontFamily, getDirection } from '../utils/helpers';
 
 interface FundraisingOverlayProps {
   onClose: () => void;
   language: Language;
-  translations: Record<string, string>;
+  translations: Translations;
 }
-
-const toArabicNumerals = (text: string): string => {
-  const arabicNumerals = ['\u0660', '\u0661', '\u0662', '\u0663', '\u0664', '\u0665', '\u0666', '\u0667', '\u0668', '\u0669'];
-  return text.replace(/[0-9]/g, (digit) => arabicNumerals[parseInt(digit)]);
-};
 
 export function FundraisingOverlay({ onClose, language, translations }: FundraisingOverlayProps) {
   const [countdown, setCountdown] = useState(10);
@@ -41,7 +38,6 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
   const progress = (collected / goal) * 100;
 
   const isRTL = language === 'ar';
-  const fontFamily = language === 'ar' ? '"Noto Naskh Arabic", serif' : '"Open Sans", sans-serif';
 
   const displayCollected = language === 'ar' ? toArabicNumerals(collected.toLocaleString()) : collected.toLocaleString();
   const displayGoal = language === 'ar' ? toArabicNumerals(goal.toLocaleString()) : goal.toLocaleString();
@@ -49,10 +45,12 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
   const displayProgress = language === 'ar' ? toArabicNumerals(progress.toFixed(0)) : progress.toFixed(0);
   const displayCountdown = language === 'ar' ? toArabicNumerals(countdown.toString()) : countdown.toString();
 
+  const dir = getDirection(language);
+
   return (
     <Backdrop
       open
-      dir={isRTL ? 'rtl' : 'ltr'}
+      dir={dir}
       sx={{ bgcolor: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(8px)', zIndex: 50 }}
     >
       <Paper
@@ -84,7 +82,7 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
               color: 'primary.main',
               fontSize: { xs: '1.875rem', sm: '3rem' },
               mb: { xs: 1.5, sm: 2 },
-              fontFamily,
+              fontFamily: getFontFamily(language),
             }}
           >
             {translations.fundraising.title}

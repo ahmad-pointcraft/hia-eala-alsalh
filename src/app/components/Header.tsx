@@ -6,6 +6,8 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { Languages, Heart, CalendarClock } from 'lucide-react';
 import { Language } from '../utils/translations';
+import type { Translations } from '../utils/translations';
+import { getFontFamily, getDirection } from '../utils/helpers';
 
 interface HeaderProps {
   eventMode: boolean;
@@ -13,7 +15,7 @@ interface HeaderProps {
   language: Language;
   onToggleLanguage: () => void;
   onShowFundraising: () => void;
-  translations: Record<string, string>;
+  translations: Translations;
 }
 
 export function Header({ eventMode, onToggleEventMode, language, onToggleLanguage, onShowFundraising, translations }: HeaderProps) {
@@ -35,12 +37,10 @@ export function Header({ eventMode, onToggleEventMode, language, onToggleLanguag
     });
   };
 
-  const fontFamily = language === 'ar' ? '"Noto Naskh Arabic", serif' : '"Open Sans", sans-serif';
-
   return (
     <AppBar
       position="static"
-      dir={language === 'ar' ? 'rtl' : 'ltr'}
+      dir={getDirection(language)}
       sx={{
         bgcolor: 'rgba(0,0,0,0.4)',
         backdropFilter: 'blur(4px)',
@@ -74,7 +74,7 @@ export function Header({ eventMode, onToggleEventMode, language, onToggleLanguag
               component="span"
               sx={{
                 display: { xs: 'none', sm: 'inline' },
-                fontFamily,
+                fontFamily: getFontFamily(language),
                 fontSize: 'inherit',
                 fontWeight: 'inherit',
               }}
@@ -119,7 +119,7 @@ export function Header({ eventMode, onToggleEventMode, language, onToggleLanguag
               component="span"
               sx={{
                 display: { xs: 'none', lg: 'inline' },
-                fontFamily,
+                fontFamily: getFontFamily(language),
                 fontSize: { xs: '0.75rem', sm: '0.875rem' },
                 fontWeight: 'bold',
               }}
@@ -148,7 +148,7 @@ export function Header({ eventMode, onToggleEventMode, language, onToggleLanguag
               component="span"
               sx={{
                 display: { xs: 'none', sm: 'inline' },
-                fontFamily,
+                fontFamily: getFontFamily(language),
                 fontSize: 'inherit',
                 fontWeight: 'inherit',
               }}

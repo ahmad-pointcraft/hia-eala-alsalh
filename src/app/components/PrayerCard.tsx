@@ -11,6 +11,8 @@ import {
   Star,
 } from 'lucide-react';
 import { Language } from '../utils/translations';
+import { toArabicNumerals, getFontFamily, getDirection } from '../utils/helpers';
+import type { PrayerKey } from '../utils/prayerTimes';
 
 interface PrayerCardProps {
   name: string;
@@ -19,35 +21,16 @@ interface PrayerCardProps {
   isActive?: boolean;
   language: Language;
   iqamaLabel: string;
-  prayerKey: string;
+  prayerKey: PrayerKey;
 }
 
-const prayerIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+const prayerIcons: Record<PrayerKey, React.ComponentType<{ className?: string }>> = {
   Fajr: Sunrise,
   Sunrise: Sun,
   Dhuhr: CloudSun,
   Asr: Sun,
   Maghrib: Sunset,
   Isha: Moon,
-};
-
-const toArabicNumerals = (text: string): string => {
-  const arabicNumerals = [
-    '\u0660',
-    '\u0661',
-    '\u0662',
-    '\u0663',
-    '\u0664',
-    '\u0665',
-    '\u0666',
-    '\u0667',
-    '\u0668',
-    '\u0669',
-  ];
-  return text.replace(
-    /[0-9]/g,
-    (digit) => arabicNumerals[parseInt(digit)],
-  );
 };
 
 export function PrayerCard({
@@ -60,14 +43,13 @@ export function PrayerCard({
   prayerKey,
 }: PrayerCardProps) {
   const Icon = prayerIcons[prayerKey] || Star;
-  const fontFamily = language === 'ar' ? '"Noto Naskh Arabic", serif' : '"Open Sans", sans-serif';
 
   const displayTime = language === 'ar' ? toArabicNumerals(time) : time;
   const displayIqamaTime = language === 'ar' ? toArabicNumerals(iqamaTime) : iqamaTime;
 
   return (
     <Card
-      dir={language === 'ar' ? 'rtl' : 'ltr'}
+      dir={getDirection(language)}
       sx={{
         display: 'flex',
         flexDirection: 'column',
@@ -109,7 +91,7 @@ export function PrayerCard({
             mb: { xs: 0.25, sm: 0.5 },
             fontWeight: isActive ? 'bold' : 'normal',
             fontSize: { xs: '10px', sm: '16px' },
-            fontFamily,
+            fontFamily: getFontFamily(language),
           }}
         >
           {name}
@@ -123,7 +105,7 @@ export function PrayerCard({
             fontSize: isActive
               ? { xs: '1.875rem', sm: '2.25rem', lg: '3rem' }
               : { xs: '1.25rem', lg: '1.5rem' },
-            fontFamily,
+            fontFamily: getFontFamily(language),
           }}
         >
           {displayTime}
@@ -134,7 +116,7 @@ export function PrayerCard({
             color: 'primary.main',
             fontSize: { xs: '8px', sm: '10px', lg: '0.875rem' },
             fontWeight: isActive ? 'bold' : 'normal',
-            fontFamily,
+            fontFamily: getFontFamily(language),
           }}
         >
           {iqamaLabel}: {displayIqamaTime}

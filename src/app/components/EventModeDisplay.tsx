@@ -10,15 +10,18 @@ import AccessTime from '@mui/icons-material/AccessTime';
 import LocationOn from '@mui/icons-material/LocationOn';
 import Groups from '@mui/icons-material/Groups';
 import { Language } from '../utils/translations';
+import type { Translations } from '../utils/translations';
+import { getFontFamily, getDirection } from '../utils/helpers';
 
 interface EventModeDisplayProps {
   language: Language;
-  translations: Record<string, string>;
+  translations: Translations;
 }
 
 export function EventModeDisplay({ language, translations }: EventModeDisplayProps) {
   const isRTL = language === 'ar';
-  const fontFamily = language === 'ar' ? '"Noto Naskh Arabic", serif' : '"Open Sans", sans-serif';
+  const dir = getDirection(language);
+  const fontFamily = getFontFamily(language);
 
   return (
     <motion.div
@@ -27,7 +30,7 @@ export function EventModeDisplay({ language, translations }: EventModeDisplayPro
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
       style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '12px' }}
-      dir={isRTL ? 'rtl' : 'ltr'}
+      dir={dir}
     >
       <motion.div
         initial={{ scale: 0.9, opacity: 0, y: 50 }}
