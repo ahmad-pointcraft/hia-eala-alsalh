@@ -1,3 +1,7 @@
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 import {
   Moon,
   Sun,
@@ -5,8 +9,8 @@ import {
   Sunset,
   CloudSun,
   Star,
-} from "lucide-react";
-import { Language } from "../utils/translations";
+} from 'lucide-react';
+import { Language } from '../utils/translations';
 
 interface PrayerCardProps {
   name: string;
@@ -18,7 +22,7 @@ interface PrayerCardProps {
   prayerKey: string;
 }
 
-const prayerIcons: Record<string, any> = {
+const prayerIcons: Record<string, React.ComponentType<{ className?: string }>> = {
   Fajr: Sunrise,
   Sunrise: Sun,
   Dhuhr: CloudSun,
@@ -29,16 +33,16 @@ const prayerIcons: Record<string, any> = {
 
 const toArabicNumerals = (text: string): string => {
   const arabicNumerals = [
-    "٠",
-    "١",
-    "٢",
-    "٣",
-    "٤",
-    "٥",
-    "٦",
-    "٧",
-    "٨",
-    "٩",
+    '\u0660',
+    '\u0661',
+    '\u0662',
+    '\u0663',
+    '\u0664',
+    '\u0665',
+    '\u0666',
+    '\u0667',
+    '\u0668',
+    '\u0669',
   ];
   return text.replace(
     /[0-9]/g,
@@ -56,53 +60,86 @@ export function PrayerCard({
   prayerKey,
 }: PrayerCardProps) {
   const Icon = prayerIcons[prayerKey] || Star;
-  const fontFamily =
-    language === "ar"
-      ? "Noto Naskh Arabic, serif"
-      : "Open Sans, sans-serif";
+  const fontFamily = language === 'ar' ? '"Noto Naskh Arabic", serif' : '"Open Sans", sans-serif';
 
-  const displayTime =
-    language === "ar" ? toArabicNumerals(time) : time;
-  const displayIqamaTime =
-    language === "ar" ? toArabicNumerals(iqamaTime) : iqamaTime;
+  const displayTime = language === 'ar' ? toArabicNumerals(time) : time;
+  const displayIqamaTime = language === 'ar' ? toArabicNumerals(iqamaTime) : iqamaTime;
 
   return (
-    <div
-      className={`
-        relative flex flex-col items-center justify-center p-1.5 sm:p-2 lg:p-3 rounded-lg border
-        transition-all duration-300
-        ${
-          isActive
-            ? "bg-[#D4AF37]/20 border-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,0.5)] scale-105 lg:scale-110"
-            : "bg-black/30 border-[#D4AF37]/30"
-        }
-      `}
-      dir={language === "ar" ? "rtl" : "ltr"}
+    <Card
+      dir={language === 'ar' ? 'rtl' : 'ltr'}
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        p: { xs: 0.75, sm: 1, lg: 1.5 },
+        borderRadius: 2,
+        transition: 'all 300ms',
+        ...(isActive
+          ? {
+              bgcolor: 'rgba(212,175,55,0.2)',
+              border: '1px solid',
+              borderColor: 'primary.main',
+              boxShadow: '0 0 30px rgba(212,175,55,0.5)',
+              transform: { xs: 'scale(1.05)', lg: 'scale(1.10)' },
+            }
+          : {
+              bgcolor: 'rgba(0,0,0,0.3)',
+              border: '1px solid rgba(212,175,55,0.3)',
+            }),
+      }}
     >
-      <Icon
-        className={`w-5 h-5 sm:w-6 lg:w-8 mb-0.5 sm:mb-1 lg:mb-2 ${isActive ? "text-[#D4AF37]" : "text-gray-500"}`}
-      />
+      <CardContent sx={{ p: 0, '&:last-child': { pb: 0 }, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Box
+          sx={{
+            mb: { xs: 0.25, sm: 0.5, lg: 1 },
+            color: isActive ? 'primary.main' : 'grey.500',
+            '& svg': { width: { xs: 20, sm: 24, lg: 32 }, height: { xs: 20, sm: 24, lg: 32 } },
+          }}
+        >
+          <Icon />
+        </Box>
 
-      <div
-        className={`text-gray-400 uppercase tracking-wider mb-0.5 sm:mb-1 ${isActive ? "font-bold" : ""} text-[10px] sm:text-[16px]`}
-        style={{ fontFamily }}
-      >
-        {name}
-      </div>
+        <Typography
+          sx={{
+            color: 'text.secondary',
+            textTransform: 'uppercase',
+            letterSpacing: '0.05em',
+            mb: { xs: 0.25, sm: 0.5 },
+            fontWeight: isActive ? 'bold' : 'normal',
+            fontSize: { xs: '10px', sm: '16px' },
+            fontFamily,
+          }}
+        >
+          {name}
+        </Typography>
 
-      <div
-        className={`text-white font-bold mb-0.5 sm:mb-1 ${isActive ? "text-3xl sm:text-4xl lg:text-5xl" : "text-xl lg:text-2xl"} text-[24px] sm:text-[48px]`}
-        style={{ fontFamily }}
-      >
-        {displayTime}
-      </div>
+        <Typography
+          sx={{
+            color: 'text.primary',
+            fontWeight: 'bold',
+            mb: { xs: 0.25, sm: 0.5 },
+            fontSize: isActive
+              ? { xs: '1.875rem', sm: '2.25rem', lg: '3rem' }
+              : { xs: '1.25rem', lg: '1.5rem' },
+            fontFamily,
+          }}
+        >
+          {displayTime}
+        </Typography>
 
-      <div
-        className={`text-[#D4AF37] text-[8px] sm:text-[10px] lg:text-sm ${isActive ? "font-bold" : ""}`}
-        style={{ fontFamily }}
-      >
-        {iqamaLabel}: {displayIqamaTime}
-      </div>
-    </div>
+        <Typography
+          sx={{
+            color: 'primary.main',
+            fontSize: { xs: '8px', sm: '10px', lg: '0.875rem' },
+            fontWeight: isActive ? 'bold' : 'normal',
+            fontFamily,
+          }}
+        >
+          {iqamaLabel}: {displayIqamaTime}
+        </Typography>
+      </CardContent>
+    </Card>
   );
 }

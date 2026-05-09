@@ -1,15 +1,21 @@
 import { useEffect, useState } from 'react';
-import { X } from 'lucide-react';
+import Backdrop from '@mui/material/Backdrop';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import Box from '@mui/material/Box';
+import LinearProgress from '@mui/material/LinearProgress';
+import Close from '@mui/icons-material/Close';
 import { Language } from '../utils/translations';
 
 interface FundraisingOverlayProps {
   onClose: () => void;
   language: Language;
-  translations: any;
+  translations: Record<string, string>;
 }
 
 const toArabicNumerals = (text: string): string => {
-  const arabicNumerals = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+  const arabicNumerals = ['\u0660', '\u0661', '\u0662', '\u0663', '\u0664', '\u0665', '\u0666', '\u0667', '\u0668', '\u0669'];
   return text.replace(/[0-9]/g, (digit) => arabicNumerals[parseInt(digit)]);
 };
 
@@ -20,7 +26,6 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
     const timer = setInterval(() => {
       setCountdown((prev) => prev - 1);
     }, 1000);
-
     return () => clearInterval(timer);
   }, []);
 
@@ -36,7 +41,7 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
   const progress = (collected / goal) * 100;
 
   const isRTL = language === 'ar';
-  const fontFamily = language === 'ar' ? 'Noto Naskh Arabic, serif' : 'Open Sans, sans-serif';
+  const fontFamily = language === 'ar' ? '"Noto Naskh Arabic", serif' : '"Open Sans", sans-serif';
 
   const displayCollected = language === 'ar' ? toArabicNumerals(collected.toLocaleString()) : collected.toLocaleString();
   const displayGoal = language === 'ar' ? toArabicNumerals(goal.toLocaleString()) : goal.toLocaleString();
@@ -45,90 +50,128 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
   const displayCountdown = language === 'ar' ? toArabicNumerals(countdown.toString()) : countdown.toString();
 
   return (
-    <div className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center z-50" dir={isRTL ? 'rtl' : 'ltr'}>
-      <div className="bg-black/60 backdrop-blur-xl border border-[#D4AF37] rounded-lg p-8 sm:p-12 max-w-3xl w-full relative mx-4">
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent"></div>
+    <Backdrop
+      open
+      dir={isRTL ? 'rtl' : 'ltr'}
+      sx={{ bgcolor: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(8px)', zIndex: 50 }}
+    >
+      <Paper
+        sx={{
+          bgcolor: 'rgba(0,0,0,0.6)',
+          backdropFilter: 'blur(16px)',
+          border: '1px solid',
+          borderColor: 'primary.main',
+          borderRadius: 2,
+          p: { xs: 3, sm: 6 },
+          maxWidth: '768px',
+          width: '100%',
+          position: 'relative',
+          mx: 2,
+        }}
+      >
+        <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, background: 'linear-gradient(to right, transparent, #D4AF37, transparent)' }} />
 
-        <button
+        <IconButton
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+          sx={{ position: 'absolute', top: 16, insetInlineEnd: 16, color: 'grey.400', '&:hover': { color: 'text.primary' } }}
         >
-          <X className="w-6 h-6" />
-        </button>
+          <Close />
+        </IconButton>
 
-        <div className="text-center mb-6 sm:mb-8">
-          <h2
-            className="text-[#D4AF37] text-3xl sm:text-5xl mb-3 sm:mb-4"
-            style={{ fontFamily }}
+        <Box sx={{ textAlign: 'center', mb: { xs: 3, sm: 4 } }}>
+          <Typography
+            sx={{
+              color: 'primary.main',
+              fontSize: { xs: '1.875rem', sm: '3rem' },
+              mb: { xs: 1.5, sm: 2 },
+              fontFamily,
+            }}
           >
             {translations.fundraising.title}
-          </h2>
-          <p className="text-gray-400 text-base sm:text-lg" style={{ fontFamily }}>
+          </Typography>
+          <Typography sx={{ color: 'grey.400', fontSize: { xs: '1rem', sm: '1.125rem' }, fontFamily }}>
             {translations.fundraising.description}
-          </p>
-        </div>
+          </Typography>
+        </Box>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-12 mb-6 sm:mb-8">
-          <div className="text-center">
-            <div className="text-gray-400 text-sm uppercase tracking-wider mb-2" style={{ fontFamily }}>{translations.fundraising.collected}</div>
-            <div className="text-[#D4AF37] text-3xl sm:text-4xl font-bold" style={{ fontFamily }}>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'center', gap: { xs: 3, sm: 6 }, mb: { xs: 3, sm: 4 } }}>
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography sx={{ color: 'grey.400', fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '0.05em', mb: 1, fontFamily }}>
+              {translations.fundraising.collected}
+            </Typography>
+            <Typography sx={{ color: 'primary.main', fontSize: { xs: '1.875rem', sm: '2.25rem' }, fontWeight: 'bold', fontFamily }}>
               ${displayCollected}
-            </div>
-          </div>
+            </Typography>
+          </Box>
 
-          <div className="hidden sm:block w-px h-16 bg-[#D4AF37]/30"></div>
+          <Box sx={{ display: { xs: 'none', sm: 'block' }, width: '1px', height: 64, bgcolor: 'rgba(212,175,55,0.3)' }} />
 
-          <div className="text-center">
-            <div className="text-gray-400 text-sm uppercase tracking-wider mb-2" style={{ fontFamily }}>{translations.fundraising.goal}</div>
-            <div className="text-white text-3xl sm:text-4xl font-bold" style={{ fontFamily }}>
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography sx={{ color: 'grey.400', fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '0.05em', mb: 1, fontFamily }}>
+              {translations.fundraising.goal}
+            </Typography>
+            <Typography sx={{ color: 'text.primary', fontSize: { xs: '1.875rem', sm: '2.25rem' }, fontWeight: 'bold', fontFamily }}>
               ${displayGoal}
-            </div>
-          </div>
+            </Typography>
+          </Box>
 
-          <div className="hidden sm:block w-px h-16 bg-[#D4AF37]/30"></div>
+          <Box sx={{ display: { xs: 'none', sm: 'block' }, width: '1px', height: 64, bgcolor: 'rgba(212,175,55,0.3)' }} />
 
-          <div className="text-center">
-            <div className="text-gray-400 text-sm uppercase tracking-wider mb-2" style={{ fontFamily }}>{translations.fundraising.donors}</div>
-            <div className="text-white text-3xl sm:text-4xl font-bold" style={{ fontFamily }}>
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography sx={{ color: 'grey.400', fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '0.05em', mb: 1, fontFamily }}>
+              {translations.fundraising.donors}
+            </Typography>
+            <Typography sx={{ color: 'text.primary', fontSize: { xs: '1.875rem', sm: '2.25rem' }, fontWeight: 'bold', fontFamily }}>
               {displayDonors}
-            </div>
-          </div>
-        </div>
+            </Typography>
+          </Box>
+        </Box>
 
-        <div className="mb-6">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-gray-400 text-sm" style={{ fontFamily }}>{translations.fundraising.progress}</span>
-            <span className="text-[#D4AF37] text-sm font-bold" style={{ fontFamily }}>{displayProgress}%</span>
-          </div>
-          <div className="w-full h-3 bg-gray-800 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-gradient-to-r from-[#D4AF37] to-[#FFD700] rounded-full transition-all duration-500"
-              style={{ width: `${progress}%` }}
-            ></div>
-          </div>
-        </div>
+        <Box sx={{ mb: 3 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+            <Typography sx={{ color: 'grey.400', fontSize: '0.875rem', fontFamily }}>
+              {translations.fundraising.progress}
+            </Typography>
+            <Typography sx={{ color: 'primary.main', fontSize: '0.875rem', fontWeight: 'bold', fontFamily }}>
+              {displayProgress}%
+            </Typography>
+          </Box>
+          <LinearProgress
+            variant="determinate"
+            value={progress}
+            sx={{
+              height: 12,
+              borderRadius: 6,
+              bgcolor: 'grey.800',
+              '& .MuiLinearProgress-bar': {
+                borderRadius: 6,
+                background: 'linear-gradient(to right, #D4AF37, #FFD700)',
+              },
+            }}
+          />
+        </Box>
 
-        <div className="flex flex-col sm:flex-row items-center justify-between mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-[#D4AF37]/30 gap-4">
-          <div className="flex items-center gap-4 sm:gap-6">
-            <div className="w-24 h-24 sm:w-32 sm:h-32 bg-white rounded-lg flex items-center justify-center shrink-0">
-              <div className="text-center text-xs text-black p-2">
-                <div className="font-bold mb-1">QR CODE</div>
-                <div className="text-[10px]" style={{ fontFamily }}>{translations.fundraising.scanToDonate}</div>
-              </div>
-            </div>
-            <div>
-              <div className="text-gray-400 text-sm mb-1" style={{ fontFamily }}>{translations.fundraising.donateOnline}</div>
-              <div className="text-[#D4AF37] text-base sm:text-lg font-mono">
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', mt: { xs: 3, sm: 4 }, pt: { xs: 3, sm: 4 }, borderTop: '1px solid rgba(212,175,55,0.3)', gap: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 2, sm: 3 } }}>
+            <Box sx={{ width: { xs: 96, sm: 128 }, height: { xs: 96, sm: 128 }, bgcolor: 'white', borderRadius: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <Box sx={{ textAlign: 'center', fontSize: '0.75rem', color: 'black', p: 1 }}>
+                <Typography sx={{ fontWeight: 'bold', mb: 0.5, fontSize: '0.75rem' }}>QR CODE</Typography>
+                <Typography sx={{ fontSize: '10px', fontFamily }}>{translations.fundraising.scanToDonate}</Typography>
+              </Box>
+            </Box>
+            <Box>
+              <Typography sx={{ color: 'grey.400', fontSize: '0.875rem', mb: 0.5, fontFamily }}>{translations.fundraising.donateOnline}</Typography>
+              <Typography sx={{ color: 'primary.main', fontSize: { xs: '1rem', sm: '1.125rem' }, fontFamily: 'monospace' }}>
                 masjidalnoor.org/donate
-              </div>
-            </div>
-          </div>
+              </Typography>
+            </Box>
+          </Box>
 
-          <div className="text-gray-500 text-sm" style={{ fontFamily }}>
+          <Typography sx={{ color: 'grey.500', fontSize: '0.875rem', fontFamily }}>
             {translations.fundraising.autoClosing} {displayCountdown}{translations.fundraising.seconds}
-          </div>
-        </div>
-      </div>
-    </div>
+          </Typography>
+        </Box>
+      </Paper>
+    </Backdrop>
   );
 }

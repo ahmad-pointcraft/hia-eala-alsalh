@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import ChevronLeft from '@mui/icons-material/ChevronLeft';
+import ChevronRight from '@mui/icons-material/ChevronRight';
 
 interface ImageCarouselProps {
   images: string[];
-  interval?: number; // Auto-slide interval in milliseconds
+  interval?: number;
 }
 
 export function ImageCarousel({ images, interval = 5000 }: ImageCarouselProps) {
@@ -31,7 +34,7 @@ export function ImageCarousel({ images, interval = 5000 }: ImageCarouselProps) {
   if (images.length === 0) return null;
 
   return (
-    <div className="relative w-full h-full overflow-hidden rounded-lg bg-black/30 border border-[#D4AF37]/30">
+    <Box sx={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden', borderRadius: 1, bgcolor: 'rgba(0,0,0,0.3)', border: '1px solid rgba(212,175,55,0.3)' }}>
       <AnimatePresence mode="wait">
         <motion.div
           key={currentIndex}
@@ -39,51 +42,57 @@ export function ImageCarousel({ images, interval = 5000 }: ImageCarouselProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5 }}
-          className="w-full h-full"
+          style={{ width: '100%', height: '100%' }}
         >
           <img
             src={images[currentIndex]}
             alt={`Slide ${currentIndex + 1}`}
-            className="w-full h-full object-cover"
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />
         </motion.div>
       </AnimatePresence>
 
-      {/* Navigation buttons */}
       {images.length > 1 && (
         <>
-          <button
+          <IconButton
             onClick={goToPrevious}
-            className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
             aria-label="Previous image"
+            sx={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', bgcolor: 'rgba(0,0,0,0.5)', color: 'text.primary', '&:hover': { bgcolor: 'rgba(0,0,0,0.7)' } }}
           >
-            <ChevronLeft className="w-6 h-6" />
-          </button>
-          <button
+            <ChevronLeft />
+          </IconButton>
+          <IconButton
             onClick={goToNext}
-            className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
             aria-label="Next image"
+            sx={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', bgcolor: 'rgba(0,0,0,0.5)', color: 'text.primary', '&:hover': { bgcolor: 'rgba(0,0,0,0.7)' } }}
           >
-            <ChevronRight className="w-6 h-6" />
-          </button>
+            <ChevronRight />
+          </IconButton>
 
-          {/* Dots indicator */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+          <Box sx={{ position: 'absolute', bottom: 16, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 1 }}>
             {images.map((_, index) => (
-              <button
+              <Box
+                component="button"
                 key={index}
                 onClick={() => setCurrentIndex(index)}
-                className={`w-2 h-2 rounded-full transition-all ${
-                  index === currentIndex
-                    ? 'bg-[#D4AF37] w-8'
-                    : 'bg-white/50 hover:bg-white/70'
-                }`}
                 aria-label={`Go to slide ${index + 1}`}
+                sx={{
+                  width: index === currentIndex ? 32 : 8,
+                  height: 8,
+                  borderRadius: 4,
+                  bgcolor: index === currentIndex ? 'primary.main' : 'rgba(255,255,255,0.5)',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'all 300ms',
+                  '&:hover': {
+                    bgcolor: index === currentIndex ? 'primary.main' : 'rgba(255,255,255,0.7)',
+                  },
+                }}
               />
             ))}
-          </div>
+          </Box>
         </>
       )}
-    </div>
+    </Box>
   );
 }

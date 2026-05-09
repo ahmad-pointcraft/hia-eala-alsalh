@@ -1,12 +1,17 @@
 import image_logo_masjid_design_1 from '@/imports/logo-masjid-design-1.png'
 import { useEffect, useState } from 'react';
 import { Language } from '../utils/translations';
-import logoSvg from '../../imports/logo.png';
+import { Box, Typography } from '@mui/material';
 
 interface MasjidInfoProps {
   language: Language;
-  translations: any;
+  translations: Record<string, string>;
 }
+
+const toArabicNumerals = (text: string): string => {
+  const arabicNumerals = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+  return text.replace(/[0-9]/g, (digit) => arabicNumerals[parseInt(digit)]);
+};
 
 export function MasjidInfo({ language, translations }: MasjidInfoProps) {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -23,40 +28,44 @@ export function MasjidInfo({ language, translations }: MasjidInfoProps) {
   };
 
   const getGregorianDate = () => {
-    return currentTime.toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', {
+    const dateStr = currentTime.toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
       day: 'numeric'
     });
+    return language === 'ar' ? toArabicNumerals(dateStr) : dateStr;
   };
 
   const isRTL = language === 'ar';
   const fontFamily = language === 'ar' ? 'Noto Naskh Arabic, serif' : 'Open Sans, sans-serif';
 
   return (
-    <div className="w-full px-[20px] py-[12px]" dir={isRTL ? 'rtl' : 'ltr'}>
-      <div className="flex items-center justify-between gap-3 lg:gap-6">
+    <Box sx={{ width: '100%', px: '20px', py: '12px' }} dir={isRTL ? 'rtl' : 'ltr'}>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: { xs: 1.5, lg: 3 } }}>
         {/* Logo - Left */}
-        <div className="shrink-0">
-          <img
+        <Box sx={{ flexShrink: 0 }}>
+          <Box
+            component="img"
             src={image_logo_masjid_design_1}
             alt="Masjid Logo"
-            className="w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 object-contain"
+            sx={{ width: { xs: 40, sm: 48, lg: 64 }, height: { xs: 40, sm: 48, lg: 64 }, objectFit: 'contain' }}
           />
-        </div>
+        </Box>
 
         {/* Dates - Right */}
-        <div className="flex items-center gap-2 sm:gap-3 text-right">
-          <span className="text-white text-xs sm:text-sm lg:text-lg" style={{ fontFamily }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, sm: 1.5 }, textAlign: 'right' }}>
+          <Typography component="span" sx={{ color: 'text.primary', fontSize: { xs: '0.75rem', sm: '0.875rem', lg: '1.125rem' }, fontFamily }}>
             {getHijriDate()}
-          </span>
-          <span className="text-gray-400 text-sm lg:text-lg">•</span>
-          <span className="text-gray-400 text-xs sm:text-sm lg:text-lg">
+          </Typography>
+          <Typography component="span" sx={{ color: 'text.secondary', fontSize: { xs: '0.875rem', lg: '1.125rem' } }}>
+            •
+          </Typography>
+          <Typography component="span" sx={{ color: 'text.secondary', fontSize: { xs: '0.75rem', sm: '0.875rem', lg: '1.125rem' } }}>
             {getGregorianDate()}
-          </span>
-        </div>
-      </div>
-    </div>
+          </Typography>
+        </Box>
+      </Box>
+    </Box>
   );
 }
