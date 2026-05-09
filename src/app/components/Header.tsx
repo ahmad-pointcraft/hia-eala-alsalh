@@ -1,4 +1,9 @@
 import { useEffect, useState } from 'react';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 import { Languages, Heart, CalendarClock } from 'lucide-react';
 import { Language } from '../utils/translations';
 
@@ -8,7 +13,7 @@ interface HeaderProps {
   language: Language;
   onToggleLanguage: () => void;
   onShowFundraising: () => void;
-  translations: any;
+  translations: Record<string, string>;
 }
 
 export function Header({ eventMode, onToggleEventMode, language, onToggleLanguage, onShowFundraising, translations }: HeaderProps) {
@@ -30,44 +35,129 @@ export function Header({ eventMode, onToggleEventMode, language, onToggleLanguag
     });
   };
 
+  const fontFamily = language === 'ar' ? '"Noto Naskh Arabic", serif' : '"Open Sans", sans-serif';
+
   return (
-    <div className="w-full bg-black/40 backdrop-blur-sm border-b border-[#D4AF37]/30 px-[20px] py-[10px]">
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex-1 flex justify-start">
-          <button
+    <AppBar
+      position="static"
+      dir={language === 'ar' ? 'rtl' : 'ltr'}
+      sx={{
+        bgcolor: 'rgba(0,0,0,0.4)',
+        backdropFilter: 'blur(4px)',
+        borderBottom: '1px solid rgba(212,175,55,0.3)',
+        boxShadow: 'none',
+      }}
+    >
+      <Toolbar sx={{ justifyContent: 'space-between', gap: 2, px: '20px !important', py: '10px' }}>
+        <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-start' }}>
+          <Button
             onClick={onToggleLanguage}
-            className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-black/80 hover:bg-black text-[#D4AF37] text-xs sm:text-sm font-bold border border-[#D4AF37]/50 rounded-lg backdrop-blur-sm transition-colors shadow-lg"
+            startIcon={<Languages style={{ width: 16, height: 16 }} />}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              px: { xs: 1.5, sm: 2 },
+              py: 1,
+              bgcolor: 'rgba(0,0,0,0.8)',
+              color: 'primary.main',
+              fontSize: { xs: '0.75rem', sm: '0.875rem' },
+              fontWeight: 'bold',
+              border: '1px solid rgba(212,175,55,0.5)',
+              borderRadius: 2,
+              backdropFilter: 'blur(4px)',
+              textTransform: 'none',
+              '&:hover': { bgcolor: 'rgba(0,0,0,0.95)' },
+            }}
           >
-            <Languages className="w-4 h-4" />
-            <span className="hidden sm:inline">{language === 'en' ? 'العربية' : 'English'}</span>
-          </button>
-        </div>
+            <Typography
+              component="span"
+              sx={{
+                display: { xs: 'none', sm: 'inline' },
+                fontFamily,
+                fontSize: 'inherit',
+                fontWeight: 'inherit',
+              }}
+            >
+              {language === 'en' ? 'العربية' : 'English'}
+            </Typography>
+          </Button>
+        </Box>
 
-        <div className="flex justify-center">
-          <div className="text-white font-mono tracking-wider text-[32px] text-justify font-bold">
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Typography
+            sx={{
+              color: 'text.primary',
+              fontFamily: 'monospace',
+              letterSpacing: '0.05em',
+              fontSize: '32px',
+              fontWeight: 'bold',
+            }}
+          >
             {formatTime(currentTime)}
-          </div>
-        </div>
+          </Typography>
+        </Box>
 
-        <div className="flex-1 flex justify-end gap-2">
-          <button
+        <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+          <Button
             onClick={onShowFundraising}
-            className="px-3 py-2 bg-black/80 hover:bg-black text-[#D4AF37] border border-[#D4AF37]/50 rounded-lg backdrop-blur-sm transition-colors shadow-lg flex items-center gap-2"
             title={translations.donate}
+            startIcon={<Heart size={18} />}
+            sx={{
+              px: 1.5,
+              py: 1,
+              bgcolor: 'rgba(0,0,0,0.8)',
+              color: 'primary.main',
+              border: '1px solid rgba(212,175,55,0.5)',
+              borderRadius: 2,
+              backdropFilter: 'blur(4px)',
+              textTransform: 'none',
+              '&:hover': { bgcolor: 'rgba(0,0,0,0.95)' },
+            }}
           >
-            <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
-            <span className="hidden lg:inline text-xs sm:text-sm font-bold">{translations.donate}</span>
-          </button>
+            <Typography
+              component="span"
+              sx={{
+                display: { xs: 'none', lg: 'inline' },
+                fontFamily,
+                fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                fontWeight: 'bold',
+              }}
+            >
+              {translations.donate}
+            </Typography>
+          </Button>
 
-          <button
+          <Button
             onClick={onToggleEventMode}
-            className="px-3 sm:px-4 py-2 bg-[#D4AF37]/80 hover:bg-[#D4AF37] text-black text-xs sm:text-sm font-bold rounded-lg backdrop-blur-sm transition-colors shadow-lg flex items-center gap-2"
+            startIcon={<CalendarClock size={18} />}
+            sx={{
+              px: { xs: 1.5, sm: 2 },
+              py: 1,
+              bgcolor: 'rgba(212,175,55,0.8)',
+              color: 'primary.contrastText',
+              fontSize: { xs: '0.75rem', sm: '0.875rem' },
+              fontWeight: 'bold',
+              borderRadius: 2,
+              backdropFilter: 'blur(4px)',
+              textTransform: 'none',
+              '&:hover': { bgcolor: 'primary.main' },
+            }}
           >
-            <CalendarClock className="w-4 h-4 sm:w-5 sm:h-5" />
-            <span className="hidden sm:inline">{eventMode ? translations.exitEvent : translations.comingEvent}</span>
-          </button>
-        </div>
-      </div>
-    </div>
+            <Typography
+              component="span"
+              sx={{
+                display: { xs: 'none', sm: 'inline' },
+                fontFamily,
+                fontSize: 'inherit',
+                fontWeight: 'inherit',
+              }}
+            >
+              {eventMode ? translations.exitEvent : translations.comingEvent}
+            </Typography>
+          </Button>
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
 }

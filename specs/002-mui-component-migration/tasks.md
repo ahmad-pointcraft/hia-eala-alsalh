@@ -21,8 +21,8 @@
 
 **Independent Test**: Load the app and verify the header renders with MUI AppBar/Toolbar, clock ticks, buttons are interactive, EN/AR toggle works
 
-- [ ] T001 [P] [US1] Rewrite Header.tsx in `src/app/components/Header.tsx` — replace all Tailwind className with MUI sx prop; outer div → AppBar position="static" with Toolbar; buttons → MUI Button variant="outlined"/"contained"; clock → Typography with sx fontFamily monospace; hidden sm:inline → sx display { xs: none, sm: inline }; replace style={{ fontFamily }} with sx={{ fontFamily }}; translations: any → Record<string, string>; dir={language === 'ar' ? 'rtl' : 'ltr'} on AppBar root; remove all className strings
-- [ ] T002 [US1] Verify Header renders at xs/sm/lg breakpoints — clock displays, language toggle switches EN↔AR, donate button shows Heart icon, event mode button toggles; confirm in browser at 375px, 640px, 1920px
+- [X] T001 [P] [US1] Rewrite Header.tsx in `src/app/components/Header.tsx` — replace all Tailwind className with MUI sx prop; outer div → AppBar position="static" with Toolbar; buttons → MUI Button variant="outlined"/"contained"; clock → Typography with sx fontFamily monospace; hidden sm:inline → sx display { xs: none, sm: inline }; replace style={{ fontFamily }} with sx={{ fontFamily }}; translations: any → Record<string, string>; dir={language === 'ar' ? 'rtl' : 'ltr'} on AppBar root; remove all className strings
+- [X] T002 [US1] Verify Header renders at xs/sm/lg breakpoints — clock displays, language toggle switches EN↔AR, donate button shows Heart icon, event mode button toggles; confirm in browser at 375px, 640px, 1920px
 
 **Checkpoint**: Header uses MUI AppBar/Toolbar/Button, zero Tailwind classes, RTL works
 
