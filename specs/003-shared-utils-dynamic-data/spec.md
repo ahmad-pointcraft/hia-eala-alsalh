@@ -102,7 +102,7 @@ As a developer, I want the fundraising timer to properly clean up all scheduled 
 
 ### Functional Requirements
 
-- **FR-001**: System MUST compute the current active prayer as the prayer whose time has most recently passed (e.g., at 13:00 with Dhuhr at 12:45, Dhuhr is active)
+- **FR-001**: System MUST compute the current active prayer as the prayer whose time has most recently passed (e.g., at 13:00 with Dhuhr at 12:45, Dhuhr is active). Prayer times are stored as HH:MM strings and MUST be parsed to minutes-from-midnight for comparison against the current wall-clock time.
 - **FR-002**: System MUST compute the next upcoming prayer based on actual wall-clock time, wrapping to tomorrow's Fajr after Isha
 - **FR-003**: System MUST compute the countdown duration (HH:MM:SS) as the time difference between now and the next prayer time
 - **FR-004**: System MUST extract `toArabicNumerals()` into a single shared utility module, removing all 5 duplicated copies
@@ -151,7 +151,7 @@ As a developer, I want the fundraising timer to properly clean up all scheduled 
 - Prayer times are currently hardcoded in App.tsx and will remain hardcoded in this spec — dynamic API-fetched prayer times are out of scope
 - The prayer schedule includes 6 entries: Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha — this is the standard Hanafi schedule
 - "Current prayer" = the prayer whose time has most recently passed (confirmed in Clarifications)
-- Sunrise is included for display but is not a mandatory prayer — it may or may not be highlighted the same way
+- Sunrise is included in the prayer schedule for display purposes and IS treated as a valid entry for getCurrentPrayer (can be "current") and getNextPrayer (can be "next") — it highlights the same as mandatory prayers
 - After Isha (last prayer), Fajr of the next day is the next prayer — the countdown will show hours until tomorrow's Fajr (confirmed in Clarifications)
 - The existing translations object structure is the source of truth for the Translations type — derived via `typeof` (confirmed in Clarifications)
 - The fundraising timer fix only addresses cleanup — the scheduling interval (1 min initial, 10 min recurring) remains unchanged
