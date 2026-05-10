@@ -17,18 +17,14 @@ import { ImageCarousel } from "./components/ImageCarousel";
 import { translations, Language } from "./utils/translations";
 import { getCurrentPrayer, getNextPrayer, getTimeToNextPrayer } from "./utils/prayerTimes";
 import type { PrayerTime } from "./utils/prayerTimes";
+import { useClock } from "./utils/useClock";
 
 export default function App() {
   const [showFundraising, setShowFundraising] = useState(false);
   const [eventMode, setEventMode] = useState(false);
   const [language, setLanguage] = useState<Language>("en");
-  const [currentTime, setCurrentTime] = useState(new Date());
+  const { currentTime } = useClock();
   const fundraisingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
 
   const carouselImages = [
     "https://images.unsplash.com/photo-1564769625905-50e93615e769?w=800&h=600&fit=crop",
@@ -117,6 +113,7 @@ export default function App() {
           onToggleLanguage={toggleLanguage}
           onShowFundraising={() => setShowFundraising(true)}
           translations={t}
+          currentTime={currentTime}
         />
 
         <AnimatePresence mode="wait">
@@ -147,6 +144,7 @@ export default function App() {
                 <MasjidInfo
                   language={language}
                   translations={t}
+                  currentTime={currentTime}
                 />
               </Box>
 
@@ -163,7 +161,7 @@ export default function App() {
                           nextPrayer={nextPrayer.name}
                           nextPrayerTime={nextPrayer.time}
                           language={language}
-                          nextPrayerLabel={t.nextPrayer}
+                          currentTime={currentTime}
                         />
                     </Grid>
                     <Grid size={{ xs: 12, lg: 6 }}>

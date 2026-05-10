@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
@@ -16,18 +15,10 @@ interface HeaderProps {
   onToggleLanguage: () => void;
   onShowFundraising: () => void;
   translations: Translations;
+  currentTime: Date;
 }
 
-export function Header({ eventMode, onToggleEventMode, language, onToggleLanguage, onShowFundraising, translations }: HeaderProps) {
-  const [currentTime, setCurrentTime] = useState(new Date());
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
+export function Header({ eventMode, onToggleEventMode, language, onToggleLanguage, onShowFundraising, translations, currentTime }: HeaderProps) {
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString('en-US', {
       hour: '2-digit',
