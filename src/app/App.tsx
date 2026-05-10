@@ -1,5 +1,7 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
@@ -28,6 +30,12 @@ export default function App() {
   const [language, setLanguage] = useState<Language>("en");
   const { currentTime } = useClock();
   const fundraisingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const theme = useTheme();
+  const prefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
+  const defaultTransition = useMemo(
+    () => (prefersReducedMotion ? { duration: 0 } : undefined),
+    [prefersReducedMotion],
+  );
 
   const carouselImages = [mosque1, mosque2, mosque3];
 
@@ -122,7 +130,7 @@ export default function App() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.4 }}
+              transition={defaultTransition ?? { duration: 0.4 }}
               style={{ flex: 1, position: "relative", overflow: "hidden" }}
             >
               <EventModeDisplay
@@ -136,7 +144,7 @@ export default function App() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
+              transition={defaultTransition ?? { duration: 0.5, ease: "easeInOut" }}
               style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}
             >
               <Box sx={{ flexShrink: 0 }}>
@@ -152,7 +160,7 @@ export default function App() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.9, y: -20 }}
-                  transition={{ delay: 0.2, duration: 0.4 }}
+                  transition={defaultTransition ?? { delay: 0.2, duration: 0.4 }}
                 >
                   <Grid container spacing={{ xs: 1, sm: 1.5 }} sx={{ mb: { xs: 1, sm: 1.5 } }}>
                     <Grid size={{ xs: 12, lg: 6 }}>
@@ -176,7 +184,7 @@ export default function App() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.9, y: -20 }}
-                  transition={{ delay: 0.4, duration: 0.4 }}
+                  transition={defaultTransition ?? { delay: 0.4, duration: 0.4 }}
                 >
                   <Box sx={{ height: { xs: 256, sm: 320, lg: 360 } }}>
                     <ImageCarousel
@@ -192,7 +200,7 @@ export default function App() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.9, y: -20 }}
-                  transition={{ delay: 0.3, duration: 0.4 }}
+                  transition={defaultTransition ?? { delay: 0.3, duration: 0.4 }}
                 >
                   <Box sx={{ mb: 1 }}>
                     <HadithPanel
@@ -206,7 +214,7 @@ export default function App() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.8 }}
-                  transition={{ duration: 0.4 }}
+                  transition={defaultTransition ?? { duration: 0.4 }}
                 >
                   <Grid
                     container
@@ -220,7 +228,7 @@ export default function App() {
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, scale: 0.8, y: -10 }}
-                          transition={{ delay: index * 0.05, duration: 0.3 }}
+                          transition={defaultTransition ?? { delay: index * 0.05, duration: 0.3 }}
                         >
                           <PrayerCard
                             name={prayer.name}

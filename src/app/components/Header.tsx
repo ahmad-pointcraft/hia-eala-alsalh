@@ -43,6 +43,7 @@ export function Header({ eventMode, onToggleEventMode, language, onToggleLanguag
         <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-start' }}>
           <Button
             onClick={onToggleLanguage}
+            aria-label={language === 'en' ? 'Switch to Arabic' : 'Switch to English'}
             startIcon={<Languages style={{ width: 16, height: 16 }} />}
             sx={{
               display: 'flex',
@@ -77,6 +78,9 @@ export function Header({ eventMode, onToggleEventMode, language, onToggleLanguag
 
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
           <Typography
+            role="timer"
+            aria-live="polite"
+            aria-atomic="true"
             sx={{
               color: 'text.primary',
               fontFamily: 'monospace',
@@ -93,6 +97,7 @@ export function Header({ eventMode, onToggleEventMode, language, onToggleLanguag
           <Button
             onClick={onShowFundraising}
             title={translations.donate}
+            aria-label={translations.donate}
             startIcon={<Heart size={18} />}
             sx={{
               px: 1.5,
@@ -121,6 +126,7 @@ export function Header({ eventMode, onToggleEventMode, language, onToggleLanguag
 
           <Button
             onClick={onToggleEventMode}
+            aria-label={eventMode ? translations.exitEvent : translations.comingEvent}
             startIcon={<CalendarClock size={18} />}
             sx={{
               px: { xs: 1.5, sm: 2 },

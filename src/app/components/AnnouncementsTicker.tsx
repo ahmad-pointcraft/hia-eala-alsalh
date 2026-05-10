@@ -51,6 +51,9 @@ export function AnnouncementsTicker({
 
 	return (
 		<Paper
+			role="status"
+			aria-live="polite"
+			aria-label={language === 'ar' ? 'إعلانات المسجد' : 'Masjid announcements'}
 			sx={{
 				width: "100%",
 				bgcolor: "rgba(0,0,0,0.4)",
@@ -91,6 +94,7 @@ export function AnnouncementsTicker({
 				<Box sx={{ flex: 1, overflow: "hidden", position: "relative" }}>
 					<Box
 						ref={scrollRef}
+						role="marquee"
 						sx={{
 							display: "flex",
 							alignItems: "center",

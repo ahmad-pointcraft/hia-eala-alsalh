@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { Language } from '../utils/translations';
 import { Paper, Box, Typography } from '@mui/material';
 import { toArabicNumerals, getFontFamily, getDirection } from '../utils/helpers';
@@ -10,6 +11,8 @@ interface CountdownBarProps {
 }
 
 export function CountdownBar({ nextPrayer, nextPrayerTime, language, currentTime }: CountdownBarProps) {
+  const lastAnnouncedMinute = useRef<number>(-1);
+
   const [hours, minutes] = nextPrayerTime.split(':').map(Number);
   const target = new Date(currentTime);
   target.setHours(hours, minutes, 0, 0);
@@ -27,9 +30,23 @@ export function CountdownBar({ nextPrayer, nextPrayerTime, language, currentTime
   const displayCountdown = language === 'ar' ? toArabicNumerals(countdown) : countdown;
   const prayerText = language === 'ar' ? `${nextPrayer} بعد` : `${nextPrayer} in`;
 
+  const currentMinute = m;
+  const shouldAnnounce = currentMinute !== lastAnnouncedMinute.current;
+  if (shouldAnnounce) {
+    lastAnnouncedMinute.current = currentMinute;
+  }
+  const announcementText = shouldAnnounce
+    ? language === 'ar'
+      ? `${nextPrayer} ${toArabicNumerals(countdown)}`
+      : `${nextPrayer} in ${countdown}`
+    : undefined;
+
   return (
     <Paper
       dir={getDirection(language)}
+      role="timer"
+      aria-live="polite"
+      aria-atomic="true"
       sx={{
         width: '100%',
         bgcolor: 'background.paper',
@@ -49,6 +66,24 @@ export function CountdownBar({ nextPrayer, nextPrayerTime, language, currentTime
           {displayCountdown}
         </Typography>
       </Box>
+      {announcementText !== undefined && (
+        <Box
+          component="span"
+          sx={{
+            position: 'absolute',
+            width: 1,
+            height: 1,
+            padding: 0,
+            margin: -1,
+            overflow: 'hidden',
+            clip: 'rect(0, 0, 0, 0)',
+            whiteSpace: 'nowrap',
+            borderWidth: 0,
+          }}
+        >
+          {announcementText}
+        </Box>
+      )}
     </Paper>
   );
 }
