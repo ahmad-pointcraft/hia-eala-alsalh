@@ -17,14 +17,14 @@
 
 ## Glossary
 
-| Term | Definition |
-|------|-----------|
-| **Display timer** | A 1-second `setInterval` that drives a visual update (clock, date, countdown, prayer highlighting). These are the 4 timers being consolidated. |
-| **Business logic timer** | A timer that controls application behavior, not display refresh. Includes: carousel auto-advance (5s interval) and fundraising self-dismiss (1s countdown to auto-close). These remain independent. |
-| **Fundraising scheduler** | The recursive `setTimeout` chain in App.tsx (1-min initial, then 10-min recurring) that determines when to show the fundraising overlay. Not a `setInterval` — unaffected by this refactor. |
-| **Independent timer** | Any timer not consolidated into `useClock`: ImageCarousel auto-advance and FundraisingOverlay self-dismiss countdown. |
+| Term                      | Definition                                                                                                                                                                                          |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Display timer**         | A 1-second `setInterval` that drives a visual update (clock, date, countdown, prayer highlighting). These are the 4 timers being consolidated.                                                      |
+| **Business logic timer**  | A timer that controls application behavior, not display refresh. Includes: carousel auto-advance (5s interval) and fundraising self-dismiss (1s countdown to auto-close). These remain independent. |
+| **Fundraising scheduler** | The recursive `setTimeout` chain in App.tsx (1-min initial, then 10-min recurring) that determines when to show the fundraising overlay. Not a `setInterval` — unaffected by this refactor.         |
+| **Independent timer**     | Any timer not consolidated into `useClock`: ImageCarousel auto-advance and FundraisingOverlay self-dismiss countdown.                                                                               |
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Kiosk Clock Display Updates Reliably (Priority: P1)
 
@@ -95,7 +95,7 @@ As a masjid attendee, the prayer card for the currently active prayer is highlig
 - What happens after Isha when all prayer times have passed? `getNextPrayer()` wraps to tomorrow's Fajr with `isTomorrow: true`. The countdown computes against tomorrow's target — this is already the current behavior and must be preserved.
 - What happens if `nextPrayerTime` is malformed or missing? The current implementation does not guard against this. Since prayer times are hardcoded (not fetched), this scenario is considered out of scope. If dynamic prayer data is introduced in a future spec, input validation will be required then.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -125,7 +125,7 @@ As a masjid attendee, the prayer card for the currently active prayer is highlig
 - **Independent Timers**: ImageCarousel (5-second auto-advance via `setInterval`) and FundraisingOverlay (1-second self-dismiss countdown via `setInterval`, auto-closes after 10 seconds). These retain their own timers — they are not consolidated into `useClock`.
 - **Fundraising Scheduler**: Recursive `setTimeout` chain in App.tsx (1-min initial delay, then 10-min recurring). Uses `fundraisingTimerRef` for cleanup. Completely separate from display timers and unaffected by this refactor.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 
