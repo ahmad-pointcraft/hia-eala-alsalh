@@ -23,7 +23,7 @@
 - [ ] CHK010 Are the storage path and import mechanism explicitly required (src/imports/ with Vite module imports)? [Clarity, Spec §FR-003, Clarification Q5]
 - [ ] CHK011 Is it clearly specified that the image array type remains `string[]` after migration? [Consistency, Spec §FR-004]
 - [ ] CHK012 Is the requirement for zero runtime network requests to image hosts measurable and testable? [Measurability, Spec §SC-002]
-- [ ] CHK013 Are all existing external image URLs identified and enumerated for replacement? [Completeness, Gap]
+- [x] CHK013 Are all existing external image URLs identified and enumerated for replacement? [Completeness, Gap — Fixed: FR-003 now lists 3 Unsplash photo IDs and source file locations]
 
 ## Accessibility — aria-live (FR-005, FR-006, FR-007)
 
@@ -35,8 +35,8 @@
 ## Accessibility — aria-labels (FR-008)
 
 - [ ] CHK018 Are all icon-only buttons explicitly enumerated (language toggle, donate, event mode, overlay close)? [Completeness, Spec §FR-008]
-- [ ] CHK019 Are the specific label values defined for each button, including bilingual variants? [Clarity, Gap]
-- [ ] CHK020 Is it specified whether icon buttons should use aria-label, aria-labelledby, or visually hidden text? [Clarity, Gap]
+- [x] CHK019 Are the specific label values defined for each button, including bilingual variants? [Clarity, Gap — Fixed: FR-008 now enumerates exact label text per button]
+- [x] CHK020 Is it specified whether icon buttons should use aria-label, aria-labelledby, or visually hidden text? [Clarity, Gap — Fixed: FR-008 now specifies aria-label attribute]
 
 ## Accessibility — Focus Trap (FR-010, FR-011, FR-012)
 
@@ -56,7 +56,7 @@
 
 - [ ] CHK029 Is it explicitly required that the service worker is optional and can be disabled without affecting other features? [Clarity, Spec §FR-013]
 - [ ] CHK030 Is the caching strategy specified: cache-first for static assets and network-first for HTML? [Completeness, Spec §FR-013]
-- [ ] CHK031 Are cache versioning requirements defined for cache busting on deploys? [Completeness, Gap]
+- [x] CHK031 Are cache versioning requirements defined for cache busting on deploys? [Completeness, Gap — Fixed: FR-013 now specifies versioned cache name with cleanup]
 - [ ] CHK032 Is the registration timing requirement specified (deferred, non-blocking first paint)? [Clarity, Spec §FR-014]
 - [ ] CHK033 Is the offline indicator behavior specified: when shown, what content, what aria attributes? [Completeness, Spec §FR-015]
 

@@ -115,17 +115,17 @@ As a masjid administrator, the kiosk display continues to function (showing pray
 
 - **FR-001**: The system MUST provide an error boundary that catches JavaScript errors in its child component tree, displays a MUI-branded fallback UI (Box, Typography, CircularProgress), and auto-recovers after 5 seconds
 - **FR-002**: The root application MUST be wrapped in the error boundary so that all runtime errors are caught at the top level
-- **FR-003**: Carousel images MUST be stored as local static assets and imported at build time (not fetched from external URLs at runtime)
+- **FR-003**: Carousel images MUST be stored as local static assets and imported at build time (not fetched from external URLs at runtime). The following 3 Unsplash URLs in `src/app/App.tsx` (lines 30–32) MUST be replaced with local imports: `photo-1564769625905-50e93615e769`, `photo-1591604466107-ec97de577aff`, `photo-1542816417-0983c9c9ad53`
 - **FR-004**: The carousel image collection MUST use locally-imported asset paths instead of remote URLs — the type remains an array of strings since build tools resolve image imports to hashed URL strings
 - **FR-005**: The countdown display MUST include a live region with atomic updates where the accessible text updates only once per minute to avoid flooding assistive technology
 - **FR-006**: The visual countdown MUST continue updating every second for sighted users — only the accessibility announcement text is throttled
 - **FR-007**: The announcements ticker MUST have a status role and polite live region on its root container, with a marquee role on the scrolling text element
-- **FR-008**: All icon-only buttons MUST have descriptive accessible labels (language toggle, donate, event mode, overlay close)
+- **FR-008**: All icon-only buttons MUST have descriptive accessible labels using the `aria-label` attribute. Specific labels: Header language toggle ("Switch to Arabic" / "Switch to English"), Header donate button (translations.donate), Header event mode button (translations.exitEvent / translations.comingEvent), FundraisingOverlay close button ("Close fundraising overlay")
 - **FR-009**: All components with motion animations MUST respect the user's reduced-motion preference — when enabled, animation durations are set to zero
 - **FR-010**: The fundraising overlay MUST implement a keyboard focus trap covering Tab, Shift+Tab, and Escape-to-close
 - **FR-011**: The fundraising overlay MUST set focus to the first focusable element on mount
 - **FR-012**: The fundraising overlay MUST have a dialog role and modal attribute
-- **FR-013**: (Optional) A service worker MUST implement cache-first strategy for static assets and network-first for the HTML shell
+- **FR-013**: (Optional) A service worker MUST implement cache-first strategy for static assets and network-first for the HTML shell. The cache MUST use a versioned name (e.g., `masjid-v1`) that increments on deploy to trigger old cache cleanup in the activate handler
 - **FR-014**: (Optional) Service worker registration MUST be conditional and deferred to avoid blocking first paint
 - **FR-015**: (Optional) A subtle offline indicator MUST display when the device has no network connectivity, using a polite live region
 - **FR-016**: No new external dependencies MUST be introduced — all solutions use existing packages only
