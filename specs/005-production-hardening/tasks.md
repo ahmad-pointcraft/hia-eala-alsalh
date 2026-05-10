@@ -95,10 +95,10 @@
 
 ### Implementation for User Story 5
 
-- [ ] T014 [US5] Create `public/sw.js`: plain JS service worker. Define `CACHE_NAME = "masjid-v1"`. Install handler: pre-cache `["/", "/index.html"]`, call `skipWaiting()`. Activate handler: delete caches not matching current CACHE_NAME, call `clients.claim()`. Fetch handler: cache-first for `.js/.css/.jpg/.png/.svg/.woff2` extensions, network-first for HTML
-- [ ] T015 [US5] Update `src/main.tsx`: add conditional service worker registration guarded by `'serviceWorker' in navigator`, wrapped in `window.addEventListener('load', ...)` to avoid blocking first paint. Register `'./sw.js'`
-- [ ] T016 [US5] Update `src/app/components/Header.tsx`: add offline indicator — conditionally render a subtle indicator (e.g., small dot or text) when `navigator.onLine === false`, with `aria-live="polite"` for accessibility
-- [ ] T017 [US5] Verify offline: load page once, go offline in browser DevTools, reload page — confirm page renders from cache. Confirm offline indicator appears in Header
+- [x] T014 [US5] Create `public/sw.js`: plain JS service worker. Define `CACHE_NAME = "masjid-v1"`. Install handler: pre-cache `["/", "/index.html"]`, call `skipWaiting()`. Activate handler: delete caches not matching current CACHE_NAME, call `clients.claim()`. Fetch handler: cache-first for `.js/.css/.jpg/.png/.svg/.woff2` extensions, network-first for HTML
+- [x] T015 [US5] Update `src/main.tsx`: add conditional service worker registration guarded by `'serviceWorker' in navigator`, wrapped in `window.addEventListener('load', ...)` to avoid blocking first paint. Register `'./sw.js'`
+- [x] T016 [US5] Update `src/app/components/Header.tsx`: add offline indicator — conditionally render a subtle indicator (e.g., small dot or text) when `navigator.onLine === false`, with `aria-live="polite"` for accessibility
+- [x] T017 [US5] Verify offline: load page once, go offline in browser DevTools, reload page — confirm page renders from cache. Confirm offline indicator appears in Header
 
 **Checkpoint**: User Story 5 fully functional — kiosk operates offline after first load
 
@@ -108,10 +108,10 @@
 
 **Purpose**: Final validation across all user stories
 
-- [ ] T018 Run `yarn build` — must exit with code 0 and zero errors (implicitly verifies FR-016: no new external dependencies)
-- [ ] T019 Verify no remote image URLs remain: `grep -r "unsplash" src/` — must return 0 matches
-- [ ] T020 Verify no `any` types in new code: `grep -r "any" src/app/components/ErrorBoundary.tsx` — must return 0 matches (FR-016: type safety compliance)
-- [ ] T021 Manual visual verification: ErrorBoundary fallback, aria attributes on all components, focus trap on FundraisingOverlay, reduced-motion support, offline indicator (if SW enabled)
+- [x] T018 Run `yarn build` — must exit with code 0 and zero errors (implicitly verifies FR-016: no new external dependencies)
+- [x] T019 Verify no remote image URLs remain: `grep -r "unsplash" src/` — must return 0 matches
+- [x] T020 Verify no `any` types in new code: `grep -r "any" src/app/components/ErrorBoundary.tsx` — must return 0 matches (FR-016: type safety compliance)
+- [x] T021 Manual visual verification: ErrorBoundary fallback, aria attributes on all components, focus trap on FundraisingOverlay, reduced-motion support, offline indicator (if SW enabled)
 
 ---
 
