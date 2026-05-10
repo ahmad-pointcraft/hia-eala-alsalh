@@ -25,7 +25,7 @@
 
 **Purpose**: Create the single shared timer hook that all user stories depend on.
 
-- [ ] T001 Create `useClock` hook in `src/app/utils/useClock.ts` — `useState(new Date())` + `useEffect` with `setInterval(1000)`, `clearInterval` cleanup on unmount (NFR-001), returns `{ currentTime: Date }`, fully typed with no `any` types (SC-005)
+- [x] T001 Create `useClock` hook in `src/app/utils/useClock.ts` — `useState(new Date())` + `useEffect` with `setInterval(1000)`, `clearInterval` cleanup on unmount (NFR-001), returns `{ currentTime: Date }`, fully typed with no `any` types (SC-005)
 
 ---
 
@@ -35,7 +35,7 @@
 
 **CRITICAL**: No consumer updates can begin until this phase is complete.
 
-- [ ] T002 Update `src/app/App.tsx`: remove `useState(new Date())` + `useEffect` with `setInterval(1000)` (lines 25, 28–31), add `import { useClock } from './utils/useClock'`, call `const { currentTime } = useClock()`, pass `currentTime={currentTime}` prop to `<Header>`, `<MasjidInfo>`, `<CountdownBar>`. Remove unused `nextPrayerLabel={t.nextPrayer}` prop from `<CountdownBar>` call site (FR-011, line 166)
+- [x] T002 Update `src/app/App.tsx`: remove `useState(new Date())` + `useEffect` with `setInterval(1000)` (lines 25, 28–31), add `import { useClock } from './utils/useClock'`, call `const { currentTime } = useClock()`, pass `currentTime={currentTime}` prop to `<Header>`, `<MasjidInfo>`, `<CountdownBar>`. Remove unused `nextPrayerLabel={t.nextPrayer}` prop from `<CountdownBar>` call site (FR-011, line 166)
 
 ---
 
@@ -49,7 +49,7 @@
 
 **Independent Test**: Observe header clock for 60+ seconds — no gaps, freezes, or duplicate timestamps.
 
-- [ ] T003 [P] [US1] Update `src/app/components/Header.tsx`: remove `useState(new Date())` (line 22), remove `useEffect` with `setInterval` (lines 24–29), remove `import { useEffect, useState } from 'react'` if no longer needed, add `currentTime: Date` to `HeaderProps` interface (after line 19), add `currentTime` to destructured props, use `currentTime` prop in `formatTime()` call (line 97)
+- [x] T003 [P] [US1] Update `src/app/components/Header.tsx`: remove `useState(new Date())` (line 22), remove `useEffect` with `setInterval` (lines 24–29), remove `import { useEffect, useState } from 'react'` if no longer needed, add `currentTime: Date` to `HeaderProps` interface (after line 19), add `currentTime` to destructured props, use `currentTime` prop in `formatTime()` call (line 97)
 
 ### US3 — Gregorian Date Display Updates at Midnight
 
@@ -57,7 +57,7 @@
 
 **Independent Test**: Check displayed date matches today; monitor around midnight for automatic rollover.
 
-- [ ] T004 [P] [US3] Update `src/app/components/MasjidInfo.tsx`: remove `useState(new Date())` (line 14), remove `useEffect` with `setInterval` (lines 16–21), remove `import { useEffect, useState } from 'react'` if no longer needed, add `currentTime: Date` to `MasjidInfoProps` interface (after line 11), add `currentTime` to destructured props, use `currentTime` prop in `getGregorianDate()` function (line 27)
+- [x] T004 [P] [US3] Update `src/app/components/MasjidInfo.tsx`: remove `useState(new Date())` (line 14), remove `useEffect` with `setInterval` (lines 16–21), remove `import { useEffect, useState } from 'react'` if no longer needed, add `currentTime: Date` to `MasjidInfoProps` interface (after line 11), add `currentTime` to destructured props, use `currentTime` prop in `getGregorianDate()` function (line 27)
 
 ### US2 — Countdown Timer Ticks Accurately
 
@@ -65,7 +65,7 @@
 
 **Independent Test**: Note countdown value + reference clock — verify it decrements by exactly 1s/s and reaches 00:00:00 at correct prayer time.
 
-- [ ] T005 [US2] Update `src/app/components/CountdownBar.tsx`: remove `useState('03:45:23')` (line 14 — eliminates placeholder bug per SC-006), remove `useEffect` with `setInterval` (lines 16–36), remove `import { useEffect, useState } from 'react'` if no longer needed, add `currentTime: Date` to `CountdownBarProps` interface (after line 11), remove `nextPrayerLabel` from `CountdownBarProps` interface (FR-011), remove `nextPrayerLabel` from destructured props, add `currentTime` to destructured props, derive countdown in render body:
+- [x] T005 [US2] Update `src/app/components/CountdownBar.tsx`: remove `useState('03:45:23')` (line 14 — eliminates placeholder bug per SC-006), remove `useEffect` with `setInterval` (lines 16–36), remove `import { useEffect, useState } from 'react'` if no longer needed, add `currentTime: Date` to `CountdownBarProps` interface (after line 11), remove `nextPrayerLabel` from `CountdownBarProps` interface (FR-011), remove `nextPrayerLabel` from destructured props, add `currentTime` to destructured props, derive countdown in render body:
   1. Parse `nextPrayerTime` ("HH:MM") via `split(":").map(Number)` → hours, minutes
   2. Create `target = new Date(currentTime)`, set `target.setHours(hours, minutes, 0, 0)`
   3. If `target < currentTime` → `target.setDate(target.getDate() + 1)` (midnight rollover)
@@ -90,12 +90,12 @@
 
 **Purpose**: Confirm all success criteria are met.
 
-- [ ] T006 Run `yarn build` — must exit with code 0, zero errors (SC-004)
-- [ ] T007 Run `grep "setInterval" src/app/App.tsx src/app/components/Header.tsx src/app/components/MasjidInfo.tsx src/app/components/CountdownBar.tsx` — must return 0 matches / exit code 1 (SC-001, SC-002)
-- [ ] T008 Run `grep "setInterval" src/app/utils/useClock.ts src/app/components/ImageCarousel.tsx src/app/components/FundraisingOverlay.tsx` — must return exactly 3 matches (SC-001, SC-002)
-- [ ] T009 Run `grep -r "any" src/app/utils/useClock.ts src/app/components/Header.tsx src/app/components/MasjidInfo.tsx src/app/components/CountdownBar.tsx` — must return 0 matches (SC-005)
-- [ ] T010 Verify visual and functional correctness via `yarn dev`: (1) confirm CountdownBar shows correct countdown on first render — no `'03:45:23'` placeholder (SC-006); (2) side-by-side visual check of clock, date, countdown, prayer highlighting against pre-refactor screenshots (SC-003)
-- [ ] T011 Final `yarn build` — must exit with code 0
+- [x] T006 Run `yarn build` — must exit with code 0, zero errors (SC-004)
+- [x] T007 Run `grep "setInterval" src/app/App.tsx src/app/components/Header.tsx src/app/components/MasjidInfo.tsx src/app/components/CountdownBar.tsx` — must return 0 matches / exit code 1 (SC-001, SC-002)
+- [x] T008 Run `grep "setInterval" src/app/utils/useClock.ts src/app/components/ImageCarousel.tsx src/app/components/FundraisingOverlay.tsx` — must return exactly 3 matches (SC-001, SC-002)
+- [x] T009 Run `grep -r "any" src/app/utils/useClock.ts src/app/components/Header.tsx src/app/components/MasjidInfo.tsx src/app/components/CountdownBar.tsx` — must return 0 matches (SC-005)
+- [x] T010 Verify visual and functional correctness via `yarn dev`: (1) confirm CountdownBar shows correct countdown on first render — no `'03:45:23'` placeholder (SC-006); (2) side-by-side visual check of clock, date, countdown, prayer highlighting against pre-refactor screenshots (SC-003)
+- [x] T011 Final `yarn build` — must exit with code 0
 
 ---
 
