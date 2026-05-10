@@ -99,11 +99,21 @@ As a masjid administrator, the kiosk display continues to function (showing pray
 - What happens if the service worker cache becomes corrupted? The user must clear browser data. Acceptable for a controlled kiosk environment.
 - What happens if two overlays are open simultaneously? The current app logic prevents simultaneous overlays — the fundraising overlay auto-dismisses and event mode replaces main content.
 
+## Clarifications
+
+### Session 2026-05-10
+
+- Q: Should the ErrorBoundary fallback use MUI components or minimal plain HTML? → A: MUI components (Box, Typography, CircularProgress) — branded recovery screen (Constitution Article I)
+- Q: Should aria-live on CountdownBar update every second or be throttled? → A: Throttled to once per minute — visual countdown still updates every second, only the aria announcement text is throttled
+- Q: Should the focus trap use an external library or manual implementation? → A: Manual useEffect + addEventListener — no new dependencies (Constitution Article IV)
+- Q: Should the service worker use Workbox or be handwritten? → A: Handwritten (public/sw.js) — no build dependency, cache-first for assets, network-first for HTML
+- Q: Should carousel images be in src/imports/ (Vite module imports) or public/ (static copies)? → A: src/imports/ with Vite module imports — content-hashed, auto-bundled
+
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
 
-- **FR-001**: The system MUST provide an error boundary that catches JavaScript errors in its child component tree, displays a branded fallback UI, and auto-recovers after 5 seconds
+- **FR-001**: The system MUST provide an error boundary that catches JavaScript errors in its child component tree, displays a MUI-branded fallback UI (Box, Typography, CircularProgress), and auto-recovers after 5 seconds
 - **FR-002**: The root application MUST be wrapped in the error boundary so that all runtime errors are caught at the top level
 - **FR-003**: Carousel images MUST be stored as local static assets and imported at build time (not fetched from external URLs at runtime)
 - **FR-004**: The carousel image collection MUST use locally-imported asset paths instead of remote URLs — the type remains an array of strings since build tools resolve image imports to hashed URL strings
