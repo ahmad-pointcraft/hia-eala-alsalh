@@ -91,10 +91,10 @@
 **Purpose**: Confirm all success criteria are met.
 
 - [ ] T006 Run `yarn build` — must exit with code 0, zero errors (SC-004)
-- [ ] T007 Run `grep "setInterval" src/app/App.tsx src/app/components/Header.tsx src/app/components/MasjidInfo.tsx src/app/components/CountdownBar.tsx` — must return 0 matches / exit code 1 (SC-002)
-- [ ] T008 Run `grep "setInterval" src/app/utils/useClock.ts src/app/components/ImageCarousel.tsx src/app/components/FundraisingOverlay.tsx` — must return exactly 3 matches (SC-002)
+- [ ] T007 Run `grep "setInterval" src/app/App.tsx src/app/components/Header.tsx src/app/components/MasjidInfo.tsx src/app/components/CountdownBar.tsx` — must return 0 matches / exit code 1 (SC-001, SC-002)
+- [ ] T008 Run `grep "setInterval" src/app/utils/useClock.ts src/app/components/ImageCarousel.tsx src/app/components/FundraisingOverlay.tsx` — must return exactly 3 matches (SC-001, SC-002)
 - [ ] T009 Run `grep -r "any" src/app/utils/useClock.ts src/app/components/Header.tsx src/app/components/MasjidInfo.tsx src/app/components/CountdownBar.tsx` — must return 0 matches (SC-005)
-- [ ] T010 Verify first-render countdown accuracy via `yarn dev`: load the app and confirm CountdownBar shows correct countdown immediately — no `'03:45:23'` placeholder (SC-006)
+- [ ] T010 Verify visual and functional correctness via `yarn dev`: (1) confirm CountdownBar shows correct countdown on first render — no `'03:45:23'` placeholder (SC-006); (2) side-by-side visual check of clock, date, countdown, prayer highlighting against pre-refactor screenshots (SC-003)
 - [ ] T011 Final `yarn build` — must exit with code 0
 
 ---
