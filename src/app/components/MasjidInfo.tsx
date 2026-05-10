@@ -1,5 +1,4 @@
 import image_logo_masjid_design_1 from '@/imports/logo-masjid-design-1.png'
-import { useEffect, useState } from 'react';
 import { Language } from '../utils/translations';
 import type { Translations } from '../utils/translations';
 import { Box, Typography } from '@mui/material';
@@ -8,18 +7,10 @@ import { toArabicNumerals, getFontFamily, getDirection } from '../utils/helpers'
 interface MasjidInfoProps {
   language: Language;
   translations: Translations;
+  currentTime: Date;
 }
 
-export function MasjidInfo({ language, translations }: MasjidInfoProps) {
-  const [currentTime, setCurrentTime] = useState(new Date());
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
+export function MasjidInfo({ language, translations, currentTime }: MasjidInfoProps) {
   const getHijriDate = () => {
     return language === 'ar' ? "١٥ ذو القعدة ١٤٤٧" : "15 Dhul-Qa'dah 1447";
   };
