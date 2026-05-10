@@ -3,6 +3,7 @@ import { Megaphone } from "lucide-react";
 import { Language } from "../utils/translations";
 import logo from "../../imports/logo.png";
 import { Paper, Box, Typography } from "@mui/material";
+import { getFontFamily, isRTL, getDirection } from '../utils/helpers';
 
 interface AnnouncementsTickerProps {
 	language: Language;
@@ -13,9 +14,6 @@ export function AnnouncementsTicker({
 	language,
 	announcements,
 }: AnnouncementsTickerProps) {
-	const isRTL = language === "ar";
-	const fontFamily =
-		language === "ar" ? "Noto Naskh Arabic, serif" : "Open Sans, sans-serif";
 	const scrollRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
@@ -24,18 +22,16 @@ export function AnnouncementsTicker({
 
 		let animationId: number;
 		let position = 0;
-		const speed = isRTL ? 0.4 : -0.4; // Reverse direction for RTL
+		const speed = isRTL(language) ? 0.4 : -0.4;
 
 		const animate = () => {
 			position += speed;
 
-			// For RTL, scroll right to left
-			if (isRTL) {
+			if (isRTL(language)) {
 				if (position >= element.scrollWidth / 2) {
 					position = 0;
 				}
 			} else {
-				// For LTR, scroll left to right
 				if (position <= -element.scrollWidth / 2) {
 					position = 0;
 				}
@@ -47,7 +43,7 @@ export function AnnouncementsTicker({
 
 		animationId = requestAnimationFrame(animate);
 		return () => cancelAnimationFrame(animationId);
-	}, [isRTL]);
+	}, [language]);
 
 	const separator = language === "ar" ? " • " : " • ";
 	const fullText =
@@ -64,7 +60,7 @@ export function AnnouncementsTicker({
 				overflow: "hidden",
 				borderRadius: 0,
 			}}
-			dir={isRTL ? "rtl" : "ltr"}
+			dir={getDirection(language)}
 			square>
 			<Box
 				sx={{
@@ -108,7 +104,7 @@ export function AnnouncementsTicker({
 							sx={{
 								color: "text.primary",
 								fontSize: { xs: "0.75rem", sm: "0.875rem", lg: "1rem" },
-								fontFamily,
+								fontFamily: getFontFamily(language),
 							}}>
 							{fullText}
 						</Typography>

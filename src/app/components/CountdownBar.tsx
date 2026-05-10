@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Language } from '../utils/translations';
 import { Paper, Box, Typography } from '@mui/material';
+import { toArabicNumerals, getFontFamily, getDirection } from '../utils/helpers';
 
 interface CountdownBarProps {
   nextPrayer: string;
@@ -8,11 +9,6 @@ interface CountdownBarProps {
   language: Language;
   nextPrayerLabel: string;
 }
-
-const toArabicNumerals = (text: string): string => {
-  const arabicNumerals = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
-  return text.replace(/[0-9]/g, (digit) => arabicNumerals[parseInt(digit)]);
-};
 
 export function CountdownBar({ nextPrayer, nextPrayerTime, language, nextPrayerLabel }: CountdownBarProps) {
   const [countdown, setCountdown] = useState('03:45:23');
@@ -39,15 +35,12 @@ export function CountdownBar({ nextPrayer, nextPrayerTime, language, nextPrayerL
     return () => clearInterval(interval);
   }, [nextPrayerTime]);
 
-  const isRTL = language === 'ar';
-  const fontFamily = language === 'ar' ? 'Noto Naskh Arabic, serif' : 'Open Sans, sans-serif';
-
   const displayCountdown = language === 'ar' ? toArabicNumerals(countdown) : countdown;
   const prayerText = language === 'ar' ? `${nextPrayer} بعد` : `${nextPrayer} in`;
 
   return (
     <Paper
-      dir={isRTL ? 'rtl' : 'ltr'}
+      dir={getDirection(language)}
       sx={{
         width: '100%',
         bgcolor: 'background.paper',
@@ -60,7 +53,7 @@ export function CountdownBar({ nextPrayer, nextPrayerTime, language, nextPrayerL
     >
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: { xs: 1, sm: 2 } }}>
         {/* Prayer Info */}
-        <Typography sx={{ color: 'text.primary', fontWeight: 'bold', fontSize: '14px', fontFamily }}>
+        <Typography sx={{ color: 'text.primary', fontWeight: 'bold', fontSize: '14px', fontFamily: getFontFamily(language) }}>
           {prayerText}
         </Typography>
 

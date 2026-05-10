@@ -4,14 +4,14 @@
 
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
-at `specs/002-mui-component-migration/plan.md`.
+at `specs/003-shared-utils-dynamic-data/plan.md`.
 
 ## Project Context
 
 - **App**: Masjid Prayer Time Display — a 24/7 kiosk display for a mosque
 - **Stack**: React 18 + TypeScript (strict) + MUI v7 + Vite + Yarn
-- **Source**: Figma export currently using Tailwind CSS + shadcn/ui (being removed)
-- **Migration target**: MUI v7 only, no Tailwind, no shadcn
+- **Source**: Figma export migrated to MUI v7 (Spec 001–002 complete)
+- **Current focus**: Shared utilities, dynamic prayer data, type safety (Spec 003)
 
 ## Spec Files
 

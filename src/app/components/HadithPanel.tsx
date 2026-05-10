@@ -1,21 +1,17 @@
 import { Language } from "../utils/translations";
+import type { Translations } from '../utils/translations';
 import { Paper, Typography, Box } from '@mui/material';
+import { getFontFamily, getDirection } from '../utils/helpers';
 
 interface HadithPanelProps {
   language: Language;
-  translations: Record<string, string>;
+  translations: Translations;
 }
 
 export function HadithPanel({
   language,
   translations,
 }: HadithPanelProps) {
-  const isRTL = language === "ar";
-  const fontFamily =
-    language === "ar"
-      ? "Noto Naskh Arabic, serif"
-      : "Open Sans, sans-serif";
-
   return (
     <Paper
       sx={{
@@ -32,10 +28,9 @@ export function HadithPanel({
         mt: 0,
         mb: '10px'
       }}
-      dir={isRTL ? "rtl" : "ltr"}
+      dir={getDirection(language)}
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 0.5, lg: 1 } }}>
-        {/* Title - Top Left (Top Right for Arabic) */}
         <Typography
           sx={{
             color: 'primary.main',
@@ -44,13 +39,12 @@ export function HadithPanel({
             fontWeight: 'bold',
             textAlign: 'start',
             fontSize: '10px',
-            fontFamily
+            fontFamily: getFontFamily(language)
           }}
         >
           {translations.hadithOfTheDay}
         </Typography>
 
-        {/* Hadith Text - Center, Full Width */}
         <Typography
           sx={{
             color: 'text.primary',
@@ -59,19 +53,18 @@ export function HadithPanel({
             textAlign: 'center',
             width: '100%',
             fontSize: '24px',
-            fontFamily
+            fontFamily: getFontFamily(language)
           }}
         >
           {translations.hadithText}
         </Typography>
 
-        {/* Source - Bottom Right (Bottom Left for Arabic) */}
         <Typography
           sx={{
             color: 'text.secondary',
             textAlign: 'end',
             fontSize: '11px',
-            fontFamily
+            fontFamily: getFontFamily(language)
           }}
         >
           {translations.hadithSource}
