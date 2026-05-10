@@ -35,35 +35,26 @@
 
 ---
 
-## Phase 3: User Story 1 - Kiosk Recovers Automatically from Errors (Priority: P1)
+## Phase 3: User Stories 1 & 2 — Error Recovery + Local Images Verification (Priority: P1)
 
-**Goal**: Any unhandled JS error shows a branded MUI recovery screen and auto-restores within 5 seconds
+**Goal**: Verify ErrorBoundary auto-recovery and zero network dependency for carousel images
 
-**Independent Test**: Trigger an error from any child component and observe the branded fallback UI appear, then auto-dismiss after 5 seconds
+**Independent Test US1**: Trigger an error from any child component and observe the branded fallback UI appear, then auto-dismiss after 5 seconds
 
-### Implementation for User Story 1
+**Independent Test US2**: Disconnect network and reload page — carousel images must still appear from bundled assets
 
-- [ ] T005 [US1] Verify ErrorBoundary auto-recovery: trigger a test error (e.g., throw from a child component), confirm branded fallback UI appears within 1 frame, confirms auto-recovery after 5 seconds, confirms sequential errors reset timer correctly in `src/app/components/ErrorBoundary.tsx`
+**Note**: US1 implementation was completed in Phase 1 (T001) and Phase 2 (T002). US2 implementation was completed in Phase 2 (T003, T004). This phase verifies both stories work correctly.
 
-**Checkpoint**: User Story 1 fully functional — kiosk never shows a white screen
+### Verification for User Stories 1 & 2
 
----
+- [ ] T005 [P] [US1] Verify ErrorBoundary auto-recovery: trigger a test error (e.g., throw from a child component), confirm branded fallback UI appears within 1 frame, confirms auto-recovery after 5 seconds, confirms sequential errors reset timer correctly in `src/app/components/ErrorBoundary.tsx`
+- [ ] T006 [P] [US2] Verify zero remote image requests: open browser Network tab, confirm zero requests to images.unsplash.com after page load. Confirm carousel transitions are smooth in `src/app/App.tsx`
 
-## Phase 4: User Story 2 - Carousel Images Load Without Network (Priority: P1)
-
-**Goal**: Background carousel images always appear instantly regardless of network conditions
-
-**Independent Test**: Disconnect network and reload page — carousel images must still appear from bundled assets
-
-### Implementation for User Story 2
-
-- [ ] T006 [US2] Verify zero remote image requests: open browser Network tab, confirm zero requests to images.unsplash.com after page load. Confirm carousel transitions are smooth in `src/app/App.tsx`
-
-**Checkpoint**: User Story 2 fully functional — zero network dependency for carousel images
+**Checkpoint**: User Stories 1 & 2 fully functional — kiosk never shows a white screen and carousel loads without network
 
 ---
 
-## Phase 5: User Story 3 - Screen Reader Users Can Access Prayer Times (Priority: P1)
+## Phase 4: User Story 3 - Screen Reader Users Can Access Prayer Times (Priority: P1)
 
 **Goal**: Countdown timer, announcements ticker, and all interactive controls are announced clearly without flooding assistive technology
 
@@ -71,17 +62,17 @@
 
 ### Implementation for User Story 3
 
-- [ ] T007 [P] [US3] Update `src/app/components/CountdownBar.tsx`: add `aria-live="polite"` and `aria-atomic="true"` on the countdown container. Add a visually-hidden `<span>` (sr-only) containing the accessible announcement text. Use `useRef` to track last announced minute — only update the sr-only text when the minute value changes (not every second)
+- [ ] T007 [P] [US3] Update `src/app/components/CountdownBar.tsx`: add `aria-live="polite"` and `aria-atomic="true"` on the countdown container. Add a visually-hidden `<span>` (sr-only) containing the accessible announcement text. Use `useRef` to track last announced minute — only update the sr-only text when the minute value changes. The existing visual countdown (driven by useClock, updates every second via parent re-render) remains unchanged (FR-006: preserved behavior)
 - [ ] T008 [P] [US3] Update `src/app/components/AnnouncementsTicker.tsx`: add `role="status"` and `aria-live="polite"` on the root Paper component. Add `aria-label` with announcements description on root. Add `role="marquee"` on the scrolling Box element (the one with `ref={scrollRef}`)
 - [ ] T009 [P] [US3] Update `src/app/components/Header.tsx`: add `aria-label="Switch to Arabic"` / `aria-label="Switch to English"` on the language toggle button (condition on language state). Add `aria-label={translations.donate}` on the donate button. Add `aria-label={eventMode ? translations.exitEvent : translations.comingEvent}` on the event mode button. Add `role="timer"` and `aria-live="polite"` and `aria-atomic="true"` on the clock Typography element
-- [ ] T010 [P] [US3] Add `prefers-reduced-motion` support in `src/app/App.tsx`: import `useTheme` from `@mui/material/styles` and `useMediaQuery` from `@mui/material/useMediaQuery`. Call `const prefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)")`. Pass as `transition={{ duration: prefersReducedMotion ? 0 : 0.3 }}` on all `motion.div` and `AnimatePresence` components
+- [ ] T010 [P] [US3] Add `prefers-reduced-motion` support in `src/app/App.tsx`: import `useTheme` from `@mui/material/styles` and `useMediaQuery` from `@mui/material/useMediaQuery`. Call `const prefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)")`. When `prefersReducedMotion` is true, set `transition={{ duration: 0 }}` on all `motion.div` and `AnimatePresence` components. When false, preserve existing animation behavior unchanged
 - [ ] T011 [US3] Verify accessibility: open browser DevTools Accessibility panel, confirm all icon-only buttons have accessible labels, confirm live regions are present on CountdownBar and AnnouncementsTicker, confirm reduced-motion works via OS accessibility settings
 
 **Checkpoint**: User Story 3 fully functional — screen reader users can access all content
 
 ---
 
-## Phase 6: User Story 4 - Keyboard Users Can Navigate Fundraising Overlay (Priority: P2)
+## Phase 5: User Story 4 - Keyboard Users Can Navigate FundraisingOverlay (Priority: P2)
 
 **Goal**: Tab/Shift+Tab cycles within the overlay; Escape closes it; focus never escapes to the page behind
 
@@ -89,14 +80,14 @@
 
 ### Implementation for User Story 4
 
-- [ ] T012 [US4] Update `src/app/components/FundraisingOverlay.tsx`: add `role="dialog"`, `aria-modal="true"`, and `aria-label="Close fundraising overlay"` on the root overlay container. Add keyboard focus trap via `useEffect` + `addEventListener("keydown")` on document: Tab cycles forward through focusable elements (selector: `'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'`), Shift+Tab cycles backward with wrapping, Escape calls onClose. Auto-focus first focusable element on mount via `useRef` + `.focus()`. Clean up event listener in effect return
+- [ ] T012 [US4] Update `src/app/components/FundraisingOverlay.tsx` (covers FR-010, FR-011, FR-012): add `role="dialog"`, `aria-modal="true"`, and `aria-label="Close fundraising overlay"` on the root overlay container (FR-012). Add keyboard focus trap via `useEffect` + `addEventListener("keydown")` on document: Tab cycles forward through focusable elements (selector: `'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'`), Shift+Tab cycles backward with wrapping, Escape calls onClose (FR-010). Auto-focus first focusable element on mount via `useRef` + `.focus()` (FR-011). Clean up event listener in effect return
 - [ ] T013 [US4] Verify focus trap: open fundraising overlay, press Tab multiple times — focus cycles within overlay without escaping. Shift+Tab cycles backward. Escape closes overlay. Focus auto-moves to first element on mount
 
 **Checkpoint**: User Story 4 fully functional — keyboard users can fully navigate the overlay
 
 ---
 
-## Phase 7: User Story 5 - Kiosk Operates Offline with Cached Assets (Priority: P3, Optional)
+## Phase 6: User Story 5 - Kiosk Operates Offline with Cached Assets (Priority: P3, Optional)
 
 **Goal**: Kiosk display continues to function when internet connection drops by serving cached static assets
 
@@ -113,13 +104,13 @@
 
 ---
 
-## Phase 8: Verification (Cross-Cutting)
+## Phase 7: Verification (Cross-Cutting)
 
 **Purpose**: Final validation across all user stories
 
-- [ ] T018 Run `yarn build` — must exit with code 0 and zero errors
+- [ ] T018 Run `yarn build` — must exit with code 0 and zero errors (implicitly verifies FR-016: no new external dependencies)
 - [ ] T019 Verify no remote image URLs remain: `grep -r "unsplash" src/` — must return 0 matches
-- [ ] T020 Verify no `any` types in new code: `grep -r "any" src/app/components/ErrorBoundary.tsx` — must return 0 matches
+- [ ] T020 Verify no `any` types in new code: `grep -r "any" src/app/components/ErrorBoundary.tsx` — must return 0 matches (FR-016: type safety compliance)
 - [ ] T021 Manual visual verification: ErrorBoundary fallback, aria attributes on all components, focus trap on FundraisingOverlay, reduced-motion support, offline indicator (if SW enabled)
 
 ---
@@ -130,12 +121,11 @@
 
 - **Phase 1 (Setup)**: No dependencies — can start immediately
 - **Phase 2 (Foundation)**: T002 depends on T001; T004 depends on T003
-- **Phase 3 (US1)**: Depends on T001 + T002 (ErrorBoundary wired into app)
-- **Phase 4 (US2)**: Depends on T003 + T004 (local images in place)
-- **Phase 5 (US3)**: No dependencies on other stories — can start immediately after Phase 2
-- **Phase 6 (US4)**: No dependencies on other stories — can start immediately after Phase 2
-- **Phase 7 (US5)**: Depends on T002 (SW registration goes in main.tsx). Optional — can be skipped
-- **Phase 8 (Verification)**: Depends on all implemented stories
+- **Phase 3 (US1 + US2 verification)**: Depends on T001–T004 (ErrorBoundary wired + local images in place)
+- **Phase 4 (US3)**: No dependencies on other stories — can start immediately after Phase 2
+- **Phase 5 (US4)**: No dependencies on other stories — can start immediately after Phase 2
+- **Phase 6 (US5)**: Depends on T002 (SW registration goes in main.tsx). Optional — can be skipped
+- **Phase 7 (Verification)**: Depends on all implemented stories
 
 ### User Story Dependencies
 
@@ -173,7 +163,7 @@ T021 [P] ──┘
 
 ---
 
-## Parallel Example: Phase 5 (US3 Accessibility)
+## Parallel Example: Phase 4 (US3 Accessibility)
 
 ```bash
 # Launch all accessibility tasks together (different component files):
@@ -192,9 +182,8 @@ Task: "T012 — focus trap on FundraisingOverlay.tsx (US4)"
 
 1. Complete Phase 1: T001 (ErrorBoundary)
 2. Complete Phase 2: T002, T003, T004 (wire boundary + local images)
-3. Complete Phase 3: T005 (verify US1)
-4. Complete Phase 4: T006 (verify US2)
-5. **STOP and VALIDATE**: `yarn build` passes, no white screen on error, carousel loads without network
+3. Complete Phase 3: T005 + T006 (verify US1 + US2)
+4. **STOP and VALIDATE**: `yarn build` passes, no white screen on error, carousel loads without network
 
 ### Incremental Delivery
 
