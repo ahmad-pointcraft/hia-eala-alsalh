@@ -17,7 +17,7 @@
 
 **Purpose**: Create the ErrorBoundary component — the foundational safety net for the entire application
 
-- [ ] T001 [US1] Create ErrorBoundary class component in `src/app/components/ErrorBoundary.tsx`: getDerivedStateFromError (sets hasError: true), componentDidCatch (console.error + schedules 5s auto-recovery via setTimeout), componentWillUnmount (clears recovery timer), MUI-branded fallback UI (Box, Typography, CircularProgress with sx prop). Props: { children: ReactNode }. State: { hasError: boolean, error: Error | null }. Reset method clears state to recover.
+- [x] T001 [US1] Create ErrorBoundary class component in `src/app/components/ErrorBoundary.tsx`: getDerivedStateFromError (sets hasError: true), componentDidCatch (console.error + schedules 5s auto-recovery via setTimeout), componentWillUnmount (clears recovery timer), MUI-branded fallback UI (Box, Typography, CircularProgress with sx prop). Props: { children: ReactNode }. State: { hasError: boolean, error: Error | null }. Reset method clears state to recover.
 
 ---
 
