@@ -27,9 +27,9 @@
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T002 [US1] Update `src/main.tsx`: import ErrorBoundary from "./app/components/ErrorBoundary", wrap `<ThemeProviderWrapper><App /></ThemeProviderWrapper>` in `<ErrorBoundary>`
-- [ ] T003 [P] Download 3 Unsplash mosque images to `src/imports/mosque-1.jpg`, `src/imports/mosque-2.jpg`, `src/imports/mosque-3.jpg` (replace photo-1564769625905, photo-1591604466107, photo-1542816417 from App.tsx lines 30–32). Each compressed to <200KB
-- [ ] T004 [US2] Update `src/app/App.tsx`: import mosque1 from "../imports/mosque-1.jpg", mosque2 from "../imports/mosque-2.jpg", mosque3 from "../imports/mosque-3.jpg". Replace carouselImages array (lines 29–33) with `[mosque1, mosque2, mosque3]`
+- [x] T002 [US1] Update `src/main.tsx`: import ErrorBoundary from "./app/components/ErrorBoundary", wrap `<ThemeProviderWrapper><App /></ThemeProviderWrapper>` in `<ErrorBoundary>`
+- [x] T003 [P] Download 3 Unsplash mosque images to `src/imports/mosque-1.jpg`, `src/imports/mosque-2.jpg`, `src/imports/mosque-3.jpg` (replace photo-1564769625905, photo-1591604466107, photo-1542816417 from App.tsx lines 30–32). Each compressed to <200KB
+- [x] T004 [US2] Update `src/app/App.tsx`: import mosque1 from "../imports/mosque-1.jpg", mosque2 from "../imports/mosque-2.jpg", mosque3 from "../imports/mosque-3.jpg". Replace carouselImages array (lines 29–33) with `[mosque1, mosque2, mosque3]`
 
 **Checkpoint**: ErrorBoundary wraps the app; carousel images are local. `yarn build` should pass.
 

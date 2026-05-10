@@ -1,5 +1,6 @@
 import { createRoot } from "react-dom/client";
 import ThemeProviderWrapper from "./app/theme/ThemeProviderWrapper";
+import { ErrorBoundary } from "./app/components/ErrorBoundary";
 import App from "./app/App";
 
 const rootElement = document.getElementById("root");
@@ -10,7 +11,9 @@ if (!rootElement) {
 }
 
 createRoot(rootElement).render(
-  <ThemeProviderWrapper>
-    <App />
-  </ThemeProviderWrapper>
+  <ErrorBoundary>
+    <ThemeProviderWrapper>
+      <App />
+    </ThemeProviderWrapper>
+  </ErrorBoundary>
 );

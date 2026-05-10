@@ -18,6 +18,9 @@ import { translations, Language } from "./utils/translations";
 import { getCurrentPrayer, getNextPrayer, getTimeToNextPrayer } from "./utils/prayerTimes";
 import type { PrayerTime } from "./utils/prayerTimes";
 import { useClock } from "./utils/useClock";
+import mosque1 from "../imports/mosque-1.jpg";
+import mosque2 from "../imports/mosque-2.jpg";
+import mosque3 from "../imports/mosque-3.jpg";
 
 export default function App() {
   const [showFundraising, setShowFundraising] = useState(false);
@@ -26,11 +29,7 @@ export default function App() {
   const { currentTime } = useClock();
   const fundraisingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const carouselImages = [
-    "https://images.unsplash.com/photo-1564769625905-50e93615e769?w=800&h=600&fit=crop",
-    "https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=800&h=600&fit=crop",
-    "https://images.unsplash.com/photo-1542816417-0983c9c9ad53?w=800&h=600&fit=crop",
-  ];
+  const carouselImages = [mosque1, mosque2, mosque3];
 
   const t = translations[language];
 
