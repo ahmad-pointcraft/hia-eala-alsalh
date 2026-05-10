@@ -31,10 +31,13 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
     const container = containerRef.current;
     if (!container) return;
 
-    const focusables = container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
-    if (focusables.length > 0) {
-      focusables[0].focus();
-    }
+    const id = setTimeout(() => {
+      const focusables = container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
+      if (focusables.length > 0) {
+        focusables[0].focus();
+      }
+    }, 50);
+    return () => clearTimeout(id);
   }, []);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -50,18 +53,32 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
     if (!container) return;
 
     const focusables = container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
-    if (focusables.length === 0) return;
+    if (focusables.length === 0) {
+      e.preventDefault();
+      return;
+    }
 
     const first = focusables[0];
     const last = focusables[focusables.length - 1];
+    const activeInDialog = container.contains(document.activeElement);
+
+    if (!activeInDialog) {
+      e.preventDefault();
+      if (e.shiftKey) {
+        last.focus();
+      } else {
+        first.focus();
+      }
+      return;
+    }
 
     if (e.shiftKey) {
-      if (document.activeElement === first) {
+      if (document.activeElement === first || first === last) {
         e.preventDefault();
         last.focus();
       }
     } else {
-      if (document.activeElement === last) {
+      if (document.activeElement === last || first === last) {
         e.preventDefault();
         first.focus();
       }
@@ -97,6 +114,7 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
   const progress = (collected / goal) * 100;
 
   const isRTL = language === 'ar';
+  const fontFamily = getFontFamily(language);
 
   const displayCollected = language === 'ar' ? toArabicNumerals(collected.toLocaleString()) : collected.toLocaleString();
   const displayGoal = language === 'ar' ? toArabicNumerals(goal.toLocaleString()) : goal.toLocaleString();

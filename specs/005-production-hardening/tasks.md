@@ -47,8 +47,8 @@
 
 ### Verification for User Stories 1 & 2
 
-- [ ] T005 [P] [US1] Verify ErrorBoundary auto-recovery: trigger a test error (e.g., throw from a child component), confirm branded fallback UI appears within 1 frame, confirms auto-recovery after 5 seconds, confirms sequential errors reset timer correctly in `src/app/components/ErrorBoundary.tsx`
-- [ ] T006 [P] [US2] Verify zero remote image requests: open browser Network tab, confirm zero requests to images.unsplash.com after page load. Confirm carousel transitions are smooth in `src/app/App.tsx`
+- [x] T005 [P] [US1] Verify ErrorBoundary auto-recovery: trigger a test error (e.g., throw from a child component), confirm branded fallback UI appears within 1 frame, confirms auto-recovery after 5 seconds, confirms sequential errors reset timer correctly in `src/app/components/ErrorBoundary.tsx`
+- [x] T006 [P] [US2] Verify zero remote image requests: open browser Network tab, confirm zero requests to images.unsplash.com after page load. Confirm carousel transitions are smooth in `src/app/App.tsx`
 
 **Checkpoint**: User Stories 1 & 2 fully functional — kiosk never shows a white screen and carousel loads without network
 
@@ -66,7 +66,7 @@
 - [x] T008 [P] [US3] Update `src/app/components/AnnouncementsTicker.tsx`: add `role="status"` and `aria-live="polite"` on the root Paper component. Add `aria-label` with announcements description on root. Add `role="marquee"` on the scrolling Box element (the one with `ref={scrollRef}`)
 - [x] T009 [P] [US3] Update `src/app/components/Header.tsx`: add `aria-label="Switch to Arabic"` / `aria-label="Switch to English"` on the language toggle button (condition on language state). Add `aria-label={translations.donate}` on the donate button. Add `aria-label={eventMode ? translations.exitEvent : translations.comingEvent}` on the event mode button. Add `role="timer"` and `aria-live="polite"` and `aria-atomic="true"` on the clock Typography element
 - [x] T010 [P] [US3] Add `prefers-reduced-motion` support in `src/app/App.tsx`: import `useTheme` from `@mui/material/styles` and `useMediaQuery` from `@mui/material/useMediaQuery`. Call `const prefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)")`. When `prefersReducedMotion` is true, set `transition={{ duration: 0 }}` on all `motion.div` and `AnimatePresence` components. When false, preserve existing animation behavior unchanged
-- [ ] T011 [US3] Verify accessibility: open browser DevTools Accessibility panel, confirm all icon-only buttons have accessible labels, confirm live regions are present on CountdownBar and AnnouncementsTicker, confirm reduced-motion works via OS accessibility settings
+- [x] T011 [US3] Verify accessibility: open browser DevTools Accessibility panel, confirm all icon-only buttons have accessible labels, confirm live regions are present on CountdownBar and AnnouncementsTicker, confirm reduced-motion works via OS accessibility settings
 
 **Checkpoint**: User Story 3 fully functional — screen reader users can access all content
 
@@ -81,7 +81,7 @@
 ### Implementation for User Story 4
 
 - [x] T012 [US4] Update `src/app/components/FundraisingOverlay.tsx` (covers FR-010, FR-011, FR-012): add `role="dialog"`, `aria-modal="true"`, and `aria-label="Close fundraising overlay"` on the root overlay container (FR-012). Add keyboard focus trap via `useEffect` + `addEventListener("keydown")` on document: Tab cycles forward through focusable elements (selector: `'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'`), Shift+Tab cycles backward with wrapping, Escape calls onClose (FR-010). Auto-focus first focusable element on mount via `useRef` + `.focus()` (FR-011). Clean up event listener in effect return
-- [ ] T013 [US4] Verify focus trap: open fundraising overlay, press Tab multiple times — focus cycles within overlay without escaping. Shift+Tab cycles backward. Escape closes overlay. Focus auto-moves to first element on mount
+- [x] T013 [US4] Verify focus trap: open fundraising overlay, press Tab multiple times — focus cycles within overlay without escaping. Shift+Tab cycles backward. Escape closes overlay. Focus auto-moves to first element on mount
 
 **Checkpoint**: User Story 4 fully functional — keyboard users can fully navigate the overlay
 
