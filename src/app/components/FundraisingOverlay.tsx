@@ -113,7 +113,6 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
   const donors = 243;
   const progress = (collected / goal) * 100;
 
-  const isRTL = language === 'ar';
   const fontFamily = getFontFamily(language);
 
   const displayCollected = language === 'ar' ? toArabicNumerals(collected.toLocaleString()) : collected.toLocaleString();

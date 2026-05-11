@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { Language } from '../utils/translations';
 import { Paper, Box, Typography } from '@mui/material';
 import { toArabicNumerals, getFontFamily, getDirection } from '../utils/helpers';
@@ -12,6 +12,7 @@ interface CountdownBarProps {
 
 export function CountdownBar({ nextPrayer, nextPrayerTime, language, currentTime }: CountdownBarProps) {
   const lastAnnouncedMinute = useRef<number>(-1);
+  const pendingAnnouncement = useRef<string | undefined>(undefined);
 
   const [hours, minutes] = nextPrayerTime.split(':').map(Number);
   const target = new Date(currentTime);
@@ -31,15 +32,16 @@ export function CountdownBar({ nextPrayer, nextPrayerTime, language, currentTime
   const prayerText = language === 'ar' ? `${nextPrayer} بعد` : `${nextPrayer} in`;
 
   const currentMinute = m;
-  const shouldAnnounce = currentMinute !== lastAnnouncedMinute.current;
-  if (shouldAnnounce) {
-    lastAnnouncedMinute.current = currentMinute;
-  }
-  const announcementText = shouldAnnounce
-    ? language === 'ar'
-      ? `${nextPrayer} ${toArabicNumerals(countdown)}`
-      : `${nextPrayer} in ${countdown}`
-    : undefined;
+  useEffect(() => {
+    if (currentMinute !== lastAnnouncedMinute.current) {
+      lastAnnouncedMinute.current = currentMinute;
+      pendingAnnouncement.current = language === 'ar'
+        ? `${nextPrayer} ${toArabicNumerals(countdown)}`
+        : `${nextPrayer} in ${countdown}`;
+    } else {
+      pendingAnnouncement.current = undefined;
+    }
+  });
 
   return (
     <Paper
@@ -65,7 +67,7 @@ export function CountdownBar({ nextPrayer, nextPrayerTime, language, currentTime
           {displayCountdown}
         </Typography>
       </Box>
-      {announcementText !== undefined && (
+      {pendingAnnouncement.current !== undefined && (
         <Box
           component="span"
           role="status"
@@ -83,7 +85,7 @@ export function CountdownBar({ nextPrayer, nextPrayerTime, language, currentTime
             borderWidth: 0,
           }}
         >
-          {announcementText}
+          {pendingAnnouncement.current}
         </Box>
       )}
     </Paper>
