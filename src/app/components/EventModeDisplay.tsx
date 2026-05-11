@@ -12,6 +12,7 @@ import Groups from '@mui/icons-material/Groups';
 import { Language } from '../utils/translations';
 import type { Translations } from '../utils/translations';
 import { getFontFamily, getDirection } from '../utils/helpers';
+import { colors } from '../theme/tokens';
 
 interface EventModeDisplayProps {
   language: Language;
@@ -39,13 +40,13 @@ export function EventModeDisplay({ language, translations }: EventModeDisplayPro
         transition={{ duration: 0.6, ease: 'easeInOut' }}
         style={{ position: 'relative', maxWidth: '1152px', width: '100%' }}
       >
-        <Box sx={{ position: 'absolute', inset: -1, background: 'linear-gradient(to right, #D4AF37, #FFD700, #D4AF37)', borderRadius: 3, opacity: 0.3, filter: 'blur(20px)' }} />
+        <Box sx={{ position: 'absolute', inset: -1, background: `linear-gradient(to right, ${colors.gold.main}, ${colors.gold.light}, ${colors.gold.main})`, borderRadius: 3, opacity: 0.3, filter: 'blur(20px)' }} />
 
-        <Paper sx={{ position: 'relative', bgcolor: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(16px)', borderTop: '2px solid rgba(212,175,55,0.5)', borderBottom: '2px solid rgba(212,175,55,0.5)', borderRadius: 3, p: { xs: 2, sm: 3, lg: 4 } }}>
-          <Box sx={{ display: { xs: 'none', sm: 'block' }, position: 'absolute', top: 16, left: 16, width: 48, height: 48, borderTop: '2px solid rgba(212,175,55,0.4)' }} />
-          <Box sx={{ display: { xs: 'none', sm: 'block' }, position: 'absolute', top: 16, right: 16, width: 48, height: 48, borderTop: '2px solid rgba(212,175,55,0.4)' }} />
-          <Box sx={{ display: { xs: 'none', sm: 'block' }, position: 'absolute', bottom: 16, left: 16, width: 48, height: 48, borderBottom: '2px solid rgba(212,175,55,0.4)' }} />
-          <Box sx={{ display: { xs: 'none', sm: 'block' }, position: 'absolute', bottom: 16, right: 16, width: 48, height: 48, borderBottom: '2px solid rgba(212,175,55,0.4)' }} />
+        <Paper sx={{ position: 'relative', bgcolor: 'surface.deep', backdropFilter: 'blur(16px)', borderTop: '2px solid', borderTopColor: 'border.prominent', borderBottom: '2px solid', borderBottomColor: 'border.prominent', borderRadius: 3, p: { xs: 2, sm: 3, lg: 4 } }}>
+          <Box sx={{ display: { xs: 'none', sm: 'block' }, position: 'absolute', top: 16, left: 16, width: 48, height: 48, borderTop: '2px solid', borderTopColor: 'border.strong' }} />
+          <Box sx={{ display: { xs: 'none', sm: 'block' }, position: 'absolute', top: 16, right: 16, width: 48, height: 48, borderTop: '2px solid', borderTopColor: 'border.strong' }} />
+          <Box sx={{ display: { xs: 'none', sm: 'block' }, position: 'absolute', bottom: 16, left: 16, width: 48, height: 48, borderBottom: '2px solid', borderBottomColor: 'border.strong' }} />
+          <Box sx={{ display: { xs: 'none', sm: 'block' }, position: 'absolute', bottom: 16, right: 16, width: 48, height: 48, borderBottom: '2px solid', borderBottomColor: 'border.strong' }} />
 
           <motion.div
             initial={{ y: -20, opacity: 0 }}
@@ -56,9 +57,9 @@ export function EventModeDisplay({ language, translations }: EventModeDisplayPro
             <Chip
               label={translations.event.badge}
               sx={{
-                bgcolor: 'rgba(212,175,55,0.2)',
+                bgcolor: 'border.default',
                 color: 'primary.main',
-                borderColor: 'rgba(212,175,55,0.5)',
+                borderColor: 'border.prominent',
                 fontSize: { xs: '0.75rem', sm: '0.875rem' },
                 fontWeight: 'bold',
                 textTransform: 'uppercase',
@@ -98,7 +99,7 @@ export function EventModeDisplay({ language, translations }: EventModeDisplayPro
                 { icon: <LocationOn />, label: translations.event.location, value: translations.event.locationValue, sub: translations.event.floor },
               ].map((item, idx) => (
                 <Grid key={idx} size={4}>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: { xs: 1.5, sm: 2 }, bgcolor: 'rgba(0,0,0,0.4)', borderRadius: 1, border: '1px solid rgba(212,175,55,0.2)' }}>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', p: { xs: 1.5, sm: 2 }, bgcolor: 'surface.raised', borderRadius: 1, border: '1px solid', borderColor: 'border.default' }}>
                     <Box sx={{ color: 'primary.main', mb: { xs: 0.5, sm: 1 }, '& svg': { width: { xs: 24, sm: 32 }, height: { xs: 24, sm: 32 } } }}>
                       {item.icon}
                     </Box>
@@ -116,7 +117,7 @@ export function EventModeDisplay({ language, translations }: EventModeDisplayPro
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.7 }}
           >
-            <Paper sx={{ bgcolor: 'rgba(0,0,0,0.3)', borderRadius: 1, p: { xs: 1.5, sm: 2.5, lg: 3 }, border: '1px solid rgba(212,175,55,0.2)', mb: { xs: 2, sm: 2.5 } }}>
+            <Paper sx={{ bgcolor: 'surface.overlay', borderRadius: 1, p: { xs: 1.5, sm: 2.5, lg: 3 }, border: '1px solid', borderColor: 'border.default', mb: { xs: 2, sm: 2.5 } }}>
               <Typography sx={{ color: 'grey.300', fontSize: { xs: '0.75rem', sm: '0.875rem', lg: '1rem' }, lineHeight: 1.625, textAlign: 'center', fontFamily }}>
                 {translations.event.description}
               </Typography>
@@ -136,14 +137,14 @@ export function EventModeDisplay({ language, translations }: EventModeDisplayPro
               <Button
                 startIcon={<Groups />}
                 sx={{
-                  background: 'linear-gradient(to right, #D4AF37, #FFD700)',
+                  background: `linear-gradient(to right, ${colors.gold.main}, ${colors.gold.light})`,
                   borderRadius: 50,
-                  color: 'black',
+                  color: colors.text.onGold,
                   fontWeight: 'bold',
                   fontSize: { xs: '0.875rem', sm: '1rem', lg: '1.125rem' },
                   px: { xs: 3, sm: 4 },
                   py: { xs: 1.5, sm: 2 },
-                  boxShadow: '0 0 30px rgba(212,175,55,0.5)',
+                  boxShadow: `0 0 30px ${colors.glow.medium}`,
                   textTransform: 'none',
                   fontFamily,
                 }}
@@ -166,7 +167,7 @@ export function EventModeDisplay({ language, translations }: EventModeDisplayPro
                 transform: 'translateX(-50%)',
                 width: '150%',
                 height: '100%',
-                background: 'radial-gradient(ellipse at top, rgba(212, 175, 55, 0.15) 0%, transparent 60%)',
+                background: `radial-gradient(ellipse at top, ${colors.border.light} 0%, transparent 60%)`,
               }}
             />
           </motion.div>
