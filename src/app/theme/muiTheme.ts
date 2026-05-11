@@ -240,10 +240,9 @@ muiTheme.palette.gold = colors.gold;
 muiTheme.palette.surface = colors.surface;
 muiTheme.palette.border = colors.border;
 muiTheme.palette.glow = colors.glow;
-muiTheme.palette.text = {
-  ...muiTheme.palette.text,
+Object.assign(muiTheme.palette.text, {
   whiteMuted: colors.text.whiteMuted,
   whiteSoft: colors.text.whiteSoft,
-};
+});
 
 export default muiTheme;

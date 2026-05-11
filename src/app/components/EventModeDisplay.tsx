@@ -20,7 +20,6 @@ interface EventModeDisplayProps {
 }
 
 export function EventModeDisplay({ language, translations }: EventModeDisplayProps) {
-  const isRTL = language === 'ar';
   const dir = getDirection(language);
   const fontFamily = getFontFamily(language);
 
