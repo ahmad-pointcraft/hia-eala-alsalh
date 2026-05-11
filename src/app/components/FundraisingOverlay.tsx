@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import Backdrop from '@mui/material/Backdrop';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
@@ -10,6 +10,8 @@ import { Language } from '../utils/translations';
 import type { Translations } from '../utils/translations';
 import { toArabicNumerals, getFontFamily, getDirection } from '../utils/helpers';
 
+const FOCUSABLE_SELECTOR = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
 interface FundraisingOverlayProps {
   onClose: () => void;
   language: Language;
@@ -18,6 +20,80 @@ interface FundraisingOverlayProps {
 
 export function FundraisingOverlay({ onClose, language, translations }: FundraisingOverlayProps) {
   const [countdown, setCountdown] = useState(10);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const previouslyFocusedRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    previouslyFocusedRef.current = document.activeElement as HTMLElement;
+  }, []);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const id = setTimeout(() => {
+      const focusables = container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
+      if (focusables.length > 0) {
+        focusables[0].focus();
+      }
+    }, 50);
+    return () => clearTimeout(id);
+  }, []);
+
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      onClose();
+      return;
+    }
+
+    if (e.key !== 'Tab') return;
+
+    const container = containerRef.current;
+    if (!container) return;
+
+    const focusables = container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
+    if (focusables.length === 0) {
+      e.preventDefault();
+      return;
+    }
+
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    const activeInDialog = container.contains(document.activeElement);
+
+    if (!activeInDialog) {
+      e.preventDefault();
+      if (e.shiftKey) {
+        last.focus();
+      } else {
+        first.focus();
+      }
+      return;
+    }
+
+    if (e.shiftKey) {
+      if (document.activeElement === first || first === last) {
+        e.preventDefault();
+        last.focus();
+      }
+    } else {
+      if (document.activeElement === last || first === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  }, [onClose]);
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      if (previouslyFocusedRef.current) {
+        previouslyFocusedRef.current.focus();
+      }
+    };
+  }, [handleKeyDown]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -37,7 +113,7 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
   const donors = 243;
   const progress = (collected / goal) * 100;
 
-  const isRTL = language === 'ar';
+  const fontFamily = getFontFamily(language);
 
   const displayCollected = language === 'ar' ? toArabicNumerals(collected.toLocaleString()) : collected.toLocaleString();
   const displayGoal = language === 'ar' ? toArabicNumerals(goal.toLocaleString()) : goal.toLocaleString();
@@ -54,6 +130,10 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
       sx={{ bgcolor: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(8px)', zIndex: 50 }}
     >
       <Paper
+        ref={containerRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={language === 'ar' ? 'لوحة جمع التبرعات' : 'Fundraising overlay'}
         sx={{
           bgcolor: 'rgba(0,0,0,0.6)',
           backdropFilter: 'blur(16px)',
@@ -71,6 +151,7 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
 
         <IconButton
           onClick={onClose}
+          aria-label={language === 'ar' ? 'إغلاق' : 'Close'}
           sx={{ position: 'absolute', top: 16, insetInlineEnd: 16, color: 'grey.400', '&:hover': { color: 'text.primary' } }}
         >
           <Close />

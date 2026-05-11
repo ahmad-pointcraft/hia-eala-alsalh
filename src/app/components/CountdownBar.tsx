@@ -1,3 +1,4 @@
+import { useRef, useEffect } from 'react';
 import { Language } from '../utils/translations';
 import { Paper, Box, Typography } from '@mui/material';
 import { toArabicNumerals, getFontFamily, getDirection } from '../utils/helpers';
@@ -10,6 +11,9 @@ interface CountdownBarProps {
 }
 
 export function CountdownBar({ nextPrayer, nextPrayerTime, language, currentTime }: CountdownBarProps) {
+  const lastAnnouncedMinute = useRef<number>(-1);
+  const pendingAnnouncement = useRef<string | undefined>(undefined);
+
   const [hours, minutes] = nextPrayerTime.split(':').map(Number);
   const target = new Date(currentTime);
   target.setHours(hours, minutes, 0, 0);
@@ -27,9 +31,22 @@ export function CountdownBar({ nextPrayer, nextPrayerTime, language, currentTime
   const displayCountdown = language === 'ar' ? toArabicNumerals(countdown) : countdown;
   const prayerText = language === 'ar' ? `${nextPrayer} بعد` : `${nextPrayer} in`;
 
+  const currentMinute = m;
+  useEffect(() => {
+    if (currentMinute !== lastAnnouncedMinute.current) {
+      lastAnnouncedMinute.current = currentMinute;
+      pendingAnnouncement.current = language === 'ar'
+        ? `${nextPrayer} ${toArabicNumerals(countdown)}`
+        : `${nextPrayer} in ${countdown}`;
+    } else {
+      pendingAnnouncement.current = undefined;
+    }
+  });
+
   return (
     <Paper
       dir={getDirection(language)}
+      role="timer"
       sx={{
         width: '100%',
         bgcolor: 'background.paper',
@@ -37,7 +54,8 @@ export function CountdownBar({ nextPrayer, nextPrayerTime, language, currentTime
         border: '1px solid',
         borderColor: 'rgba(212,175,55,0.3)',
         borderRadius: 2,
-        p: { xs: 1, sm: 1.5, lg: 2 }
+        p: { xs: 1, sm: 1.5, lg: 2 },
+        position: 'relative',
       }}
     >
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: { xs: 1, sm: 2 } }}>
@@ -49,6 +67,27 @@ export function CountdownBar({ nextPrayer, nextPrayerTime, language, currentTime
           {displayCountdown}
         </Typography>
       </Box>
+      {pendingAnnouncement.current !== undefined && (
+        <Box
+          component="span"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          sx={{
+            position: 'absolute',
+            width: 1,
+            height: 1,
+            padding: 0,
+            margin: -1,
+            overflow: 'hidden',
+            clip: 'rect(0, 0, 0, 0)',
+            whiteSpace: 'nowrap',
+            borderWidth: 0,
+          }}
+        >
+          {pendingAnnouncement.current}
+        </Box>
+      )}
     </Paper>
   );
 }

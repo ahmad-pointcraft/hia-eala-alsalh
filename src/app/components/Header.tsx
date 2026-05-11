@@ -1,9 +1,10 @@
+import { useState, useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { Languages, Heart, CalendarClock } from 'lucide-react';
+import { Languages, Heart, CalendarClock, WifiOff } from 'lucide-react';
 import { Language } from '../utils/translations';
 import type { Translations } from '../utils/translations';
 import { getFontFamily, getDirection } from '../utils/helpers';
@@ -19,6 +20,18 @@ interface HeaderProps {
 }
 
 export function Header({ eventMode, onToggleEventMode, language, onToggleLanguage, onShowFundraising, translations, currentTime }: HeaderProps) {
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+
+  useEffect(() => {
+    const goOffline = () => setIsOffline(true);
+    const goOnline = () => setIsOffline(false);
+    window.addEventListener('offline', goOffline);
+    window.addEventListener('online', goOnline);
+    return () => {
+      window.removeEventListener('offline', goOffline);
+      window.removeEventListener('online', goOnline);
+    };
+  }, []);
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString('en-US', {
       hour: '2-digit',
@@ -43,6 +56,7 @@ export function Header({ eventMode, onToggleEventMode, language, onToggleLanguag
         <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-start' }}>
           <Button
             onClick={onToggleLanguage}
+            aria-label={language === 'en' ? 'Switch to Arabic' : 'Switch to English'}
             startIcon={<Languages style={{ width: 16, height: 16 }} />}
             sx={{
               display: 'flex',
@@ -75,8 +89,10 @@ export function Header({ eventMode, onToggleEventMode, language, onToggleLanguag
           </Button>
         </Box>
 
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1 }}>
           <Typography
+            role="timer"
+            aria-label={language === 'en' ? 'Current time' : 'الوقت الحالي'}
             sx={{
               color: 'text.primary',
               fontFamily: 'monospace',
@@ -87,12 +103,23 @@ export function Header({ eventMode, onToggleEventMode, language, onToggleLanguag
           >
             {formatTime(currentTime)}
           </Typography>
+          {isOffline && (
+            <Box
+              component="span"
+              role="status"
+              aria-label={language === 'en' ? 'Offline — no internet connection' : 'غير متصل — لا يوجد اتصال بالإنترنت'}
+              sx={{ display: 'flex', alignItems: 'center', color: 'grey.500', ml: 1 }}
+            >
+              <WifiOff size={18} aria-hidden="true" />
+            </Box>
+          )}
         </Box>
 
         <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
           <Button
             onClick={onShowFundraising}
             title={translations.donate}
+            aria-label={translations.donate}
             startIcon={<Heart size={18} />}
             sx={{
               px: 1.5,
@@ -121,6 +148,7 @@ export function Header({ eventMode, onToggleEventMode, language, onToggleLanguag
 
           <Button
             onClick={onToggleEventMode}
+            aria-label={eventMode ? translations.exitEvent : translations.comingEvent}
             startIcon={<CalendarClock size={18} />}
             sx={{
               px: { xs: 1.5, sm: 2 },

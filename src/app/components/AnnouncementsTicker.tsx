@@ -8,11 +8,13 @@ import { getFontFamily, isRTL, getDirection } from '../utils/helpers';
 interface AnnouncementsTickerProps {
 	language: Language;
 	announcements: string[];
+	announcementsLabel: string;
 }
 
 export function AnnouncementsTicker({
 	language,
 	announcements,
+	announcementsLabel,
 }: AnnouncementsTickerProps) {
 	const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -51,6 +53,8 @@ export function AnnouncementsTicker({
 
 	return (
 		<Paper
+			role="status"
+			aria-label={language === 'ar' ? 'إعلانات المسجد' : 'Masjid announcements'}
 			sx={{
 				width: "100%",
 				bgcolor: "rgba(0,0,0,0.4)",
