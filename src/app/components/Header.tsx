@@ -92,8 +92,7 @@ export function Header({ eventMode, onToggleEventMode, language, onToggleLanguag
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1 }}>
           <Typography
             role="timer"
-            aria-live="polite"
-            aria-atomic="true"
+            aria-label={language === 'en' ? 'Current time' : 'الوقت الحالي'}
             sx={{
               color: 'text.primary',
               fontFamily: 'monospace',

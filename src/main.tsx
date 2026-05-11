@@ -11,11 +11,11 @@ if (!rootElement) {
 }
 
 createRoot(rootElement).render(
-  <ErrorBoundary>
-    <ThemeProviderWrapper>
+  <ThemeProviderWrapper>
+    <ErrorBoundary>
       <App />
-    </ThemeProviderWrapper>
-  </ErrorBoundary>
+    </ErrorBoundary>
+  </ThemeProviderWrapper>
 );
 
 if ('serviceWorker' in navigator) {

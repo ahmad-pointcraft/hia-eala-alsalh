@@ -45,8 +45,6 @@ export function CountdownBar({ nextPrayer, nextPrayerTime, language, currentTime
     <Paper
       dir={getDirection(language)}
       role="timer"
-      aria-live="polite"
-      aria-atomic="true"
       sx={{
         width: '100%',
         bgcolor: 'background.paper',
@@ -54,7 +52,8 @@ export function CountdownBar({ nextPrayer, nextPrayerTime, language, currentTime
         border: '1px solid',
         borderColor: 'rgba(212,175,55,0.3)',
         borderRadius: 2,
-        p: { xs: 1, sm: 1.5, lg: 2 }
+        p: { xs: 1, sm: 1.5, lg: 2 },
+        position: 'relative',
       }}
     >
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: { xs: 1, sm: 2 } }}>
@@ -69,6 +68,9 @@ export function CountdownBar({ nextPrayer, nextPrayerTime, language, currentTime
       {announcementText !== undefined && (
         <Box
           component="span"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
           sx={{
             position: 'absolute',
             width: 1,

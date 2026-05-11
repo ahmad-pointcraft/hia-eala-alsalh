@@ -1,7 +1,7 @@
 import { Component, type ReactNode } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import CircularProgress from "@mui/material/CircularProgress";
+import Button from "@mui/material/Button";
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -10,7 +10,11 @@ interface ErrorBoundaryProps {
 interface ErrorBoundaryState {
   hasError: boolean;
   error: Error | null;
+  retryCount: number;
 }
+
+const MAX_RETRIES = 3;
+const RECOVERY_DELAY_MS = 5000;
 
 export class ErrorBoundary extends Component<
   ErrorBoundaryProps,
@@ -20,16 +24,19 @@ export class ErrorBoundary extends Component<
 
   constructor(props: ErrorBoundaryProps) {
     super(props);
-    this.state = { hasError: false, error: null };
+    this.state = { hasError: false, error: null, retryCount: 0 };
   }
 
-  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+  static getDerivedStateFromError(error: Error): Partial<ErrorBoundaryState> {
     return { hasError: true, error };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
     console.error("[ErrorBoundary] Caught error:", error, errorInfo);
-    this.scheduleRecovery();
+
+    if (this.state.retryCount < MAX_RETRIES) {
+      this.scheduleRecovery();
+    }
   }
 
   private scheduleRecovery(): void {
@@ -37,9 +44,13 @@ export class ErrorBoundary extends Component<
       clearTimeout(this.recoveryTimer);
     }
     this.recoveryTimer = setTimeout(() => {
-      this.setState({ hasError: false, error: null });
+      this.setState((prev) => ({
+        hasError: false,
+        error: null,
+        retryCount: prev.retryCount + 1,
+      }));
       this.recoveryTimer = null;
-    }, 5000);
+    }, RECOVERY_DELAY_MS);
   }
 
   componentWillUnmount(): void {
@@ -49,38 +60,69 @@ export class ErrorBoundary extends Component<
     }
   }
 
+  private handleReload = (): void => {
+    window.location.reload();
+  };
+
   render(): ReactNode {
-    if (this.state.hasError) {
-      return (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: "100vh",
-            bgcolor: "background.default",
-            gap: 3,
-            p: 4,
-          }}
-        >
-          <CircularProgress size={48} />
-          <Typography
-            variant="h5"
-            sx={{ color: "text.primary", textAlign: "center" }}
-          >
-            Recovering...
-          </Typography>
-          <Typography
-            variant="body2"
-            sx={{ color: "text.secondary", textAlign: "center" }}
-          >
-            The display will restore automatically.
-          </Typography>
-        </Box>
-      );
+    if (!this.state.hasError) {
+      return this.props.children;
     }
 
-    return this.props.children;
+    const exhausted = this.state.retryCount >= MAX_RETRIES;
+
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100vh",
+          bgcolor: "background.default",
+          gap: 3,
+          p: 4,
+        }}
+      >
+        {exhausted ? (
+          <>
+            <Typography
+              variant="h5"
+              sx={{ color: "error.main", textAlign: "center" }}
+            >
+              Display Error
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{ color: "text.secondary", textAlign: "center" }}
+            >
+              The display encountered a persistent error. Please reload.
+            </Typography>
+            <Button
+              variant="contained"
+              onClick={this.handleReload}
+              sx={{ mt: 1 }}
+            >
+              Reload Display
+            </Button>
+          </>
+        ) : (
+          <>
+            <Typography
+              variant="h5"
+              sx={{ color: "text.primary", textAlign: "center" }}
+            >
+              Recovering...
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{ color: "text.secondary", textAlign: "center" }}
+            >
+              The display will restore automatically.
+            </Typography>
+          </>
+        )}
+      </Box>
+    );
   }
 }
