@@ -44,7 +44,9 @@ colors (as const)
 │   ├── secondary: "#9ca3af"
 │   ├── contrast: "#0a1f0a"
 │   ├── onGold: "#0a1f0a"
-│   └── onDark: "#ffffff"
+│   ├── onDark: "#ffffff"
+│   ├── whiteMuted: "rgba(255,255,255,0.5)"
+│   └── whiteSoft: "rgba(255,255,255,0.7)"
 ├── error
 │   ├── main: "#d4183d"
 │   ├── light: "#ff4d6a"
@@ -78,12 +80,14 @@ declare module "@mui/material/styles" {
     surface: { overlay: string; raised: string; medium: string; deep: string; heavy: string; darker: string; opaque: string };
     border: { faint: string; subtle: string; thin: string; light: string; default: string; medium: string; strong: string; prominent: string; intense: string };
     glow: { subtle: string; medium: string; strong: string };
+    text: { whiteMuted: string; whiteSoft: string };
   }
   interface PaletteOptions {
     gold?: { main: string; light: string; dark: string };
     surface?: { overlay: string; raised: string; medium: string; deep: string; heavy: string; darker: string; opaque: string };
     border?: { faint: string; subtle: string; thin: string; light: string; default: string; medium: string; strong: string; prominent: string; intense: string };
     glow?: { subtle: string; medium: string; strong: string };
+    text?: { whiteMuted: string; whiteSoft: string };
   }
 }
 ```
@@ -95,6 +99,7 @@ muiTheme.palette.gold = colors.gold;
 muiTheme.palette.surface = colors.surface;
 muiTheme.palette.border = colors.border;
 muiTheme.palette.glow = colors.glow;
+muiTheme.palette.text = { ...muiTheme.palette.text, whiteMuted: colors.text.whiteMuted, whiteSoft: colors.text.whiteSoft };
 ```
 
 ## Entity: Component Migration Mapping
