@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { motion } from 'motion/react';
 import Box from '@mui/material/Box';
+import { colors } from '../theme/tokens';
 
 export function IslamicGeometricOverlay() {
   const particlePositions = useMemo(
@@ -34,7 +35,7 @@ export function IslamicGeometricOverlay() {
         <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="islamic-pattern" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse">
-              <g fill="none" stroke="#D4AF37" strokeWidth="1.5">
+              <g fill="none" stroke={colors.gold.main} strokeWidth="1.5">
                 <circle cx="100" cy="100" r="40" />
                 <circle cx="100" cy="100" r="60" />
                 {[0, 45, 90, 135, 180, 225, 270, 315].map((angle) => (
@@ -66,7 +67,7 @@ export function IslamicGeometricOverlay() {
         <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <pattern id="islamic-pattern-2" x="0" y="0" width="300" height="300" patternUnits="userSpaceOnUse">
-              <g fill="none" stroke="#D4AF37" strokeWidth="1">
+              <g fill="none" stroke={colors.gold.main} strokeWidth="1">
                 <polygon points="150,50 200,87.5 200,162.5 150,200 100,162.5 100,87.5" />
                 <polygon points="150,50 200,87.5 250,87.5 275,125 250,162.5 200,162.5" />
                 <circle cx="150" cy="125" r="30" />
@@ -78,24 +79,24 @@ export function IslamicGeometricOverlay() {
       </motion.div>
 
       <motion.div
-        style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, background: 'linear-gradient(90deg, transparent 0%, #D4AF37 50%, transparent 100%)' }}
+        style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, background: `linear-gradient(90deg, transparent 0%, ${colors.gold.main} 50%, transparent 100%)` }}
         animate={{
           boxShadow: [
-            '0 0 20px 4px rgba(212, 175, 55, 0.3)',
-            '0 0 40px 8px rgba(212, 175, 55, 0.5)',
-            '0 0 20px 4px rgba(212, 175, 55, 0.3)',
+            `0 0 20px 4px ${colors.glow.subtle}`,
+            `0 0 40px 8px ${colors.glow.medium}`,
+            `0 0 20px 4px ${colors.glow.subtle}`,
           ],
         }}
         transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
       />
 
       <motion.div
-        style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 4, background: 'linear-gradient(90deg, transparent 0%, #D4AF37 50%, transparent 100%)' }}
+        style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 4, background: `linear-gradient(90deg, transparent 0%, ${colors.gold.main} 50%, transparent 100%)` }}
         animate={{
           boxShadow: [
-            '0 0 20px 4px rgba(212, 175, 55, 0.3)',
-            '0 0 40px 8px rgba(212, 175, 55, 0.5)',
-            '0 0 20px 4px rgba(212, 175, 55, 0.3)',
+            `0 0 20px 4px ${colors.glow.subtle}`,
+            `0 0 40px 8px ${colors.glow.medium}`,
+            `0 0 20px 4px ${colors.glow.subtle}`,
           ],
         }}
         transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
@@ -112,7 +113,7 @@ export function IslamicGeometricOverlay() {
             sx={{
               width: '100%',
               height: '100%',
-              background: `radial-gradient(circle at ${pos.gradientOrigin}, rgba(212, 175, 55, 0.3) 0%, transparent 70%)`,
+              background: `radial-gradient(circle at ${pos.gradientOrigin}, ${colors.border.medium} 0%, transparent 70%)`,
             }}
           />
         </motion.div>
@@ -121,7 +122,7 @@ export function IslamicGeometricOverlay() {
       {particlePositions.map((pos, i) => (
         <motion.div
           key={i}
-          style={{ position: 'absolute', width: 4, height: 4, left: pos.left, top: pos.top, backgroundColor: '#D4AF37', borderRadius: '50%' }}
+          style={{ position: 'absolute', width: 4, height: 4, left: pos.left, top: pos.top, backgroundColor: colors.gold.main, borderRadius: '50%' }}
           animate={{ y: [0, -30, 0], opacity: [0.3, 0.7, 0.3], scale: [1, 1.5, 1] }}
           transition={{ duration: pos.duration, repeat: Infinity, ease: 'easeInOut', delay: pos.delay }}
         />

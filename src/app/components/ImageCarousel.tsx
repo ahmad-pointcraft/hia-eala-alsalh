@@ -34,7 +34,7 @@ export function ImageCarousel({ images, interval = 5000 }: ImageCarouselProps) {
   if (images.length === 0) return null;
 
   return (
-    <Box sx={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden', borderRadius: 1, bgcolor: 'rgba(0,0,0,0.3)', border: '1px solid rgba(212,175,55,0.3)' }}>
+    <Box sx={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden', borderRadius: 1, bgcolor: 'surface.overlay', border: '1px solid', borderColor: 'border.medium' }}>
       <AnimatePresence mode="wait">
         <motion.div
           key={currentIndex}
@@ -57,14 +57,14 @@ export function ImageCarousel({ images, interval = 5000 }: ImageCarouselProps) {
           <IconButton
             onClick={goToPrevious}
             aria-label="Previous image"
-            sx={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', bgcolor: 'rgba(0,0,0,0.5)', color: 'text.primary', '&:hover': { bgcolor: 'rgba(0,0,0,0.7)' } }}
+            sx={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', bgcolor: 'surface.medium', color: 'text.primary', '&:hover': { bgcolor: 'surface.heavy' } }}
           >
             <ChevronLeft />
           </IconButton>
           <IconButton
             onClick={goToNext}
             aria-label="Next image"
-            sx={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', bgcolor: 'rgba(0,0,0,0.5)', color: 'text.primary', '&:hover': { bgcolor: 'rgba(0,0,0,0.7)' } }}
+            sx={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', bgcolor: 'surface.medium', color: 'text.primary', '&:hover': { bgcolor: 'surface.heavy' } }}
           >
             <ChevronRight />
           </IconButton>
@@ -80,12 +80,12 @@ export function ImageCarousel({ images, interval = 5000 }: ImageCarouselProps) {
                   width: index === currentIndex ? 32 : 8,
                   height: 8,
                   borderRadius: 4,
-                  bgcolor: index === currentIndex ? 'primary.main' : 'rgba(255,255,255,0.5)',
+                  bgcolor: index === currentIndex ? 'primary.main' : 'text.whiteMuted',
                   border: 'none',
                   cursor: 'pointer',
                   transition: 'all 300ms',
                   '&:hover': {
-                    bgcolor: index === currentIndex ? 'primary.main' : 'rgba(255,255,255,0.7)',
+                    bgcolor: index === currentIndex ? 'primary.main' : 'text.whiteSoft',
                   },
                 }}
               />

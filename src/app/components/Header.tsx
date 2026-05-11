@@ -46,9 +46,10 @@ export function Header({ eventMode, onToggleEventMode, language, onToggleLanguag
       position="static"
       dir={getDirection(language)}
       sx={{
-        bgcolor: 'rgba(0,0,0,0.4)',
+        bgcolor: 'surface.raised',
         backdropFilter: 'blur(4px)',
-        borderBottom: '1px solid rgba(212,175,55,0.3)',
+        borderBottom: '1px solid',
+        borderBottomColor: 'border.medium',
         boxShadow: 'none',
       }}
     >
@@ -64,15 +65,16 @@ export function Header({ eventMode, onToggleEventMode, language, onToggleLanguag
               gap: 1,
               px: { xs: 1.5, sm: 2 },
               py: 1,
-              bgcolor: 'rgba(0,0,0,0.8)',
+              bgcolor: 'surface.darker',
               color: 'primary.main',
               fontSize: { xs: '0.75rem', sm: '0.875rem' },
               fontWeight: 'bold',
-              border: '1px solid rgba(212,175,55,0.5)',
+              border: '1px solid',
+              borderColor: 'border.prominent',
               borderRadius: 2,
               backdropFilter: 'blur(4px)',
               textTransform: 'none',
-              '&:hover': { bgcolor: 'rgba(0,0,0,0.95)' },
+              '&:hover': { bgcolor: 'surface.opaque' },
             }}
           >
             <Typography
@@ -124,13 +126,14 @@ export function Header({ eventMode, onToggleEventMode, language, onToggleLanguag
             sx={{
               px: 1.5,
               py: 1,
-              bgcolor: 'rgba(0,0,0,0.8)',
+              bgcolor: 'surface.darker',
               color: 'primary.main',
-              border: '1px solid rgba(212,175,55,0.5)',
+              border: '1px solid',
+              borderColor: 'border.prominent',
               borderRadius: 2,
               backdropFilter: 'blur(4px)',
               textTransform: 'none',
-              '&:hover': { bgcolor: 'rgba(0,0,0,0.95)' },
+              '&:hover': { bgcolor: 'surface.opaque' },
             }}
           >
             <Typography
@@ -153,7 +156,7 @@ export function Header({ eventMode, onToggleEventMode, language, onToggleLanguag
             sx={{
               px: { xs: 1.5, sm: 2 },
               py: 1,
-              bgcolor: 'rgba(212,175,55,0.8)',
+              bgcolor: 'border.intense',
               color: 'primary.contrastText',
               fontSize: { xs: '0.75rem', sm: '0.875rem' },
               fontWeight: 'bold',

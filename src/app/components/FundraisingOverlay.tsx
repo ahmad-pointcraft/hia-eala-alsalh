@@ -9,6 +9,7 @@ import Close from '@mui/icons-material/Close';
 import { Language } from '../utils/translations';
 import type { Translations } from '../utils/translations';
 import { toArabicNumerals, getFontFamily, getDirection } from '../utils/helpers';
+import { colors } from '../theme/tokens';
 
 const FOCUSABLE_SELECTOR = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
@@ -127,7 +128,7 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
     <Backdrop
       open
       dir={dir}
-      sx={{ bgcolor: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(8px)', zIndex: 50 }}
+      sx={{ bgcolor: 'surface.raised', backdropFilter: 'blur(8px)', zIndex: 50 }}
     >
       <Paper
         ref={containerRef}
@@ -135,7 +136,7 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
         aria-modal="true"
         aria-label={language === 'ar' ? 'لوحة جمع التبرعات' : 'Fundraising overlay'}
         sx={{
-          bgcolor: 'rgba(0,0,0,0.6)',
+          bgcolor: 'surface.deep',
           backdropFilter: 'blur(16px)',
           border: '1px solid',
           borderColor: 'primary.main',
@@ -147,7 +148,7 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
           mx: 2,
         }}
       >
-        <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, background: 'linear-gradient(to right, transparent, #D4AF37, transparent)' }} />
+        <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, background: `linear-gradient(to right, transparent, ${colors.gold.main}, transparent)` }} />
 
         <IconButton
           onClick={onClose}
@@ -183,7 +184,7 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
             </Typography>
           </Box>
 
-          <Box sx={{ display: { xs: 'none', sm: 'block' }, width: '1px', height: 64, bgcolor: 'rgba(212,175,55,0.3)' }} />
+          <Box sx={{ display: { xs: 'none', sm: 'block' }, width: '1px', height: 64, bgcolor: 'border.medium' }} />
 
           <Box sx={{ textAlign: 'center' }}>
             <Typography sx={{ color: 'grey.400', fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '0.05em', mb: 1, fontFamily }}>
@@ -194,7 +195,7 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
             </Typography>
           </Box>
 
-          <Box sx={{ display: { xs: 'none', sm: 'block' }, width: '1px', height: 64, bgcolor: 'rgba(212,175,55,0.3)' }} />
+          <Box sx={{ display: { xs: 'none', sm: 'block' }, width: '1px', height: 64, bgcolor: 'border.medium' }} />
 
           <Box sx={{ textAlign: 'center' }}>
             <Typography sx={{ color: 'grey.400', fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '0.05em', mb: 1, fontFamily }}>
@@ -224,16 +225,16 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
               bgcolor: 'grey.800',
               '& .MuiLinearProgress-bar': {
                 borderRadius: 6,
-                background: 'linear-gradient(to right, #D4AF37, #FFD700)',
+                background: `linear-gradient(to right, ${colors.gold.main}, ${colors.gold.light})`,
               },
             }}
           />
         </Box>
 
-        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', mt: { xs: 3, sm: 4 }, pt: { xs: 3, sm: 4 }, borderTop: '1px solid rgba(212,175,55,0.3)', gap: 2 }}>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', mt: { xs: 3, sm: 4 }, pt: { xs: 3, sm: 4 }, borderTop: '1px solid', borderTopColor: 'border.medium', gap: 2 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 2, sm: 3 } }}>
-            <Box sx={{ width: { xs: 96, sm: 128 }, height: { xs: 96, sm: 128 }, bgcolor: 'white', borderRadius: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <Box sx={{ textAlign: 'center', fontSize: '0.75rem', color: 'black', p: 1 }}>
+            <Box sx={{ width: { xs: 96, sm: 128 }, height: { xs: 96, sm: 128 }, bgcolor: 'common.white', borderRadius: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <Box sx={{ textAlign: 'center', fontSize: '0.75rem', color: colors.text.onGold, p: 1 }}>
                 <Typography sx={{ fontWeight: 'bold', mb: 0.5, fontSize: '0.75rem' }}>QR CODE</Typography>
                 <Typography sx={{ fontSize: '10px', fontFamily }}>{translations.fundraising.scanToDonate}</Typography>
               </Box>

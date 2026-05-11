@@ -13,6 +13,7 @@ import {
 import { Language } from '../utils/translations';
 import { toArabicNumerals, getFontFamily, getDirection } from '../utils/helpers';
 import type { PrayerKey } from '../utils/prayerTimes';
+import { colors } from '../theme/tokens';
 
 interface PrayerCardProps {
   name: string;
@@ -60,15 +61,16 @@ export function PrayerCard({
         transition: 'all 300ms',
         ...(isActive
           ? {
-              bgcolor: 'rgba(212,175,55,0.2)',
+              bgcolor: 'border.default',
               border: '1px solid',
               borderColor: 'primary.main',
-              boxShadow: '0 0 30px rgba(212,175,55,0.5)',
+              boxShadow: `0 0 30px ${colors.glow.medium}`,
               transform: { xs: 'scale(1.05)', lg: 'scale(1.10)' },
             }
           : {
-              bgcolor: 'rgba(0,0,0,0.3)',
-              border: '1px solid rgba(212,175,55,0.3)',
+              bgcolor: 'surface.overlay',
+              border: '1px solid',
+              borderColor: 'border.medium',
             }),
       }}
     >
