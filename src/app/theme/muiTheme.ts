@@ -1,35 +1,36 @@
 import { createTheme } from "@mui/material/styles";
+import { colors } from "./tokens";
 
 const muiTheme = createTheme({
   palette: {
     mode: "dark",
     primary: {
-      main: "#D4AF37",
-      light: "#FFD700",
-      dark: "#B8960C",
-      contrastText: "#0a1f0a",
+      main: colors.gold.main,
+      light: colors.gold.light,
+      dark: colors.gold.dark,
+      contrastText: colors.text.contrast,
     },
     secondary: {
-      main: "#2E7D32",
-      light: "#4CAF50",
-      dark: "#1B5E20",
-      contrastText: "#ffffff",
+      main: colors.green.main,
+      light: colors.green.light,
+      dark: colors.green.dark,
+      contrastText: colors.text.onDark,
     },
     background: {
-      default: "#0a1f0a",
-      paper: "rgba(0,0,0,0.3)",
+      default: colors.background.default,
+      paper: colors.background.paper,
     },
     error: {
-      main: "#d4183d",
-      light: "#ff4d6a",
-      dark: "#a30025",
-      contrastText: "#ffffff",
+      main: colors.error.main,
+      light: colors.error.light,
+      dark: colors.error.dark,
+      contrastText: colors.text.onDark,
     },
     text: {
-      primary: "#ffffff",
-      secondary: "#9ca3af",
+      primary: colors.text.primary,
+      secondary: colors.text.secondary,
     },
-    divider: "rgba(212, 175, 55, 0.12)",
+    divider: colors.border.thin,
   },
   typography: {
     fontFamily: '"Open Sans", "Noto Naskh Arabic", sans-serif',
@@ -120,15 +121,15 @@ const muiTheme = createTheme({
     MuiCssBaseline: {
       styleOverrides: {
         body: {
-          backgroundColor: "#0a1f0a",
+          backgroundColor: colors.background.default,
           backgroundImage:
-            "linear-gradient(45deg, rgba(212, 175, 55, 0.02) 25%, transparent 25%, transparent 75%, rgba(212, 175, 55, 0.02) 75%, rgba(212, 175, 55, 0.02)), linear-gradient(45deg, rgba(212, 175, 55, 0.02) 25%, transparent 25%, transparent 75%, rgba(212, 175, 55, 0.02) 75%, rgba(212, 175, 55, 0.02))",
+            `linear-gradient(45deg, ${colors.border.faint} 25%, transparent 25%, transparent 75%, ${colors.border.faint} 75%, ${colors.border.faint}), linear-gradient(45deg, ${colors.border.faint} 25%, transparent 25%, transparent 75%, ${colors.border.faint} 75%, ${colors.border.faint})`,
           backgroundSize: "60px 60px",
           backgroundPosition: "0 0, 30px 30px",
         },
         "*": {
           scrollbarWidth: "thin",
-          scrollbarColor: "rgba(212, 175, 55, 0.3) transparent",
+          scrollbarColor: `${colors.border.medium} transparent`,
         },
       },
     },
@@ -136,8 +137,8 @@ const muiTheme = createTheme({
       styleOverrides: {
         root: {
           backgroundImage: "none",
-          backgroundColor: "rgba(0,0,0,0.3)",
-          border: "1px solid rgba(212, 175, 55, 0.08)",
+          backgroundColor: colors.background.paper,
+          border: `1px solid ${colors.border.subtle}`,
         },
       },
     },
@@ -145,8 +146,8 @@ const muiTheme = createTheme({
       styleOverrides: {
         root: {
           backgroundImage: "none",
-          backgroundColor: "rgba(0,0,0,0.3)",
-          border: "1px solid rgba(212, 175, 55, 0.08)",
+          backgroundColor: colors.background.paper,
+          border: `1px solid ${colors.border.subtle}`,
         },
       },
     },
@@ -156,9 +157,9 @@ const muiTheme = createTheme({
           borderRadius: 8,
         },
         containedPrimary: {
-          color: "#0a1f0a",
+          color: colors.text.onGold,
           "&:hover": {
-            backgroundColor: "#FFD700",
+            backgroundColor: colors.gold.light,
           },
         },
       },
@@ -173,7 +174,7 @@ const muiTheme = createTheme({
     MuiDivider: {
       styleOverrides: {
         root: {
-          borderColor: "rgba(212, 175, 55, 0.12)",
+          borderColor: colors.border.thin,
         },
       },
     },
@@ -182,22 +183,67 @@ const muiTheme = createTheme({
 
 declare module "@mui/material/styles" {
   interface Palette {
-    gold: {
-      main: string;
-      light: string;
+    gold: { main: string; light: string; dark: string };
+    surface: {
+      overlay: string;
+      raised: string;
+      medium: string;
+      deep: string;
+      heavy: string;
+      darker: string;
+      opaque: string;
     };
+    border: {
+      faint: string;
+      subtle: string;
+      thin: string;
+      light: string;
+      default: string;
+      medium: string;
+      strong: string;
+      prominent: string;
+      intense: string;
+    };
+    glow: { subtle: string; medium: string; strong: string };
   }
   interface PaletteOptions {
-    gold?: {
-      main: string;
-      light: string;
+    gold?: { main: string; light: string; dark: string };
+    surface?: {
+      overlay: string;
+      raised: string;
+      medium: string;
+      deep: string;
+      heavy: string;
+      darker: string;
+      opaque: string;
     };
+    border?: {
+      faint: string;
+      subtle: string;
+      thin: string;
+      light: string;
+      default: string;
+      medium: string;
+      strong: string;
+      prominent: string;
+      intense: string;
+    };
+    glow?: { subtle: string; medium: string; strong: string };
+  }
+  interface PaletteText {
+    whiteMuted: string;
+    whiteSoft: string;
   }
 }
 
-muiTheme.palette.gold = {
-  main: "#D4AF37",
-  light: "#FFD700",
+muiTheme.palette.gold = colors.gold;
+muiTheme.palette.surface = colors.surface;
+muiTheme.palette.border = colors.border;
+muiTheme.palette.glow = colors.glow;
+muiTheme.palette.text = {
+  ...muiTheme.palette.text,
+  whiteMuted: colors.text.whiteMuted,
+  whiteSoft: colors.text.whiteSoft,
 };
 
 export default muiTheme;
