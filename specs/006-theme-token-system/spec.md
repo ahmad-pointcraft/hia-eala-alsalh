@@ -71,18 +71,21 @@ As a developer, I want any unused imports and dead code removed across all compo
 - What happens when an SVG attribute requires a raw color string (not a theme reference)? The token file exports typed string constants that can be imported directly for use in SVG `stroke`, `fill`, and `stopColor` attributes.
 - What happens when an rgba value uses a unique opacity not covered by standard tokens? The theme palette provides base hex values, and components construct rgba at the needed opacity via CSS color functions or the alpha utility — only the base hex is tokenized.
 - What happens if a component references the theme outside of an sx prop context? Components can import token constants directly from the tokens file for use in JavaScript contexts (e.g., framer-motion styles, inline style objects).
+- What happens when a gradient string embeds hex values (e.g., `linear-gradient(to right, #D4AF37, #FFD700)`)? The gradient string is constructed using imported token constants concatenated with the gradient syntax — token values are interpolated into the string, never hardcoded.
+- What happens when an SVG element inside an MUI component could use `currentColor` instead of a token import? Where the parent MUI component sets the color via theme palette, SVG children SHOULD use `currentColor` to inherit. Token imports are reserved for standalone SVGs or cases where `currentColor` would inherit the wrong value.
+- What happens if a migrated component renders a perceptibly different shade after rgba construction? Each migration MUST be visually verified individually. If MUI's `alpha()` utility produces a non-matching result for a specific opacity, the exact rgba string is stored as a named token constant instead of being constructed at runtime.
 
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
 
 - **FR-001**: System MUST provide a centralized color token file (`src/app/theme/tokens.ts`) that exports all color constants with `as const` typing
-- **FR-002**: System MUST define token namespaces covering: gold accent (with light/dark variants), surface overlays (dark translucent backgrounds), border colors (gold at multiple opacities), glow/shadow colors, and semantic colors (text, error, background)
+- **FR-002**: System MUST define token namespaces covering: gold accent (with light/dark variants), surface overlays (dark translucent backgrounds at opacities 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.95), border colors (gold at opacities 0.02, 0.08, 0.12, 0.15, 0.2, 0.3, 0.4, 0.5, 0.8), glow/shadow colors, and semantic colors (text, error, background)
 - **FR-003**: The MUI theme (`muiTheme.ts`) MUST consume the centralized tokens instead of defining its own hardcoded values
-- **FR-004**: The theme palette MUST be extended with gold, surface, border, and glow namespaces so components can reference `theme.palette.gold.main`, `theme.palette.border.subtle`, etc.
-- **FR-005**: All component files MUST replace hardcoded hex strings, rgba() calls, and CSS color keywords with either theme palette references (in sx props) or direct token imports (in SVG attributes, inline styles, framer-motion configs)
+- **FR-004**: The theme palette MUST be extended with gold, surface, border, and glow namespaces so components can reference `theme.palette.gold.main`, `theme.palette.border.subtle`, etc. Each namespace MUST use a flat object of named string properties (e.g., `gold: { main: "#D4AF37", light: "#FFD700", dark: "#B8960C" }`, `border: { faint: "rgba(...)", subtle: "rgba(...)", default: "rgba(...)", strong: "rgba(...)" }`)
+- **FR-005**: All component files MUST replace hardcoded hex strings, rgba() calls, and CSS color keywords with either theme palette references (in sx props), direct token imports (in SVG attributes, gradient strings, inline styles, framer-motion configs), or `currentColor` (where SVG children inherit from a parent MUI element's color). EventModeDisplay.tsx (~20 color instances) MUST be flagged for prioritized verification as the heaviest migration target.
 - **FR-006**: The duplicate backgroundImage pattern in App.tsx MUST be removed, relying solely on the theme's CssBaseline application
-- **FR-007**: All unused imports across component files MUST be removed
+- **FR-007**: All unused imports, unused variables, and unreachable code across component files MUST be removed, detected via `tsc --noUnusedLocals --noUnusedParameters`
 - **FR-008**: The visual output of every component MUST remain pixel-identical after the migration — zero visual regression
 - **FR-009**: TypeScript strict mode MUST be satisfied with no `any` types — all tokens typed `as const`, all palette extensions properly declared in the module augmentation
 
@@ -96,16 +99,19 @@ As a developer, I want any unused imports and dead code removed across all compo
 
 ### Measurable Outcomes
 
-- **SC-001**: Zero hardcoded hex color strings (#xxx or #xxxxxx) remain in any component file outside of the tokens file — verified by codebase search
-- **SC-002**: Zero hardcoded rgba() strings remain in any component file outside of muiTheme.ts — verified by codebase search
-- **SC-003**: Zero hardcoded CSS color keywords ("black", "white") remain in component sx props — verified by codebase search
-- **SC-004**: Changing a single token value in tokens.ts propagates to all consuming components — verified by modifying gold.main and confirming visual change across all gold-accented elements
-- **SC-005**: Production build succeeds with zero TypeScript errors and zero unused-import warnings
+- **SC-001**: Zero hardcoded hex color strings (#xxx or #xxxxxx) remain in any component file outside of tokens.ts and muiTheme.ts — verified by: `grep -rE '#[0-9a-fA-F]{3,8}' src/app/components/ src/app/App.tsx` returning zero matches
+- **SC-002**: Zero hardcoded rgba() strings remain in any component file outside of tokens.ts and muiTheme.ts — verified by: `grep -rE 'rgba\(' src/app/components/ src/app/App.tsx` returning zero matches
+- **SC-003**: Zero hardcoded CSS color keywords ("black", "white") remain in component sx props — verified by: `grep -rE '"(black|white)"' src/app/components/` returning zero matches
+- **SC-004**: Changing a single token value in tokens.ts propagates to all consuming components — verified by: (a) modifying `colors.gold.main` to a distinct test value (e.g., "#FF0000"), (b) running `yarn build`, (c) confirming all gold-accented elements render the test color, then reverting
+- **SC-005**: Production build succeeds with zero TypeScript errors and zero unused-import warnings — verified by: `yarn build` exiting with code 0
 - **SC-006**: App.tsx contains no backgroundImage/backgroundSize/backgroundPosition props (duplicate removed)
+- **SC-007**: Gzipped JS bundle size does not increase by more than 1KB after migration (token constants are inlined; no runtime overhead expected)
 
 ## Assumptions
 
 - All gold-based rgba variants (opacities: 0.02, 0.08, 0.12, 0.15, 0.2, 0.3, 0.4, 0.5, 0.8) will be tokenized as border/glow/surface namespace members with semantic names
+- All black-based rgba variants (opacities: 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.95) will be tokenized as surface namespace members with semantic names
+- Token structure uses flat objects per namespace — each namespace key maps to a semantic name string value (not nested sub-objects)
 - Components that need rgba values at non-standard opacities will construct them at runtime from the base token hex value, using CSS color-mix or MUI's alpha utility
 - The existing module augmentation pattern in muiTheme.ts (already declaring `gold` on Palette) will be extended to include `surface`, `border`, and `glow` namespaces
 - No new npm/yarn dependencies will be added — only existing MUI utilities (e.g., `alpha` from `@mui/material/styles`) may be used
