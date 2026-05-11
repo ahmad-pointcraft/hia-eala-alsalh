@@ -94,7 +94,6 @@ export function AnnouncementsTicker({
 				<Box sx={{ flex: 1, overflow: "hidden", position: "relative" }}>
 					<Box
 						ref={scrollRef}
-						role="marquee"
 						sx={{
 							display: "flex",
 							alignItems: "center",

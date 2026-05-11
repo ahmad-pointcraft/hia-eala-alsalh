@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
@@ -30,7 +29,6 @@ export default function App() {
   const [language, setLanguage] = useState<Language>("en");
   const { currentTime } = useClock();
   const fundraisingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const theme = useTheme();
   const prefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
   const defaultTransition = useMemo(
     () => (prefersReducedMotion ? { duration: 0 } : undefined),

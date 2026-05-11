@@ -106,10 +106,11 @@ export function Header({ eventMode, onToggleEventMode, language, onToggleLanguag
           {isOffline && (
             <Box
               component="span"
-              aria-live="polite"
+              role="status"
+              aria-label={language === 'en' ? 'Offline — no internet connection' : 'غير متصل — لا يوجد اتصال بالإنترنت'}
               sx={{ display: 'flex', alignItems: 'center', color: 'grey.500', ml: 1 }}
             >
-              <WifiOff size={18} />
+              <WifiOff size={18} aria-hidden="true" />
             </Box>
           )}
         </Box>
