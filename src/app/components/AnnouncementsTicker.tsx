@@ -52,7 +52,6 @@ export function AnnouncementsTicker({
 	return (
 		<Paper
 			role="status"
-			aria-live="polite"
 			aria-label={language === 'ar' ? 'إعلانات المسجد' : 'Masjid announcements'}
 			sx={{
 				width: "100%",
