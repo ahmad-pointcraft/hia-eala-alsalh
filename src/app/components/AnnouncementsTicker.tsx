@@ -1,10 +1,10 @@
 import { useEffect, useRef } from "react";
 import { Megaphone } from "lucide-react";
 import { Language } from "../utils/translations";
-import logo from "../../imports/logo.png";
+import logo from "../../assets/logo.png";
 import { Paper, Box, Typography } from "@mui/material";
-import { getFontFamily, isRTL, getDirection } from '../utils/helpers';
-import { colors } from '../theme/tokens';
+import { getFontFamily, isRTL, getDirection } from "../utils/helpers";
+import { colors } from "../theme/tokens";
 
 interface AnnouncementsTickerProps {
 	language: Language;
@@ -15,7 +15,6 @@ interface AnnouncementsTickerProps {
 export function AnnouncementsTicker({
 	language,
 	announcements,
-	announcementsLabel,
 }: AnnouncementsTickerProps) {
 	const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -55,7 +54,7 @@ export function AnnouncementsTicker({
 	return (
 		<Paper
 			role="status"
-			aria-label={language === 'ar' ? 'إعلانات المسجد' : 'Masjid announcements'}
+			aria-label={language === "ar" ? "إعلانات المسجد" : "Masjid announcements"}
 			sx={{
 				width: "100%",
 				bgcolor: "surface.raised",
@@ -124,7 +123,9 @@ export function AnnouncementsTicker({
 						justifyContent: "center",
 						flexShrink: 0,
 					}}>
-					<Megaphone style={{ width: "1em", height: "1em", color: colors.text.onDark }} />
+					<Megaphone
+						style={{ width: "1em", height: "1em", color: colors.text.onDark }}
+					/>
 				</Box>
 			</Box>
 		</Paper>

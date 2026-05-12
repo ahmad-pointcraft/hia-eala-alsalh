@@ -19,9 +19,9 @@ import { translations, Language } from "./utils/translations";
 import { getCurrentPrayer, getNextPrayer, getTimeToNextPrayer } from "./utils/prayerTimes";
 import type { PrayerTime } from "./utils/prayerTimes";
 import { useClock } from "./utils/useClock";
-import mosque1 from "../imports/mosque-1.jpg";
-import mosque2 from "../imports/mosque-2.jpg";
-import mosque3 from "../imports/mosque-3.jpg";
+import mosque1 from "../assets/mosque-1.jpg";
+import mosque2 from "../assets/mosque-2.jpg";
+import mosque3 from "../assets/mosque-3.jpg";
 
 export default function App() {
   const [showFundraising, setShowFundraising] = useState(false);
