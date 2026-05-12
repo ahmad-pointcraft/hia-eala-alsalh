@@ -4,6 +4,7 @@ import { Language } from "../utils/translations";
 import logo from "../../imports/logo.png";
 import { Paper, Box, Typography } from "@mui/material";
 import { getFontFamily, isRTL, getDirection } from '../utils/helpers';
+import { colors } from '../theme/tokens';
 
 interface AnnouncementsTickerProps {
 	language: Language;
@@ -57,10 +58,10 @@ export function AnnouncementsTicker({
 			aria-label={language === 'ar' ? 'إعلانات المسجد' : 'Masjid announcements'}
 			sx={{
 				width: "100%",
-				bgcolor: "rgba(0,0,0,0.4)",
+				bgcolor: "surface.raised",
 				backdropFilter: "blur(4px)",
 				borderTop: "1px solid",
-				borderColor: "rgba(212,175,55,0.3)",
+				borderColor: "border.medium",
 				overflow: "hidden",
 				borderRadius: 0,
 			}}
@@ -72,7 +73,6 @@ export function AnnouncementsTicker({
 					alignItems: "center",
 					height: { xs: 32, sm: 36, lg: 40 },
 				}}>
-				{/* Logo on far left (or far right in RTL) */}
 				<Box
 					sx={{
 						px: { xs: 1, sm: 1.5 },
@@ -81,7 +81,7 @@ export function AnnouncementsTicker({
 						alignItems: "center",
 						justifyContent: "center",
 						flexShrink: 0,
-						bgcolor: "rgba(0,0,0,0.6)",
+						bgcolor: "surface.deep",
 					}}>
 					<Box
 						component="img"
@@ -91,7 +91,6 @@ export function AnnouncementsTicker({
 					/>
 				</Box>
 
-				{/* Scrolling announcements text in the middle */}
 				<Box sx={{ flex: 1, overflow: "hidden", position: "relative" }}>
 					<Box
 						ref={scrollRef}
@@ -115,7 +114,6 @@ export function AnnouncementsTicker({
 					</Box>
 				</Box>
 
-				{/* Announcements label on far right (or far left in RTL) */}
 				<Box
 					sx={{
 						bgcolor: "primary.main",
@@ -126,7 +124,7 @@ export function AnnouncementsTicker({
 						justifyContent: "center",
 						flexShrink: 0,
 					}}>
-					<Megaphone style={{ width: "1em", height: "1em", color: "black" }} />
+					<Megaphone style={{ width: "1em", height: "1em", color: colors.text.onDark }} />
 				</Box>
 			</Box>
 		</Paper>

@@ -4,14 +4,14 @@
 
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
-at `specs/005-production-hardening/plan.md`.
+at `specs/006-theme-token-system/plan.md`.
 
 ## Project Context
 
 - **App**: Masjid Prayer Time Display — a 24/7 kiosk display for a mosque
 - **Stack**: React 18 + TypeScript (strict) + MUI v7 + Vite + Yarn
 - **Source**: Figma export migrated to MUI v7 (Spec 001–004 complete)
-- **Current focus**: Production hardening — error boundaries, local assets, accessibility, offline support (Spec 005)
+- **Current focus**: Polish & theme system — centralized color tokens, palette extension, hardcoded color migration (Spec 006)
 
 ## Spec Files
 

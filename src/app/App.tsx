@@ -99,10 +99,6 @@ export default function App() {
           inset: 0,
           bgcolor: "background.default",
           transition: "all 1000ms",
-          backgroundImage:
-            "linear-gradient(45deg, rgba(212, 175, 55, 0.02) 25%, transparent 25%, transparent 75%, rgba(212, 175, 55, 0.02) 75%, rgba(212, 175, 55, 0.02)), linear-gradient(45deg, rgba(212, 175, 55, 0.02) 25%, transparent 25%, transparent 75%, rgba(212, 175, 55, 0.02) 75%, rgba(212, 175, 55, 0.02))",
-          backgroundSize: "60px 60px",
-          backgroundPosition: "0 0, 30px 30px",
         }}
       />
 

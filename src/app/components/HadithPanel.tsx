@@ -19,7 +19,7 @@ export function HadithPanel({
         bgcolor: 'background.paper',
         backdropFilter: 'blur(4px)',
         border: '1px solid',
-        borderColor: 'rgba(212,175,55,0.3)',
+        borderColor: 'border.medium',
         borderRadius: 2,
         p: 0.75,
         px: '10px',
