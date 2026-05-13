@@ -11,6 +11,7 @@ import { HadithPanel } from "./components/HadithPanel";
 import { WeatherWidget } from "./components/WeatherWidget";
 import { AnnouncementsTicker } from "./components/AnnouncementsTicker";
 import { FundraisingOverlay } from "./components/FundraisingOverlay";
+import { IslamicGeometricOverlay } from "./components/IslamicGeometricOverlay";
 import { EventModeDisplay } from "./components/EventModeDisplay";
 import { ImageCarousel } from "./components/ImageCarousel";
 import { translations, Language } from "./utils/translations";
@@ -102,6 +103,16 @@ export default function App() {
   const sunrisePrayer = prayers.find((p) => p.key === "Sunrise");
   const sunsetTime = "19:28";
 
+  const isPraying = useMemo(() => {
+    const nowMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
+    return prayerPrayers.some((p) => {
+      if (p.iqamaTime === "\u2014") return false;
+      const [ih = 0, im = 0] = p.iqamaTime.split(":").map(Number);
+      const iqamaMinutes = ih * 60 + im;
+      return nowMinutes >= iqamaMinutes && nowMinutes < iqamaMinutes + 5;
+    });
+  }, [currentTime, prayerPrayers]);
+
   return (
     <Box sx={{ position: "relative", width: "100%", height: "100vh", overflow: "hidden" }}>
       <Box
@@ -122,6 +133,24 @@ export default function App() {
           translations={t}
           currentTime={currentTime}
         />
+
+        {isPraying && (
+          <Box
+            sx={{
+              position: "absolute",
+              inset: 0,
+              zIndex: 20,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              bgcolor: "rgba(10,31,10,0.85)",
+            }}
+          >
+            <Box sx={{ opacity: 0.3, position: "absolute", inset: 0 }}>
+              <IslamicGeometricOverlay />
+            </Box>
+          </Box>
+        )}
 
         <AnimatePresence mode="wait">
           <motion.div
