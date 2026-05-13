@@ -11,7 +11,6 @@ import { HadithPanel } from "./components/HadithPanel";
 import { WeatherWidget } from "./components/WeatherWidget";
 import { AnnouncementsTicker } from "./components/AnnouncementsTicker";
 import { FundraisingOverlay } from "./components/FundraisingOverlay";
-import { IslamicGeometricOverlay } from "./components/IslamicGeometricOverlay";
 import { EventModeDisplay } from "./components/EventModeDisplay";
 import { ImageCarousel } from "./components/ImageCarousel";
 import { translations, Language } from "./utils/translations";
@@ -113,10 +112,6 @@ export default function App() {
         }}
       />
 
-      <AnimatePresence>
-        {eventMode && <IslamicGeometricOverlay />}
-      </AnimatePresence>
-
       <Stack sx={{ position: "relative", zIndex: 10, height: "100%" }}>
         <Header
           eventMode={eventMode}
@@ -129,29 +124,14 @@ export default function App() {
         />
 
         <AnimatePresence mode="wait">
-          {eventMode ? (
-            <motion.div
-              key="event-mode"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={defaultTransition ?? { duration: 0.4 }}
-              style={{ flex: 1, position: "relative", overflow: "hidden" }}
-            >
-              <EventModeDisplay
-                language={language}
-                translations={t}
-              />
-            </motion.div>
-          ) : (
-            <motion.div
-              key="normal-mode"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={defaultTransition ?? { duration: 0.5, ease: [0.25, 1, 0.5, 1] }}
-              style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}
-            >
+          <motion.div
+            key="normal-mode"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={defaultTransition ?? { duration: 0.5, ease: [0.25, 1, 0.5, 1] }}
+            style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}
+          >
               <Box sx={{ flex: 1, display: "flex", gap: 2, px: "48px", py: 1.5, overflow: "hidden" }}>
                 <Box sx={{ flex: 3, display: "flex", flexDirection: "column", gap: 1.5, minWidth: 0 }}>
                   <Box sx={{ flex: 1, ...floatingCardSx, overflow: "hidden" }}>
@@ -268,7 +248,6 @@ export default function App() {
                 </Box>
               </Box>
             </motion.div>
-          )}
         </AnimatePresence>
 
         <AnnouncementsTicker
@@ -283,6 +262,14 @@ export default function App() {
           onClose={() => setShowFundraising(false)}
           language={language}
           translations={t}
+        />
+      )}
+
+      {eventMode && (
+        <EventModeDisplay
+          language={language}
+          translations={t}
+          onClose={() => setEventMode(false)}
         />
       )}
     </Box>
