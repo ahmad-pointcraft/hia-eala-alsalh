@@ -176,14 +176,15 @@ The project constitution (`.specify/memory/constitution.md`) defines 9 governing
 
 ### Migration Roadmap
 
-| Spec | Priority | Description                                                         | Status      |
-| ---- | -------- | ------------------------------------------------------------------- | ----------- |
-| 001  | **P0**   | Bootstrap & Cleanup — Remove Tailwind/shadcn, set up MUI            | ✅ Complete |
-| 002  | **P0**   | MUI Component Migration — Rewrite all components with `sx` prop     | ⬜ Pending  |
-| 003  | **P0**   | Dynamic Data & Shared Utils — Dynamic prayer detection, deduplicate | ⬜ Pending  |
-| 004  | **P1**   | Performance & Type Safety — Shared hooks, context providers         | ⬜ Pending  |
-| 005  | **P2**   | Production Hardening — Error boundaries, offline, accessibility     | ⬜ Pending  |
-| 006  | **P3**   | Polish & Theme System — Theme tokens, responsive audit              | ⬜ Pending  |
+| Spec | Priority | Description                                                         | Status  |
+| ---- | -------- | ------------------------------------------------------------------- | ------- |
+| 001  | **P0**   | Bootstrap & Cleanup — Remove Tailwind/shadcn, set up MUI            | ✅ Done |
+| 002  | **P0**   | MUI Component Migration — Rewrite all components with `sx` prop     | ✅ Done |
+| 003  | **P0**   | Dynamic Data & Shared Utils — Dynamic prayer detection, deduplicate | ✅ Done |
+| 004  | **P1**   | Performance & Type Safety — Shared hooks, context providers         | ✅ Done |
+| 005  | **P2**   | Production Hardening — Error boundaries, offline, accessibility     | ✅ Done |
+| 006  | **P3**   | Polish & Theme System — Theme tokens, responsive audit              | ✅ Done |
+| 007  | **P0**   | Mockup 7 Redesign — Floating widgets layout, two-column glassmorphic | ⬜ Pending |
 
 ```doc
 Spec 001 (Bootstrap) → Spec 002 (MUI Migration) → Spec 003 (Dynamic Data)
@@ -193,6 +194,8 @@ Spec 001 (Bootstrap) → Spec 002 (MUI Migration) → Spec 003 (Dynamic Data)
                                                    Spec 005 (Hardening)
                                                           ↓
                                                    Spec 006 (Polish)
+                                                          ↓
+                                                   Spec 007 (Mockup 7 Redesign)
 ```
 
 ---
