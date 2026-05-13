@@ -17,3 +17,6 @@
 !.yarn/sdks
 !.yarn/versions
 .pnp.*
+
+# Impeccable sidecar (regenerated from DESIGN.md)
+.impeccable/
