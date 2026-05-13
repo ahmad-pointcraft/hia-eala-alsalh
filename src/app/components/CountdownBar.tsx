@@ -1,6 +1,7 @@
 import { useRef, useEffect } from "react";
 import { Language } from "../utils/translations";
-import { Paper, Box, Typography } from "@mui/material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import {
 	toArabicNumerals,
 	getFontFamily,
@@ -10,6 +11,7 @@ import {
 interface CountdownBarProps {
 	nextPrayer: string;
 	nextPrayerTime: string;
+	nextPrayerIqamaTime: string;
 	language: Language;
 	currentTime: Date;
 }
@@ -17,6 +19,7 @@ interface CountdownBarProps {
 export function CountdownBar({
 	nextPrayer,
 	nextPrayerTime,
+	nextPrayerIqamaTime,
 	language,
 	currentTime,
 }: CountdownBarProps) {
@@ -39,8 +42,15 @@ export function CountdownBar({
 	const countdown = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 	const displayCountdown =
 		language === "ar" ? toArabicNumerals(countdown) : countdown;
-	const prayerText =
-		language === "ar" ? `${nextPrayer} بعد` : `${nextPrayer} in`;
+
+	const displayPrayerTime = language === "ar" ? toArabicNumerals(nextPrayerTime) : nextPrayerTime;
+	const displayIqamaTime = language === "ar" ? toArabicNumerals(nextPrayerIqamaTime) : nextPrayerIqamaTime;
+
+	const nextPrayerLabel = language === "en" ? "Next Prayer" : "الصلاة القادمة";
+
+	const subtitleText = language === "en"
+		? `${nextPrayer} at ${displayPrayerTime} · Iqama ${displayIqamaTime}`
+		: `${nextPrayer} الساعة ${displayPrayerTime} · الإقامة ${displayIqamaTime}`;
 
 	const currentMinute = m;
 	useEffect(() => {
@@ -56,50 +66,69 @@ export function CountdownBar({
 	});
 
 	return (
-		<Paper
+		<Box
 			dir={getDirection(language)}
 			role="timer"
 			sx={{
-				height: "100%",
 				display: "flex",
 				flexDirection: "column",
+				alignItems: "center",
 				justifyContent: "center",
-				bgcolor: "background.paper",
-				backdropFilter: "blur(4px)",
-				border: "1px solid",
-				borderColor: "border.medium",
-				borderRadius: 2,
-				p: { xs: 1, sm: 1.5 },
-			}}>
-			<Box
+				height: "100%",
+				py: 3,
+				px: 2,
+			}}
+		>
+			<Typography
 				sx={{
-					display: "flex",
-					alignItems: "center",
-					justifyContent: "space-between",
-					gap: { xs: 1, sm: 2 },
-					width: "100%",
-				}}>
-				<Typography
-					sx={{
-						color: "text.primary",
-						fontWeight: "bold",
-						fontSize: { xs: "14px", sm: "16px", lg: "36px" },
-						fontFamily: getFontFamily(language),
-					}}>
-					{prayerText}
-				</Typography>
+					color: "text.whiteMuted",
+					textTransform: "uppercase",
+					letterSpacing: "0.15em",
+					fontWeight: 600,
+					fontSize: { xs: "10px", sm: "11px", lg: "13px" },
+				}}
+			>
+				{nextPrayerLabel}
+			</Typography>
 
-				<Typography
-					sx={{
-						color: "primary.main",
-						fontFamily: "monospace",
-						fontWeight: "bold",
-						letterSpacing: "0.05em",
-						fontSize: { xs: "14px", sm: "16px", lg: "36px" },
-					}}>
-					{displayCountdown}
-				</Typography>
-			</Box>
+			<Typography
+				sx={{
+					color: "primary.main",
+					fontWeight: 800,
+					fontSize: { xs: "28px", sm: "34px", lg: "40px" },
+					fontFamily: getFontFamily(language),
+					mt: 1,
+					lineHeight: 1.2,
+				}}
+			>
+				{nextPrayer}
+			</Typography>
+
+			<Typography
+				sx={{
+					color: "text.primary",
+					fontFamily: '"Roboto Mono", monospace',
+					fontWeight: 700,
+					letterSpacing: "0.05em",
+					fontSize: { xs: "36px", sm: "48px", lg: "64px" },
+					lineHeight: 1.1,
+					mt: 1,
+				}}
+			>
+				{displayCountdown}
+			</Typography>
+
+			<Typography
+				sx={{
+					color: "text.whiteMuted",
+					fontSize: { xs: "11px", sm: "12px", lg: "13px" },
+					fontFamily: getFontFamily(language),
+					mt: 1.25,
+				}}
+			>
+				{subtitleText}
+			</Typography>
+
 			{pendingAnnouncement.current !== undefined && (
 				<Box
 					component="span"
@@ -116,10 +145,11 @@ export function CountdownBar({
 						clip: "rect(0, 0, 0, 0)",
 						whiteSpace: "nowrap",
 						borderWidth: 0,
-					}}>
+					}}
+				>
 					{pendingAnnouncement.current}
 				</Box>
 			)}
-		</Paper>
+		</Box>
 	);
 }

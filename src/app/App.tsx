@@ -3,9 +3,8 @@ import { motion, AnimatePresence } from "motion/react";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
-import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
 import { Header } from "./components/Header";
-import { MasjidInfo } from "./components/MasjidInfo";
 import { PrayerCard } from "./components/PrayerCard";
 import { CountdownBar } from "./components/CountdownBar";
 import { HadithPanel } from "./components/HadithPanel";
@@ -22,6 +21,15 @@ import { useClock } from "./utils/useClock";
 import mosque1 from "../assets/mosque-1.jpg";
 import mosque2 from "../assets/mosque-2.jpg";
 import mosque3 from "../assets/mosque-3.jpg";
+
+const floatingCardSx = {
+	bgcolor: "surface.raised",
+	border: "1px solid",
+	borderColor: "border.thin",
+	borderRadius: 3,
+	backdropFilter: "blur(16px)",
+	boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+} as const;
 
 export default function App() {
   const [showFundraising, setShowFundraising] = useState(false);
@@ -91,6 +99,10 @@ export default function App() {
     setLanguage((prev) => (prev === "en" ? "ar" : "en"));
   };
 
+  const prayerPrayers = prayers.filter((p) => p.key !== "Sunrise");
+  const sunrisePrayer = prayers.find((p) => p.key === "Sunrise");
+  const sunsetTime = "19:28";
+
   return (
     <Box sx={{ position: "relative", width: "100%", height: "100vh", overflow: "hidden" }}>
       <Box
@@ -98,7 +110,6 @@ export default function App() {
           position: "absolute",
           inset: 0,
           bgcolor: "background.default",
-          transition: "all 1000ms",
         }}
       />
 
@@ -135,109 +146,126 @@ export default function App() {
           ) : (
             <motion.div
               key="normal-mode"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={defaultTransition ?? { duration: 0.5, ease: "easeInOut" }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={defaultTransition ?? { duration: 0.5, ease: [0.25, 1, 0.5, 1] }}
               style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}
             >
-              <Box sx={{ flexShrink: 0 }}>
-                <MasjidInfo
-                  language={language}
-                  translations={t}
-                  currentTime={currentTime}
-                />
-              </Box>
-
-              <Box sx={{ flex: 1, overflow: "auto", px: "16px", py: "10px" }}>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.9, y: -20 }}
-                  transition={defaultTransition ?? { delay: 0.2, duration: 0.4 }}
-                >
-                  <Grid container spacing={{ xs: 1, sm: 1.5 }} sx={{ mb: { xs: 1, sm: 1.5 } }}>
-                    <Grid size={{ xs: 12, lg: 6 }}>
-                        <CountdownBar
-                          nextPrayer={nextPrayer.name}
-                          nextPrayerTime={nextPrayer.time}
-                          language={language}
-                          currentTime={currentTime}
-                        />
-                    </Grid>
-                    <Grid size={{ xs: 12, lg: 6 }}>
-                      <WeatherWidget
-                        language={language}
-                        translations={t}
-                      />
-                    </Grid>
-                  </Grid>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.9, y: -20 }}
-                  transition={defaultTransition ?? { delay: 0.4, duration: 0.4 }}
-                >
-                  <Box sx={{ height: { xs: 256, sm: 320, lg: 360 } }}>
+              <Box sx={{ flex: 1, display: "flex", gap: 2, px: "48px", py: 1.5, overflow: "hidden" }}>
+                <Box sx={{ flex: 3, display: "flex", flexDirection: "column", gap: 1.5, minWidth: 0 }}>
+                  <Box sx={{ flex: 1, ...floatingCardSx, overflow: "hidden" }}>
                     <ImageCarousel
                       images={carouselImages}
                       interval={5000}
                     />
                   </Box>
-                </motion.div>
-              </Box>
-
-              <Box sx={{ flexShrink: 0, mx: 0, my: "5px", px: "20px", pt: 0, pb: "10px" }}>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.9, y: -20 }}
-                  transition={defaultTransition ?? { delay: 0.3, duration: 0.4 }}
-                >
-                  <Box sx={{ mb: 1 }}>
+                  <Box sx={{ ...floatingCardSx }}>
                     <HadithPanel
                       language={language}
                       translations={t}
                     />
                   </Box>
-                </motion.div>
+                </Box>
 
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  transition={defaultTransition ?? { duration: 0.4 }}
+                <Box sx={{ flex: 2, display: "flex", flexDirection: "column", gap: 1.5, minWidth: 0 }}>
+                  <Box sx={{ flex: 1, ...floatingCardSx }}>
+                    <CountdownBar
+                      nextPrayer={nextPrayer.name}
+                      nextPrayerTime={nextPrayer.time}
+                      nextPrayerIqamaTime={nextPrayer.iqamaTime}
+                      language={language}
+                      currentTime={currentTime}
+                    />
+                  </Box>
+                  <Box sx={{ ...floatingCardSx }}>
+                    <WeatherWidget
+                      language={language}
+                      translations={t}
+                    />
+                  </Box>
+                </Box>
+              </Box>
+
+              <Box sx={{ flexShrink: 0, px: "48px", pb: 1 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    gap: 1.5,
+                    alignItems: "stretch",
+                    dir: language === "ar" ? "rtl" : "ltr",
+                  }}
                 >
-                  <Grid
-                    container
-                    spacing={{ xs: 1, sm: 1.5 }}
-                    dir={language === "ar" ? "rtl" : "ltr"}
-                    sx={{ mt: 1.5 }}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      px: 1.5,
+                      py: 1,
+                      borderRadius: 2,
+                      bgcolor: "surface.overlay",
+                      border: "1px solid",
+                      borderColor: "border.thin",
+                      gap: 0.25,
+                      minWidth: { xs: 56, sm: 72 },
+                    }}
                   >
-                    {prayers.map((prayer, index) => (
-                      <Grid key={prayer.key} size={{ xs: 6, sm: 4, lg: 2 }}>
-                        <motion.div
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, scale: 0.8, y: -10 }}
-                          transition={defaultTransition ?? { delay: index * 0.05, duration: 0.3 }}
-                        >
-                          <PrayerCard
-                            name={prayer.name}
-                            time={prayer.time}
-                            iqamaTime={prayer.iqamaTime}
-                            isActive={prayer.key === activePrayer?.key}
-                            language={language}
-                            iqamaLabel={t.iqama}
-                            prayerKey={prayer.key}
-                          />
-                        </motion.div>
-                      </Grid>
-                    ))}
-                  </Grid>
-                </motion.div>
+                    <Box sx={{ fontSize: "16px", lineHeight: 1 }}>🌅</Box>
+                    <Typography sx={{ fontSize: { xs: "8px", lg: "10px" }, color: "text.whiteMuted", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600 }}>
+                      {language === "en" ? "Sunrise" : "الشروق"}
+                    </Typography>
+                    <Typography sx={{ fontSize: { xs: "12px", lg: "14px" }, color: "text.primary", fontWeight: 700, fontFamily: '"Roboto Mono", monospace' }}>
+                      {sunrisePrayer?.time ?? "--:--"}
+                    </Typography>
+                  </Box>
+
+                  {prayerPrayers.map((prayer, index) => (
+                    <Box key={prayer.key} sx={{ flex: prayer.key === activePrayer?.key ? 1.5 : 1 }}>
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={defaultTransition ?? { delay: index * 0.05, duration: 0.3 }}
+                      >
+                        <PrayerCard
+                          name={prayer.name}
+                          time={prayer.time}
+                          iqamaTime={prayer.iqamaTime}
+                          isActive={prayer.key === activePrayer?.key}
+                          language={language}
+                          iqamaLabel={t.iqama}
+                          prayerKey={prayer.key}
+                        />
+                      </motion.div>
+                    </Box>
+                  ))}
+
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      px: 1.5,
+                      py: 1,
+                      borderRadius: 2,
+                      bgcolor: "surface.overlay",
+                      border: "1px solid",
+                      borderColor: "border.thin",
+                      gap: 0.25,
+                      minWidth: { xs: 56, sm: 72 },
+                    }}
+                  >
+                    <Box sx={{ fontSize: "16px", lineHeight: 1 }}>🌇</Box>
+                    <Typography sx={{ fontSize: { xs: "8px", lg: "10px" }, color: "text.whiteMuted", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600 }}>
+                      {language === "en" ? "Sunset" : "الغروب"}
+                    </Typography>
+                    <Typography sx={{ fontSize: { xs: "12px", lg: "14px" }, color: "text.primary", fontWeight: 700, fontFamily: '"Roboto Mono", monospace' }}>
+                      {language === "ar" ? "١٩:٢٨" : sunsetTime}
+                    </Typography>
+                  </Box>
+                </Box>
               </Box>
             </motion.div>
           )}

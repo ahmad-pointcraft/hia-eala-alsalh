@@ -2,7 +2,8 @@ import { Droplets } from "lucide-react";
 import { Cloud } from "@mui/icons-material";
 import { Language } from "../utils/translations";
 import type { Translations } from "../utils/translations";
-import { Paper, Box, Typography } from "@mui/material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import {
 	toArabicNumerals,
 	getFontFamily,
@@ -19,86 +20,74 @@ export function WeatherWidget({ language, translations }: WeatherWidgetProps) {
 	const humidity = language === "ar" ? toArabicNumerals("75") : "75";
 
 	return (
-		<Paper
+		<Box
 			dir={getDirection(language)}
 			sx={{
-				height: "100%",
 				display: "flex",
-				flexDirection: "column",
-				justifyContent: "center",
-				bgcolor: "background.paper",
-				backdropFilter: "blur(4px)",
-				border: "1px solid",
-				borderColor: "border.medium",
-				borderRadius: 2,
-				p: { xs: 1, sm: 1.5 },
-			}}>
-			<Box
+				alignItems: "center",
+				gap: 2,
+				py: 1.5,
+				px: 2.5,
+			}}
+		>
+			<Cloud
 				sx={{
-					display: "flex",
-					alignItems: "center",
-					justifyContent: "space-between",
-					gap: { xs: 1, sm: 2 },
-					width: "100%",
-				}}>
+					fontSize: { xs: 36, sm: 40, lg: 44 },
+					color: "text.whiteMuted",
+					flexShrink: 0,
+				}}
+			/>
+
+			<Box sx={{ flex: 1 }}>
+				<Typography
+					sx={{
+						color: "text.primary",
+						fontSize: { xs: "1.5rem", sm: "1.75rem", lg: "2.25rem" },
+						fontWeight: 800,
+						lineHeight: 1.1,
+					}}
+				>
+					{temperature}°C
+				</Typography>
+				<Typography
+					sx={{
+						color: "text.whiteMuted",
+						fontSize: "12px",
+						mt: 0.25,
+						fontFamily: getFontFamily(language),
+					}}
+				>
+					{language === "ar" ? "هانوي" : "Hanoi"}
+				</Typography>
+			</Box>
+
+			<Box sx={{ textAlign: "end" }}>
+				<Typography
+					sx={{
+						color: "text.whiteSoft",
+						fontSize: { xs: "0.75rem", sm: "0.875rem", lg: "0.875rem" },
+						fontFamily: getFontFamily(language),
+					}}
+				>
+					{translations.weather?.partlyCloudy || "Partly Cloudy"}
+				</Typography>
 				<Box
 					sx={{
 						display: "flex",
 						alignItems: "center",
-						gap: { xs: 1, sm: 1.5 },
-					}}>
-					<Cloud
-						sx={{
-							width: { xs: 32, sm: 40, lg: 48 },
-							height: { xs: 32, sm: 40, lg: 48 },
-							color: "text.secondary",
-						}}
-					/>
-					<Box>
-						<Typography
-							sx={{
-								color: "text.primary",
-								fontSize: { xs: "1.25rem", sm: "1.5rem", lg: "1.875rem" },
-								fontWeight: "bold",
-							}}>
-							{temperature}°C
-						</Typography>
-						<Typography
-							sx={{
-								color: "text.secondary",
-								fontSize: { xs: "0.75rem", sm: "0.875rem", lg: "1rem" },
-								mt: 0.5,
-								fontFamily: getFontFamily(language),
-							}}>
-							{language === "ar" ? "هانوي" : "Hanoi"}
-						</Typography>
-					</Box>
-				</Box>
-
-				<Box sx={{ textAlign: "end" }}>
-					<Typography
-						sx={{
-							color: "grey.300",
-							fontSize: { xs: "0.75rem", sm: "0.875rem", lg: "1rem" },
-							fontFamily: getFontFamily(language),
-						}}>
-						{translations.weather?.partlyCloudy || "Partly Cloudy"}
+						gap: 0.5,
+						color: "text.whiteMuted",
+						fontSize: "12px",
+						mt: 0.25,
+						justifyContent: "flex-end",
+					}}
+				>
+					<Droplets style={{ width: "1em", height: "1em" }} />
+					<Typography component="span" sx={{ fontSize: "12px" }}>
+						{humidity}%
 					</Typography>
-					<Box
-						sx={{
-							display: "flex",
-							alignItems: "center",
-							gap: 0.5,
-							color: "text.secondary",
-							fontSize: { xs: "0.75rem", sm: "0.875rem" },
-							mt: 0.5,
-							justifyContent: "flex-end",
-						}}>
-						<Droplets style={{ width: "1.25em", height: "1.25em" }} />
-						<Typography component="span">{humidity}%</Typography>
-					</Box>
 				</Box>
 			</Box>
-		</Paper>
+		</Box>
 	);
 }
