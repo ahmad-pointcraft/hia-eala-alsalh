@@ -51,14 +51,15 @@ export function PrayerCard({
   return (
     <Card
       dir={getDirection(language)}
+      aria-current={isActive ? 'true' : undefined}
       sx={{
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         p: { xs: 0.75, sm: 1, lg: 1.5 },
-        borderRadius: 2,
-        transition: 'all 300ms',
+        borderRadius: "16px",
+        transition: 'all 300ms cubic-bezier(0.25, 1, 0.5, 1)',
         ...(isActive
           ? {
               bgcolor: 'border.default',
@@ -78,17 +79,17 @@ export function PrayerCard({
         <Box
           sx={{
             mb: { xs: 0.25, sm: 0.5, lg: 1 },
-            color: isActive ? 'primary.main' : 'grey.500',
+            color: isActive ? 'primary.main' : 'text.secondary',
             '& svg': { width: { xs: 20, sm: 24, lg: 32 }, height: { xs: 20, sm: 24, lg: 32 } },
           }}
         >
-          <Icon />
+          <Icon aria-hidden="true" />
         </Box>
 
         <Typography
           sx={{
             color: 'text.secondary',
-            textTransform: 'uppercase',
+            textTransform: language === 'ar' ? 'none' : 'uppercase',
             letterSpacing: '0.05em',
             mb: { xs: 0.25, sm: 0.5 },
             fontWeight: isActive ? 'bold' : 'normal',

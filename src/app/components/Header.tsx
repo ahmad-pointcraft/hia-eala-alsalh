@@ -8,6 +8,7 @@ import { Heart, CalendarClock, WifiOff } from 'lucide-react';
 import { Language } from '../utils/translations';
 import type { Translations } from '../utils/translations';
 import { getFontFamily, getDirection, toArabicNumerals } from '../utils/helpers';
+import { colors } from '../theme/tokens';
 
 interface HeaderProps {
   eventMode: boolean;
@@ -84,6 +85,7 @@ export function Header({ eventMode, onToggleEventMode, language, onToggleLanguag
           >
             <ButtonBase
               onClick={language === 'en' ? onToggleLanguage : undefined}
+              aria-label="العربية"
               sx={{
                 px: 2.5,
                 py: 1,
@@ -101,6 +103,7 @@ export function Header({ eventMode, onToggleEventMode, language, onToggleLanguag
             </ButtonBase>
             <ButtonBase
               onClick={language === 'ar' ? onToggleLanguage : undefined}
+              aria-label="English"
               sx={{
                 px: 2.5,
                 py: 1,
@@ -207,7 +210,7 @@ export function Header({ eventMode, onToggleEventMode, language, onToggleLanguag
               px: 3,
               py: 1,
               borderRadius: 24,
-              background: 'linear-gradient(135deg, #B8960C, #D4AF37)',
+              background: `linear-gradient(135deg, ${colors.gold.dark}, ${colors.gold.main})`,
               color: 'text.onGold',
               fontSize: { xs: '0.75rem', sm: '0.875rem' },
               fontWeight: 600,

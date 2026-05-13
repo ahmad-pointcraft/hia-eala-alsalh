@@ -18,6 +18,8 @@ import { translations, Language } from "./utils/translations";
 import { getCurrentPrayer, getNextPrayer, getTimeToNextPrayer } from "./utils/prayerTimes";
 import type { PrayerTime } from "./utils/prayerTimes";
 import { useClock } from "./utils/useClock";
+import { getDirection } from "./utils/helpers";
+import { colors } from "./theme/tokens";
 import mosque1 from "../assets/mosque-1.jpg";
 import mosque2 from "../assets/mosque-2.jpg";
 import mosque3 from "../assets/mosque-3.jpg";
@@ -26,9 +28,9 @@ const floatingCardSx = {
 	bgcolor: "surface.raised",
 	border: "1px solid",
 	borderColor: "border.thin",
-	borderRadius: 3,
+	borderRadius: "24px",
 	backdropFilter: "blur(16px)",
-	boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+	boxShadow: `0 8px 32px ${colors.surface.overlay}`,
 } as const;
 
 export default function App() {
@@ -75,9 +77,6 @@ export default function App() {
       );
     };
 
-    if (fundraisingTimerRef.current) {
-      clearTimeout(fundraisingTimerRef.current);
-    }
     fundraisingTimerRef.current = setTimeout(
       () => {
         if (getTimeToNextPrayer(prayers, new Date()) > 10 * 60) {
@@ -101,7 +100,7 @@ export default function App() {
 
   const prayerPrayers = prayers.filter((p) => p.key !== "Sunrise");
   const sunrisePrayer = prayers.find((p) => p.key === "Sunrise");
-  const sunsetTime = "19:28";
+  const sunsetTime = prayers.find((p) => p.key === "Maghrib")?.time ?? "19:28";
 
   const isPraying = useMemo(() => {
     const nowMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
@@ -136,6 +135,8 @@ export default function App() {
 
         {isPraying && (
           <Box
+            role="alert"
+            aria-label={language === "en" ? "Prayer in progress" : "الصلاة جارية"}
             sx={{
               position: "absolute",
               inset: 0,
@@ -143,7 +144,7 @@ export default function App() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              bgcolor: "rgba(10,31,10,0.85)",
+              bgcolor: `${colors.background.default}D9`,
             }}
           >
             <Box sx={{ opacity: 0.3, position: "absolute", inset: 0 }}>
@@ -202,7 +203,7 @@ export default function App() {
                     display: "flex",
                     gap: 1.5,
                     alignItems: "stretch",
-                    dir: language === "ar" ? "rtl" : "ltr",
+                    dir: getDirection(language),
                   }}
                 >
                   <Box
@@ -213,7 +214,7 @@ export default function App() {
                       justifyContent: "center",
                       px: 1.5,
                       py: 1,
-                      borderRadius: 2,
+                      borderRadius: "16px",
                       bgcolor: "surface.overlay",
                       border: "1px solid",
                       borderColor: "border.thin",
@@ -221,7 +222,7 @@ export default function App() {
                       minWidth: { xs: 56, sm: 72 },
                     }}
                   >
-                    <Box sx={{ fontSize: "16px", lineHeight: 1 }}>🌅</Box>
+                    <Box sx={{ fontSize: "16px", lineHeight: 1 }} role="img" aria-label={language === "en" ? "Sunrise" : "شروق"}>🌅</Box>
                     <Typography sx={{ fontSize: { xs: "8px", lg: "10px" }, color: "text.whiteMuted", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600 }}>
                       {language === "en" ? "Sunrise" : "الشروق"}
                     </Typography>
@@ -258,7 +259,7 @@ export default function App() {
                       justifyContent: "center",
                       px: 1.5,
                       py: 1,
-                      borderRadius: 2,
+                      borderRadius: "16px",
                       bgcolor: "surface.overlay",
                       border: "1px solid",
                       borderColor: "border.thin",
@@ -266,7 +267,7 @@ export default function App() {
                       minWidth: { xs: 56, sm: 72 },
                     }}
                   >
-                    <Box sx={{ fontSize: "16px", lineHeight: 1 }}>🌇</Box>
+                    <Box sx={{ fontSize: "16px", lineHeight: 1 }} role="img" aria-label={language === "en" ? "Sunset" : "غروب"}>🌇</Box>
                     <Typography sx={{ fontSize: { xs: "8px", lg: "10px" }, color: "text.whiteMuted", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600 }}>
                       {language === "en" ? "Sunset" : "الغروب"}
                     </Typography>
@@ -281,7 +282,6 @@ export default function App() {
 
         <AnnouncementsTicker
           language={language}
-          announcementsLabel={t.announcements}
           announcements={t.announcementsList}
         />
       </Stack>
@@ -297,7 +297,6 @@ export default function App() {
       {eventMode && (
         <EventModeDisplay
           language={language}
-          translations={t}
           onClose={() => setEventMode(false)}
         />
       )}

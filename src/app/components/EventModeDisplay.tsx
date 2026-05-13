@@ -1,5 +1,6 @@
 import { useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
@@ -8,12 +9,11 @@ import CalendarMonth from "@mui/icons-material/CalendarMonth";
 import AccessTime from "@mui/icons-material/AccessTime";
 import LocationOn from "@mui/icons-material/LocationOn";
 import { Language } from "../utils/translations";
-import type { Translations } from "../utils/translations";
 import { getFontFamily, getDirection } from "../utils/helpers";
+import { colors } from "../theme/tokens";
 
 interface EventModeDisplayProps {
   language: Language;
-  translations: Translations;
   onClose?: () => void;
 }
 
@@ -71,6 +71,7 @@ export function EventModeDisplay({ language, onClose }: EventModeDisplayProps) {
   const fontFamily = getFontFamily(language);
   const events = language === "ar" ? eventsAr : eventsEn;
   const heading = language === "en" ? "Upcoming Events" : "الأحداث القادمة";
+  const prefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
 
   const handleClose = useCallback(() => {
     onClose?.();
@@ -86,6 +87,9 @@ export function EventModeDisplay({ language, onClose }: EventModeDisplayProps) {
   return (
     <AnimatePresence>
       <Box
+        role="dialog"
+        aria-modal="true"
+        aria-label={heading}
         onClick={handleClose}
         sx={{
           position: "fixed",
@@ -94,7 +98,7 @@ export function EventModeDisplay({ language, onClose }: EventModeDisplayProps) {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          bgcolor: "rgba(0,0,0,0.6)",
+          bgcolor: "surface.deep",
           backdropFilter: "blur(4px)",
         }}
         dir={dir}
@@ -103,7 +107,7 @@ export function EventModeDisplay({ language, onClose }: EventModeDisplayProps) {
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          transition={{ duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
+          transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.3, ease: [0.25, 1, 0.5, 1] }}
           onClick={(e) => e.stopPropagation()}
           style={{ width: "100%", maxWidth: 520 }}
         >
@@ -113,9 +117,9 @@ export function EventModeDisplay({ language, onClose }: EventModeDisplayProps) {
               backdropFilter: "blur(16px)",
               border: "1px solid",
               borderColor: "border.thin",
-              borderRadius: 3,
+              borderRadius: "24px",
               overflow: "hidden",
-              boxShadow: "0 16px 64px rgba(0,0,0,0.5)",
+              boxShadow: `0 16px 64px ${colors.surface.medium}`,
             }}
           >
             <Box
@@ -157,7 +161,7 @@ export function EventModeDisplay({ language, onClose }: EventModeDisplayProps) {
                   key={index}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 + index * 0.08, duration: 0.25, ease: [0.25, 1, 0.5, 1] }}
+                  transition={prefersReducedMotion ? { duration: 0 } : { delay: 0.1 + index * 0.08, duration: 0.25, ease: [0.25, 1, 0.5, 1] }}
                 >
                   <Box
                     sx={{

@@ -140,16 +140,16 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
           backdropFilter: 'blur(16px)',
           border: '1px solid',
           borderColor: 'border.thin',
-          borderRadius: 3,
+          borderRadius: "24px",
           p: { xs: 3, sm: 6 },
           maxWidth: '768px',
           width: '100%',
           position: 'relative',
           mx: 2,
-          boxShadow: '0 16px 64px rgba(0,0,0,0.5)',
+          boxShadow: `0 16px 64px ${colors.surface.medium}`,
         }}
       >
-        <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, background: `linear-gradient(to right, transparent, ${colors.gold.main}, transparent)` }} />
+        <Box sx={{ position: 'absolute', top: 0, insetInline: 0, height: 4, background: `linear-gradient(to right, transparent, ${colors.gold.main}, transparent)` }} />
 
         <IconButton
           onClick={onClose}
@@ -234,7 +234,7 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
 
           <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', mt: { xs: 3, sm: 4 }, pt: { xs: 3, sm: 4 }, borderTop: '1px solid', borderTopColor: 'border.thin', gap: 2 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 2, sm: 3 } }}>
-            <Box sx={{ width: { xs: 96, sm: 128 }, height: { xs: 96, sm: 128 }, bgcolor: 'common.white', borderRadius: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <Box sx={{ width: { xs: 96, sm: 128 }, height: { xs: 96, sm: 128 }, bgcolor: 'common.white', borderRadius: "8px", display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }} role="img" aria-label={translations.fundraising.scanToDonate}>
               <Box sx={{ textAlign: 'center', fontSize: '0.75rem', color: colors.text.onGold, p: 1 }}>
                 <Typography sx={{ fontWeight: 'bold', mb: 0.5, fontSize: '0.75rem' }}>QR CODE</Typography>
                 <Typography sx={{ fontSize: '10px', fontFamily }}>{translations.fundraising.scanToDonate}</Typography>

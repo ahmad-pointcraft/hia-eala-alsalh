@@ -17,10 +17,10 @@ export function IslamicGeometricOverlay() {
 
   const cornerPositions = useMemo(
     () => [
-      { top: 0, left: 0, gradientOrigin: 'top left' },
-      { top: 0, right: 0, gradientOrigin: 'top right' },
-      { bottom: 0, left: 0, gradientOrigin: 'bottom left' },
-      { bottom: 0, right: 0, gradientOrigin: 'bottom right' },
+      { top: 0, insetInlineStart: 0, gradientOrigin: 'top left' },
+      { top: 0, insetInlineEnd: 0, gradientOrigin: 'top right' },
+      { bottom: 0, insetInlineStart: 0, gradientOrigin: 'bottom left' },
+      { bottom: 0, insetInlineEnd: 0, gradientOrigin: 'bottom right' },
     ],
     [],
   );
@@ -79,7 +79,7 @@ export function IslamicGeometricOverlay() {
       </motion.div>
 
       <motion.div
-        style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, background: `linear-gradient(90deg, transparent 0%, ${colors.gold.main} 50%, transparent 100%)` }}
+        style={{ position: 'absolute', top: 0, insetInline: 0, height: 4, background: `linear-gradient(90deg, transparent 0%, ${colors.gold.main} 50%, transparent 100%)` }}
         animate={{
           boxShadow: [
             `0 0 20px 4px ${colors.glow.subtle}`,
@@ -87,11 +87,11 @@ export function IslamicGeometricOverlay() {
             `0 0 20px 4px ${colors.glow.subtle}`,
           ],
         }}
-        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+        transition={{ duration: 3, repeat: Infinity, ease: [0.25, 1, 0.5, 1] }}
       />
 
       <motion.div
-        style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 4, background: `linear-gradient(90deg, transparent 0%, ${colors.gold.main} 50%, transparent 100%)` }}
+        style={{ position: 'absolute', bottom: 0, insetInline: 0, height: 4, background: `linear-gradient(90deg, transparent 0%, ${colors.gold.main} 50%, transparent 100%)` }}
         animate={{
           boxShadow: [
             `0 0 20px 4px ${colors.glow.subtle}`,
@@ -99,7 +99,7 @@ export function IslamicGeometricOverlay() {
             `0 0 20px 4px ${colors.glow.subtle}`,
           ],
         }}
-        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
+        transition={{ duration: 3, repeat: Infinity, ease: [0.25, 1, 0.5, 1], delay: 1.5 }}
       />
 
       {cornerPositions.map((pos, i) => (
@@ -107,7 +107,7 @@ export function IslamicGeometricOverlay() {
           key={i}
           style={{ position: 'absolute', width: 128, height: 128, ...pos }}
           animate={{ opacity: [0.2, 0.4, 0.2] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: i * 0.5 }}
+          transition={{ duration: 4, repeat: Infinity, ease: [0.25, 1, 0.5, 1], delay: i * 0.5 }}
         >
           <Box
             sx={{
@@ -122,9 +122,9 @@ export function IslamicGeometricOverlay() {
       {particlePositions.map((pos, i) => (
         <motion.div
           key={i}
-          style={{ position: 'absolute', width: 4, height: 4, left: pos.left, top: pos.top, backgroundColor: colors.gold.main, borderRadius: '50%' }}
+          style={{ position: 'absolute', width: 4, height: 4, insetInlineStart: pos.left, top: pos.top, backgroundColor: colors.gold.main, borderRadius: '50%' }}
           animate={{ y: [0, -30, 0], opacity: [0.3, 0.7, 0.3], scale: [1, 1.5, 1] }}
-          transition={{ duration: pos.duration, repeat: Infinity, ease: 'easeInOut', delay: pos.delay }}
+          transition={{ duration: pos.duration, repeat: Infinity, ease: [0.25, 1, 0.5, 1], delay: pos.delay }}
         />
       ))}
     </Box>

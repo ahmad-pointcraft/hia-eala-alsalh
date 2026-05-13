@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import Box from '@mui/material/Box';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { colors } from '../theme/tokens';
 
 interface ImageCarouselProps {
   images: string[];
@@ -9,6 +11,7 @@ interface ImageCarouselProps {
 
 export function ImageCarousel({ images, interval = 5000 }: ImageCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const prefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
 
   useEffect(() => {
     if (images.length <= 1) return;
@@ -28,11 +31,11 @@ export function ImageCarousel({ images, interval = 5000 }: ImageCarouselProps) {
       width: '100%',
       height: '100%',
       overflow: 'hidden',
-      borderRadius: 3,
+      borderRadius: "24px",
       bgcolor: 'surface.overlay',
       border: '1px solid',
       borderColor: 'border.thin',
-      boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+      boxShadow: `0 8px 32px ${colors.surface.overlay}`,
     }}>
       <AnimatePresence mode="wait">
         <motion.div
@@ -40,12 +43,12 @@ export function ImageCarousel({ images, interval = 5000 }: ImageCarouselProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
+          transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
           style={{ width: '100%', height: '100%' }}
         >
           <img
             src={images[currentIndex]}
-            alt={`Slide ${currentIndex + 1}`}
+            alt={`Mosque image ${currentIndex + 1} of ${images.length}`}
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />
         </motion.div>
@@ -55,10 +58,9 @@ export function ImageCarousel({ images, interval = 5000 }: ImageCarouselProps) {
         <Box sx={{
           position: 'absolute',
           bottom: 0,
-          left: 0,
-          right: 0,
+          insetInline: 0,
           height: 60,
-          background: 'linear-gradient(transparent, rgba(0,0,0,0.5))',
+          background: `linear-gradient(transparent, ${colors.surface.medium})`,
           display: 'flex',
           alignItems: 'flex-end',
           justifyContent: 'center',
@@ -74,11 +76,11 @@ export function ImageCarousel({ images, interval = 5000 }: ImageCarouselProps) {
               sx={{
                 width: index === currentIndex ? 28 : 10,
                 height: 10,
-                borderRadius: 1,
-                bgcolor: index === currentIndex ? 'primary.main' : 'rgba(255,255,255,0.25)',
+                borderRadius: "4px",
+                bgcolor: index === currentIndex ? 'primary.main' : colors.text.whiteMuted,
                 border: 'none',
                 cursor: 'pointer',
-                transition: 'all 300ms cubic-bezier(0.25, 1, 0.5, 1)',
+                transition: prefersReducedMotion ? 'none' : 'all 300ms cubic-bezier(0.25, 1, 0.5, 1)',
               }}
             />
           ))}

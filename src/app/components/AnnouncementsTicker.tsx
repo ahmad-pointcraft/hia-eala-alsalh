@@ -9,7 +9,6 @@ import { getFontFamily, isRTL, getDirection } from "../utils/helpers";
 interface AnnouncementsTickerProps {
 	language: Language;
 	announcements: string[];
-	announcementsLabel: string;
 }
 
 export function AnnouncementsTicker({

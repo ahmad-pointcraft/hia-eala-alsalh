@@ -84,8 +84,9 @@ export function CountdownBar({
 					color: "text.whiteMuted",
 					textTransform: "uppercase",
 					letterSpacing: "0.15em",
-					fontWeight: 600,
-					fontSize: { xs: "10px", sm: "11px", lg: "13px" },
+				fontWeight: 600,
+				fontSize: { xs: "10px", sm: "11px", lg: "13px" },
+				fontFamily: getFontFamily(language),
 				}}
 			>
 				{nextPrayerLabel}
