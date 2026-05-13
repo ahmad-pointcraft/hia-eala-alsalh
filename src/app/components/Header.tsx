@@ -1,236 +1,268 @@
-import { useState, useEffect } from 'react';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import ButtonBase from '@mui/material/ButtonBase';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import { Heart, CalendarClock, WifiOff } from 'lucide-react';
-import { Language } from '../utils/translations';
-import type { Translations } from '../utils/translations';
-import { getFontFamily, getDirection, toArabicNumerals } from '../utils/helpers';
-import { colors } from '../theme/tokens';
+import { useState, useEffect } from "react";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import ButtonBase from "@mui/material/ButtonBase";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import { Heart, CalendarClock, WifiOff } from "lucide-react";
+import { Language } from "../utils/translations";
+import type { Translations } from "../utils/translations";
+import {
+	getFontFamily,
+	getDirection,
+	toArabicNumerals,
+} from "../utils/helpers";
+import { colors } from "../theme/tokens";
 
 interface HeaderProps {
-  eventMode: boolean;
-  onToggleEventMode: () => void;
-  language: Language;
-  onToggleLanguage: () => void;
-  onShowFundraising: () => void;
-  translations: Translations;
-  currentTime: Date;
+	eventMode: boolean;
+	onToggleEventMode: () => void;
+	language: Language;
+	onToggleLanguage: () => void;
+	onShowFundraising: () => void;
+	translations: Translations;
+	currentTime: Date;
 }
 
-export function Header({ eventMode, onToggleEventMode, language, onToggleLanguage, onShowFundraising, translations, currentTime }: HeaderProps) {
-  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+export function Header({
+	eventMode,
+	onToggleEventMode,
+	language,
+	onToggleLanguage,
+	onShowFundraising,
+	translations,
+	currentTime,
+}: HeaderProps) {
+	const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
-  useEffect(() => {
-    const goOffline = () => setIsOffline(true);
-    const goOnline = () => setIsOffline(false);
-    window.addEventListener('offline', goOffline);
-    window.addEventListener('online', goOnline);
-    return () => {
-      window.removeEventListener('offline', goOffline);
-      window.removeEventListener('online', goOnline);
-    };
-  }, []);
+	useEffect(() => {
+		const goOffline = () => setIsOffline(true);
+		const goOnline = () => setIsOffline(false);
+		window.addEventListener("offline", goOffline);
+		window.addEventListener("online", goOnline);
+		return () => {
+			window.removeEventListener("offline", goOffline);
+			window.removeEventListener("online", goOnline);
+		};
+	}, []);
 
-  const formatTime = (date: Date) => {
-    const timeStr = date.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false
-    });
-    return language === 'ar' ? toArabicNumerals(timeStr) : timeStr;
-  };
+	const formatTime = (date: Date) => {
+		const timeStr = date.toLocaleTimeString("en-US", {
+			hour: "2-digit",
+			minute: "2-digit",
+			second: "2-digit",
+			hour12: false,
+		});
+		return language === "ar" ? toArabicNumerals(timeStr) : timeStr;
+	};
 
-  const getHijriDate = () => {
-    return language === 'ar' ? '١٥ ذو القعدة ١٤٤٧' : '15 Dhul-Qa\'dah 1447';
-  };
+	const getHijriDate = () => {
+		return language === "ar" ? "١٥ ذو القعدة ١٤٤٧" : "15 Dhul-Qa'dah 1447";
+	};
 
-  const getGregorianDate = () => {
-    const dateStr = currentTime.toLocaleDateString(
-      language === 'ar' ? 'ar-SA' : 'en-US',
-      { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }
-    );
-    return language === 'ar' ? toArabicNumerals(dateStr) : dateStr;
-  };
+	const getGregorianDate = () => {
+		const dateStr = currentTime.toLocaleDateString(
+			language === "ar" ? "ar-SA" : "en-US",
+			{ weekday: "long", year: "numeric", month: "long", day: "numeric" },
+		);
+		return language === "ar" ? toArabicNumerals(dateStr) : dateStr;
+	};
 
-  const pillSx = {
-    bgcolor: 'surface.raised',
-    backdropFilter: 'blur(12px)',
-    border: '1px solid',
-    borderColor: 'border.thin',
-    borderRadius: 24,
-  } as const;
+	const pillSx = {
+		bgcolor: "surface.raised",
+		backdropFilter: "blur(12px)",
+		border: "1px solid",
+		borderColor: "border.thin",
+		borderRadius: 24,
+	} as const;
 
-  return (
-    <AppBar
-      position="static"
-      dir={getDirection(language)}
-      sx={{
-        bgcolor: 'transparent',
-        boxShadow: 'none',
-        backgroundImage: 'none',
-      }}
-    >
-      <Toolbar sx={{ justifyContent: 'space-between', gap: 2, px: '48px !important', py: '12px' }}>
-        <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-start' }}>
-          <Box
-            sx={{
-              ...pillSx,
-              display: 'flex',
-              overflow: 'hidden',
-            }}
-          >
-            <ButtonBase
-              onClick={language === 'en' ? onToggleLanguage : undefined}
-              aria-label="العربية"
-              sx={{
-                px: 2.5,
-                py: 1,
-                fontSize: '0.875rem',
-                fontWeight: 600,
-                fontFamily: '"Noto Naskh Arabic", serif',
-                bgcolor: language === 'ar' ? 'border.default' : 'transparent',
-                color: language === 'ar' ? 'primary.main' : 'text.whiteMuted',
-                borderRadius: 24,
-                transition: 'all 200ms cubic-bezier(0.25, 1, 0.5, 1)',
-                '&:hover': { bgcolor: language === 'ar' ? 'border.medium' : 'surface.raised' },
-              }}
-            >
-              العربية
-            </ButtonBase>
-            <ButtonBase
-              onClick={language === 'ar' ? onToggleLanguage : undefined}
-              aria-label="English"
-              sx={{
-                px: 2.5,
-                py: 1,
-                fontSize: '0.875rem',
-                fontWeight: 600,
-                fontFamily: '"Open Sans", sans-serif',
-                bgcolor: language === 'en' ? 'border.default' : 'transparent',
-                color: language === 'en' ? 'primary.main' : 'text.whiteMuted',
-                borderRadius: 24,
-                transition: 'all 200ms cubic-bezier(0.25, 1, 0.5, 1)',
-                '&:hover': { bgcolor: language === 'en' ? 'border.medium' : 'surface.raised' },
-              }}
-            >
-              English
-            </ButtonBase>
-          </Box>
-        </Box>
+	return (
+		<AppBar
+			position="static"
+			dir={getDirection(language)}
+			sx={{
+				bgcolor: "transparent",
+				boxShadow: "none",
+				backgroundImage: "none",
+				border: "none",
+			}}>
+			<Toolbar
+				sx={{
+					justifyContent: "space-between",
+					gap: 2,
+					px: "48px !important",
+					py: "12px",
+				}}>
+				<Box sx={{ flex: 1, display: "flex", justifyContent: "flex-start" }}>
+					<Box
+						sx={{
+							...pillSx,
+							display: "flex",
+							overflow: "hidden",
+						}}>
+						<ButtonBase
+							onClick={language === "en" ? onToggleLanguage : undefined}
+							aria-label="العربية"
+							sx={{
+								px: 2.5,
+								py: 1,
+								fontSize: "0.875rem",
+								fontWeight: 600,
+								fontFamily: '"Noto Naskh Arabic", serif',
+								bgcolor: language === "ar" ? "border.default" : "transparent",
+								color: language === "ar" ? "primary.main" : "text.whiteMuted",
+								borderRadius: 24,
+								transition: "all 200ms cubic-bezier(0.25, 1, 0.5, 1)",
+								"&:hover": {
+									bgcolor:
+										language === "ar" ? "border.medium" : "surface.raised",
+								},
+							}}>
+							العربية
+						</ButtonBase>
+						<ButtonBase
+							onClick={language === "ar" ? onToggleLanguage : undefined}
+							aria-label="English"
+							sx={{
+								px: 2.5,
+								py: 1,
+								fontSize: "0.875rem",
+								fontWeight: 600,
+								fontFamily: '"Open Sans", sans-serif',
+								bgcolor: language === "en" ? "border.default" : "transparent",
+								color: language === "en" ? "primary.main" : "text.whiteMuted",
+								borderRadius: 24,
+								transition: "all 200ms cubic-bezier(0.25, 1, 0.5, 1)",
+								"&:hover": {
+									bgcolor:
+										language === "en" ? "border.medium" : "surface.raised",
+								},
+							}}>
+							English
+						</ButtonBase>
+					</Box>
+				</Box>
 
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.25 }}>
-          <Box
-            sx={{
-              ...pillSx,
-              px: 4,
-              py: 0.75,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1.5,
-            }}
-          >
-            <Typography
-              role="timer"
-              aria-label={language === 'en' ? 'Current time' : 'الوقت الحالي'}
-              sx={{
-                color: 'text.primary',
-                fontFamily: '"Roboto Mono", monospace',
-                letterSpacing: '0.05em',
-                fontSize: { xs: '28px', sm: '36px', lg: '44px' },
-                fontWeight: 700,
-                lineHeight: 1,
-              }}
-            >
-              {formatTime(currentTime)}
-            </Typography>
-            {isOffline && (
-              <Box
-                component="span"
-                role="status"
-                aria-label={language === 'en' ? 'Offline' : 'غير متصل'}
-                sx={{ display: 'flex', alignItems: 'center', color: 'text.whiteMuted' }}
-              >
-                <WifiOff size={18} aria-hidden="true" />
-              </Box>
-            )}
-          </Box>
-          <Typography
-            sx={{
-              color: 'text.whiteMuted',
-              fontSize: { xs: '10px', sm: '11px', lg: '12px' },
-              fontFamily: getFontFamily(language),
-              letterSpacing: '0.03em',
-              textAlign: 'center',
-            }}
-          >
-            {getHijriDate()} · {getGregorianDate()}
-          </Typography>
-        </Box>
+				<Box
+					sx={{
+						display: "flex",
+						flexDirection: "column",
+						alignItems: "center",
+						gap: 0.25,
+					}}>
+					<Box
+						sx={{
+							...pillSx,
+							px: 4,
+							py: 0.75,
+							display: "flex",
+							alignItems: "center",
+							gap: 1.5,
+						}}>
+						<Typography
+							role="timer"
+							aria-label={language === "en" ? "Current time" : "الوقت الحالي"}
+							sx={{
+								color: "text.primary",
+								fontFamily: '"Roboto Mono", monospace',
+								letterSpacing: "0.05em",
+								fontSize: { xs: "28px", sm: "36px", lg: "44px" },
+								fontWeight: 700,
+								lineHeight: 1,
+							}}>
+							{formatTime(currentTime)}
+						</Typography>
+						{isOffline && (
+							<Box
+								component="span"
+								role="status"
+								aria-label={language === "en" ? "Offline" : "غير متصل"}
+								sx={{
+									display: "flex",
+									alignItems: "center",
+									color: "text.whiteMuted",
+								}}>
+								<WifiOff size={18} aria-hidden="true" />
+							</Box>
+						)}
+					</Box>
+					<Typography
+						sx={{
+							color: "text.whiteSoft",
+							fontSize: { xs: "13px", sm: "14px", lg: "15px" },
+							fontWeight: 600,
+							fontFamily: getFontFamily(language),
+							letterSpacing: "0.04em",
+							textAlign: "center",
+						}}>
+						{getHijriDate()} · {getGregorianDate()}
+					</Typography>
+				</Box>
 
-        <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end', gap: 1.5 }}>
-          <ButtonBase
-            onClick={onToggleEventMode}
-            aria-label={eventMode ? translations.exitEvent : translations.comingEvent}
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1,
-              px: 3,
-              py: 1,
-              ...pillSx,
-              color: 'primary.main',
-              fontSize: { xs: '0.75rem', sm: '0.875rem' },
-              fontWeight: 600,
-              fontFamily: getFontFamily(language),
-              textTransform: 'none',
-              transition: 'all 200ms cubic-bezier(0.25, 1, 0.5, 1)',
-              '&:hover': { borderColor: 'border.medium' },
-            }}
-          >
-            <CalendarClock size={16} />
-            <Box
-              component="span"
-              sx={{ display: { xs: 'none', sm: 'inline' } }}
-            >
-              {eventMode ? translations.exitEvent : translations.comingEvent}
-            </Box>
-          </ButtonBase>
+				<Box
+					sx={{
+						flex: 1,
+						display: "flex",
+						justifyContent: "flex-end",
+						gap: 1.5,
+					}}>
+					<ButtonBase
+						onClick={onToggleEventMode}
+						aria-label={
+							eventMode ? translations.exitEvent : translations.comingEvent
+						}
+						sx={{
+							display: "flex",
+							alignItems: "center",
+							gap: 1,
+							px: 3,
+							py: 1,
+							...pillSx,
+							color: "primary.main",
+							fontSize: { xs: "0.75rem", sm: "0.875rem" },
+							fontWeight: 600,
+							fontFamily: getFontFamily(language),
+							textTransform: "none",
+							transition: "all 200ms cubic-bezier(0.25, 1, 0.5, 1)",
+							"&:hover": { borderColor: "border.medium" },
+						}}>
+						<CalendarClock size={16} />
+						<Box
+							component="span"
+							sx={{ display: { xs: "none", sm: "inline" } }}>
+							{eventMode ? translations.exitEvent : translations.comingEvent}
+						</Box>
+					</ButtonBase>
 
-          <ButtonBase
-            onClick={onShowFundraising}
-            aria-label={translations.donate}
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1,
-              px: 3,
-              py: 1,
-              borderRadius: 24,
-              background: `linear-gradient(135deg, ${colors.gold.dark}, ${colors.gold.main})`,
-              color: 'text.onGold',
-              fontSize: { xs: '0.75rem', sm: '0.875rem' },
-              fontWeight: 600,
-              fontFamily: getFontFamily(language),
-              textTransform: 'none',
-              border: 'none',
-              transition: 'all 200ms cubic-bezier(0.25, 1, 0.5, 1)',
-              '&:hover': { opacity: 0.9 },
-            }}
-          >
-            <Heart size={16} />
-            <Box
-              component="span"
-              sx={{ display: { xs: 'none', lg: 'inline' } }}
-            >
-              {translations.donate}
-            </Box>
-          </ButtonBase>
-        </Box>
-      </Toolbar>
-    </AppBar>
-  );
+					<ButtonBase
+						onClick={onShowFundraising}
+						aria-label={translations.donate}
+						sx={{
+							display: "flex",
+							alignItems: "center",
+							gap: 1,
+							px: 3,
+							py: 1,
+							borderRadius: 24,
+							background: `linear-gradient(135deg, ${colors.gold.dark}, ${colors.gold.main})`,
+							color: "text.onGold",
+							fontSize: { xs: "0.75rem", sm: "0.875rem" },
+							fontWeight: 600,
+							fontFamily: getFontFamily(language),
+							textTransform: "none",
+							border: "none",
+							transition: "all 200ms cubic-bezier(0.25, 1, 0.5, 1)",
+							"&:hover": { opacity: 0.9 },
+						}}>
+						<Heart size={16} />
+						<Box
+							component="span"
+							sx={{ display: { xs: "none", lg: "inline" } }}>
+							{translations.donate}
+						</Box>
+					</ButtonBase>
+				</Box>
+			</Toolbar>
+		</AppBar>
+	);
 }

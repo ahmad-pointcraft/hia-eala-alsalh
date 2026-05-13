@@ -66,7 +66,6 @@ export function PrayerCard({
               border: '1px solid',
               borderColor: 'primary.main',
               boxShadow: `0 0 30px ${colors.glow.medium}`,
-              transform: { xs: 'scale(1.05)', lg: 'scale(1.10)' },
             }
           : {
               bgcolor: 'surface.overlay',
@@ -80,7 +79,7 @@ export function PrayerCard({
           sx={{
             mb: { xs: 0.25, sm: 0.5, lg: 1 },
             color: isActive ? 'primary.main' : 'text.secondary',
-            '& svg': { width: { xs: 20, sm: 24, lg: 32 }, height: { xs: 20, sm: 24, lg: 32 } },
+            '& svg': { width: { xs: 20, sm: 24 }, height: { xs: 20, sm: 24 } },
           }}
         >
           <Icon aria-hidden="true" />
@@ -92,7 +91,7 @@ export function PrayerCard({
             textTransform: language === 'ar' ? 'none' : 'uppercase',
             letterSpacing: '0.05em',
             mb: { xs: 0.25, sm: 0.5 },
-            fontWeight: isActive ? 'bold' : 'normal',
+            fontWeight: 'normal',
             fontSize: { xs: '10px', sm: '16px' },
             fontFamily: getFontFamily(language),
           }}
@@ -105,9 +104,7 @@ export function PrayerCard({
             color: 'text.primary',
             fontWeight: 'bold',
             mb: { xs: 0.25, sm: 0.5 },
-            fontSize: isActive
-              ? { xs: '1.875rem', sm: '2.25rem', lg: '3rem' }
-              : { xs: '1.25rem', lg: '1.5rem' },
+            fontSize: { xs: '1.25rem', sm: '1.5rem', lg: '1.5rem' },
             fontFamily: getFontFamily(language),
           }}
         >
@@ -118,7 +115,7 @@ export function PrayerCard({
           sx={{
             color: 'primary.main',
             fontSize: { xs: '8px', sm: '10px', lg: '0.875rem' },
-            fontWeight: isActive ? 'bold' : 'normal',
+            fontWeight: 'normal',
             fontFamily: getFontFamily(language),
           }}
         >

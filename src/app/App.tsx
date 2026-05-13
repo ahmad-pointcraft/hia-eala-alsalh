@@ -15,10 +15,14 @@ import { IslamicGeometricOverlay } from "./components/IslamicGeometricOverlay";
 import { EventModeDisplay } from "./components/EventModeDisplay";
 import { ImageCarousel } from "./components/ImageCarousel";
 import { translations, Language } from "./utils/translations";
-import { getCurrentPrayer, getNextPrayer, getTimeToNextPrayer } from "./utils/prayerTimes";
+import {
+	getCurrentPrayer,
+	getNextPrayer,
+	getTimeToNextPrayer,
+} from "./utils/prayerTimes";
 import type { PrayerTime } from "./utils/prayerTimes";
 import { useClock } from "./utils/useClock";
-import { getDirection } from "./utils/helpers";
+import { getDirection, toArabicNumerals } from "./utils/helpers";
 import { colors } from "./theme/tokens";
 import mosque1 from "../assets/mosque-1.jpg";
 import mosque2 from "../assets/mosque-2.jpg";
@@ -34,272 +38,355 @@ const floatingCardSx = {
 } as const;
 
 export default function App() {
-  const [showFundraising, setShowFundraising] = useState(false);
-  const [eventMode, setEventMode] = useState(false);
-  const [language, setLanguage] = useState<Language>("en");
-  const { currentTime } = useClock();
-  const fundraisingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const prefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
-  const defaultTransition = useMemo(
-    () => (prefersReducedMotion ? { duration: 0 } : undefined),
-    [prefersReducedMotion],
-  );
+	const [showFundraising, setShowFundraising] = useState(false);
+	const [eventMode, setEventMode] = useState(false);
+	const [language, setLanguage] = useState<Language>("en");
+	const { currentTime } = useClock();
+	const fundraisingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
+		null,
+	);
+	const prefersReducedMotion = useMediaQuery(
+		"(prefers-reduced-motion: reduce)",
+	);
+	const defaultTransition = useMemo(
+		() => (prefersReducedMotion ? { duration: 0 } : undefined),
+		[prefersReducedMotion],
+	);
 
-  const carouselImages = [mosque1, mosque2, mosque3];
+	const carouselImages = [mosque1, mosque2, mosque3];
 
-  const t = translations[language];
+	const t = translations[language];
 
-  const prayers: PrayerTime[] = [
-    { name: t.prayers.fajr, key: "Fajr", time: "05:30", iqamaTime: "05:45" },
-    { name: t.prayers.sunrise, key: "Sunrise", time: "06:52", iqamaTime: "\u2014" },
-    { name: t.prayers.dhuhr, key: "Dhuhr", time: "12:45", iqamaTime: "13:00" },
-    { name: t.prayers.asr, key: "Asr", time: "16:15", iqamaTime: "16:30" },
-    { name: t.prayers.maghrib, key: "Maghrib", time: "19:28", iqamaTime: "19:30" },
-    { name: t.prayers.isha, key: "Isha", time: "20:45", iqamaTime: "21:00" },
-  ];
+	const prayers: PrayerTime[] = [
+		{ name: t.prayers.fajr, key: "Fajr", time: "05:30", iqamaTime: "05:45" },
+		{
+			name: t.prayers.sunrise,
+			key: "Sunrise",
+			time: "06:52",
+			iqamaTime: "\u2014",
+		},
+		{ name: t.prayers.dhuhr, key: "Dhuhr", time: "12:45", iqamaTime: "13:00" },
+		{ name: t.prayers.asr, key: "Asr", time: "16:15", iqamaTime: "16:30" },
+		{
+			name: t.prayers.maghrib,
+			key: "Maghrib",
+			time: "19:28",
+			iqamaTime: "19:30",
+		},
+		{ name: t.prayers.isha, key: "Isha", time: "20:45", iqamaTime: "21:00" },
+	];
 
-  const activePrayer = getCurrentPrayer(prayers, currentTime);
-  const nextPrayer = getNextPrayer(prayers, currentTime);
+	const activePrayer = getCurrentPrayer(prayers, currentTime);
+	const nextPrayer = getNextPrayer(prayers, currentTime);
 
-  useEffect(() => {
-    const scheduleFundraising = () => {
-      if (fundraisingTimerRef.current) {
-        clearTimeout(fundraisingTimerRef.current);
-      }
-      fundraisingTimerRef.current = setTimeout(
-        () => {
-          if (getTimeToNextPrayer(prayers, new Date()) > 10 * 60) {
-            setShowFundraising(true);
-          }
-          scheduleFundraising();
-        },
-        10 * 60 * 1000,
-      );
-    };
+	useEffect(() => {
+		const scheduleFundraising = () => {
+			if (fundraisingTimerRef.current) {
+				clearTimeout(fundraisingTimerRef.current);
+			}
+			fundraisingTimerRef.current = setTimeout(
+				() => {
+					if (getTimeToNextPrayer(prayers, new Date()) > 10 * 60) {
+						setShowFundraising(true);
+					}
+					scheduleFundraising();
+				},
+				10 * 60 * 1000,
+			);
+		};
 
-    fundraisingTimerRef.current = setTimeout(
-      () => {
-        if (getTimeToNextPrayer(prayers, new Date()) > 10 * 60) {
-          setShowFundraising(true);
-        }
-        scheduleFundraising();
-      },
-      1 * 60 * 1000,
-    );
+		fundraisingTimerRef.current = setTimeout(
+			() => {
+				if (getTimeToNextPrayer(prayers, new Date()) > 10 * 60) {
+					setShowFundraising(true);
+				}
+				scheduleFundraising();
+			},
+			1 * 60 * 1000,
+		);
 
-    return () => {
-      if (fundraisingTimerRef.current) {
-        clearTimeout(fundraisingTimerRef.current);
-      }
-    };
-  }, [prayers]);
+		return () => {
+			if (fundraisingTimerRef.current) {
+				clearTimeout(fundraisingTimerRef.current);
+			}
+		};
+	}, [prayers]);
 
-  const toggleLanguage = () => {
-    setLanguage((prev) => (prev === "en" ? "ar" : "en"));
-  };
+	const toggleLanguage = () => {
+		setLanguage((prev) => (prev === "en" ? "ar" : "en"));
+	};
 
-  const prayerPrayers = prayers.filter((p) => p.key !== "Sunrise");
-  const sunrisePrayer = prayers.find((p) => p.key === "Sunrise");
-  const sunsetTime = prayers.find((p) => p.key === "Maghrib")?.time ?? "19:28";
+	const prayerPrayers = prayers.filter((p) => p.key !== "Sunrise");
+	const sunrisePrayer = prayers.find((p) => p.key === "Sunrise");
+	const sunsetTime = prayers.find((p) => p.key === "Maghrib")?.time ?? "19:28";
 
-  const isPraying = useMemo(() => {
-    const nowMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
-    return prayerPrayers.some((p) => {
-      if (p.iqamaTime === "\u2014") return false;
-      const [ih = 0, im = 0] = p.iqamaTime.split(":").map(Number);
-      const iqamaMinutes = ih * 60 + im;
-      return nowMinutes >= iqamaMinutes && nowMinutes < iqamaMinutes + 5;
-    });
-  }, [currentTime, prayerPrayers]);
+	const isPraying = useMemo(() => {
+		const nowMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
+		return prayerPrayers.some((p) => {
+			if (p.iqamaTime === "\u2014") return false;
+			const [ih = 0, im = 0] = p.iqamaTime.split(":").map(Number);
+			const iqamaMinutes = ih * 60 + im;
+			return nowMinutes >= iqamaMinutes && nowMinutes < iqamaMinutes + 5;
+		});
+	}, [currentTime, prayerPrayers]);
 
-  return (
-    <Box sx={{ position: "relative", width: "100%", height: "100vh", overflow: "hidden" }}>
-      <Box
-        sx={{
-          position: "absolute",
-          inset: 0,
-          bgcolor: "background.default",
-        }}
-      />
+	return (
+		<Box
+			sx={{
+				position: "relative",
+				width: "100%",
+				height: "100vh",
+				overflow: "hidden",
+			}}>
+			<Box
+				sx={{
+					position: "absolute",
+					inset: 0,
+					bgcolor: "background.default",
+				}}
+			/>
 
-      <Stack sx={{ position: "relative", zIndex: 10, height: "100%" }}>
-        <Header
-          eventMode={eventMode}
-          onToggleEventMode={() => setEventMode(!eventMode)}
-          language={language}
-          onToggleLanguage={toggleLanguage}
-          onShowFundraising={() => setShowFundraising(true)}
-          translations={t}
-          currentTime={currentTime}
-        />
+			<Stack sx={{ position: "relative", zIndex: 10, height: "100%" }}>
+				<Header
+					eventMode={eventMode}
+					onToggleEventMode={() => setEventMode(!eventMode)}
+					language={language}
+					onToggleLanguage={toggleLanguage}
+					onShowFundraising={() => setShowFundraising(true)}
+					translations={t}
+					currentTime={currentTime}
+				/>
 
-        {isPraying && (
-          <Box
-            role="alert"
-            aria-label={language === "en" ? "Prayer in progress" : "الصلاة جارية"}
-            sx={{
-              position: "absolute",
-              inset: 0,
-              zIndex: 20,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              bgcolor: `${colors.background.default}D9`,
-            }}
-          >
-            <Box sx={{ opacity: 0.3, position: "absolute", inset: 0 }}>
-              <IslamicGeometricOverlay />
-            </Box>
-          </Box>
-        )}
+				{isPraying && (
+					<Box
+						role="alert"
+						aria-label={
+							language === "en" ? "Prayer in progress" : "الصلاة جارية"
+						}
+						sx={{
+							position: "absolute",
+							inset: 0,
+							zIndex: 20,
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+							bgcolor: `${colors.background.default}D9`,
+						}}>
+						<Box sx={{ opacity: 0.3, position: "absolute", inset: 0 }}>
+							<IslamicGeometricOverlay />
+						</Box>
+					</Box>
+				)}
 
-        <AnimatePresence mode="wait">
-          <motion.div
-            key="normal-mode"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={defaultTransition ?? { duration: 0.5, ease: [0.25, 1, 0.5, 1] }}
-            style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}
-          >
-              <Box sx={{ flex: 1, display: "flex", gap: 2, px: "48px", py: 1.5, overflow: "hidden" }}>
-                <Box sx={{ flex: 3, display: "flex", flexDirection: "column", gap: 1.5, minWidth: 0 }}>
-                  <Box sx={{ flex: 1, ...floatingCardSx, overflow: "hidden" }}>
-                    <ImageCarousel
-                      images={carouselImages}
-                      interval={5000}
-                    />
-                  </Box>
-                  <Box sx={{ ...floatingCardSx }}>
-                    <HadithPanel
-                      language={language}
-                      translations={t}
-                    />
-                  </Box>
-                </Box>
+				<AnimatePresence mode="wait">
+					<motion.div
+						key="normal-mode"
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						exit={{ opacity: 0 }}
+						transition={
+							defaultTransition ?? { duration: 0.5, ease: [0.25, 1, 0.5, 1] }
+						}
+						style={{
+							flex: 1,
+							display: "flex",
+							flexDirection: "column",
+							overflow: "hidden",
+						}}>
+						<Box
+							sx={{
+								flex: 1,
+								display: "flex",
+								gap: 2,
+								px: "48px",
+								py: 1.5,
+								overflow: "hidden",
+							}}>
+							<Box
+								sx={{
+									flex: 3,
+									display: "flex",
+									flexDirection: "column",
+									gap: 1.5,
+									minWidth: 0,
+								}}>
+								<Box sx={{ flex: 1, ...floatingCardSx, overflow: "hidden" }}>
+									<ImageCarousel images={carouselImages} interval={5000} />
+								</Box>
+								<Box sx={{ ...floatingCardSx }}>
+									<HadithPanel language={language} translations={t} />
+								</Box>
+							</Box>
 
-                <Box sx={{ flex: 2, display: "flex", flexDirection: "column", gap: 1.5, minWidth: 0 }}>
-                  <Box sx={{ flex: 1, ...floatingCardSx }}>
-                    <CountdownBar
-                      nextPrayer={nextPrayer.name}
-                      nextPrayerTime={nextPrayer.time}
-                      nextPrayerIqamaTime={nextPrayer.iqamaTime}
-                      language={language}
-                      currentTime={currentTime}
-                    />
-                  </Box>
-                  <Box sx={{ ...floatingCardSx }}>
-                    <WeatherWidget
-                      language={language}
-                      translations={t}
-                    />
-                  </Box>
-                </Box>
-              </Box>
+							<Box
+								sx={{
+									flex: 2,
+									display: "flex",
+									flexDirection: "column",
+									gap: 1.5,
+									minWidth: 0,
+								}}>
+								<Box sx={{ flex: 1, ...floatingCardSx }}>
+									<CountdownBar
+										nextPrayer={nextPrayer.name}
+										nextPrayerTime={nextPrayer.time}
+										nextPrayerIqamaTime={nextPrayer.iqamaTime}
+										language={language}
+										currentTime={currentTime}
+									/>
+								</Box>
+								<Box sx={{ ...floatingCardSx }}>
+									<WeatherWidget language={language} translations={t} />
+								</Box>
+							</Box>
+						</Box>
 
-              <Box sx={{ flexShrink: 0, px: "48px", pb: 1 }}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    gap: 1.5,
-                    alignItems: "stretch",
-                    dir: getDirection(language),
-                  }}
-                >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      px: 1.5,
-                      py: 1,
-                      borderRadius: "16px",
-                      bgcolor: "surface.overlay",
-                      border: "1px solid",
-                      borderColor: "border.thin",
-                      gap: 0.25,
-                      minWidth: { xs: 56, sm: 72 },
-                    }}
-                  >
-                    <Box sx={{ fontSize: "16px", lineHeight: 1 }} role="img" aria-label={language === "en" ? "Sunrise" : "شروق"}>🌅</Box>
-                    <Typography sx={{ fontSize: { xs: "8px", lg: "10px" }, color: "text.whiteMuted", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600 }}>
-                      {language === "en" ? "Sunrise" : "الشروق"}
-                    </Typography>
-                    <Typography sx={{ fontSize: { xs: "12px", lg: "14px" }, color: "text.primary", fontWeight: 700, fontFamily: '"Roboto Mono", monospace' }}>
-                      {sunrisePrayer?.time ?? "--:--"}
-                    </Typography>
-                  </Box>
+						<Box sx={{ flexShrink: 0, px: "48px", pb: 1 }}>
+							<Box
+								dir={getDirection(language)}
+								sx={{
+									display: "flex",
+									gap: 1.5,
+									alignItems: "stretch",
+								}}>
+								<Box
+									sx={{
+										display: "flex",
+										flexDirection: "column",
+										alignItems: "center",
+										justifyContent: "center",
+										px: 1.5,
+										py: 1,
+										borderRadius: "16px",
+										bgcolor: "surface.overlay",
+										border: "1px solid",
+										borderColor: "border.thin",
+										gap: 0.25,
+										minWidth: { xs: 56, sm: 72 },
+									}}>
+									<Box
+										sx={{ fontSize: "16px", lineHeight: 1 }}
+										role="img"
+										aria-label={language === "en" ? "Sunrise" : "شروق"}>
+										🌅
+									</Box>
+									<Typography
+										sx={{
+											fontSize: { xs: "8px", lg: "10px" },
+											color: "text.whiteMuted",
+											textTransform: "uppercase",
+											letterSpacing: "0.1em",
+											fontWeight: 600,
+										}}>
+										{language === "en" ? "Sunrise" : "الشروق"}
+									</Typography>
+									<Typography
+										sx={{
+											fontSize: { xs: "12px", lg: "14px" },
+											color: "text.primary",
+											fontWeight: 700,
+											fontFamily: '"Roboto Mono", monospace',
+										}}>
+										{language === "ar"
+											? toArabicNumerals(sunrisePrayer?.time ?? "--:--")
+											: (sunrisePrayer?.time ?? "--:--")}
+									</Typography>
+								</Box>
 
-                  {prayerPrayers.map((prayer, index) => (
-                    <Box key={prayer.key} sx={{ flex: prayer.key === activePrayer?.key ? 1.5 : 1 }}>
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={defaultTransition ?? { delay: index * 0.05, duration: 0.3 }}
-                      >
-                        <PrayerCard
-                          name={prayer.name}
-                          time={prayer.time}
-                          iqamaTime={prayer.iqamaTime}
-                          isActive={prayer.key === activePrayer?.key}
-                          language={language}
-                          iqamaLabel={t.iqama}
-                          prayerKey={prayer.key}
-                        />
-                      </motion.div>
-                    </Box>
-                  ))}
+								{prayerPrayers.map((prayer, index) => (
+									<Box
+										key={prayer.key}
+										sx={{ flex: prayer.key === activePrayer?.key ? 1.5 : 1 }}>
+										<motion.div
+											initial={{ opacity: 0, y: 20 }}
+											animate={{ opacity: 1, y: 0 }}
+											transition={
+												defaultTransition ?? {
+													delay: index * 0.05,
+													duration: 0.3,
+												}
+											}>
+											<PrayerCard
+												name={prayer.name}
+												time={prayer.time}
+												iqamaTime={prayer.iqamaTime}
+												isActive={prayer.key === activePrayer?.key}
+												language={language}
+												iqamaLabel={t.iqama}
+												prayerKey={prayer.key}
+											/>
+										</motion.div>
+									</Box>
+								))}
 
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      px: 1.5,
-                      py: 1,
-                      borderRadius: "16px",
-                      bgcolor: "surface.overlay",
-                      border: "1px solid",
-                      borderColor: "border.thin",
-                      gap: 0.25,
-                      minWidth: { xs: 56, sm: 72 },
-                    }}
-                  >
-                    <Box sx={{ fontSize: "16px", lineHeight: 1 }} role="img" aria-label={language === "en" ? "Sunset" : "غروب"}>🌇</Box>
-                    <Typography sx={{ fontSize: { xs: "8px", lg: "10px" }, color: "text.whiteMuted", textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: 600 }}>
-                      {language === "en" ? "Sunset" : "الغروب"}
-                    </Typography>
-                    <Typography sx={{ fontSize: { xs: "12px", lg: "14px" }, color: "text.primary", fontWeight: 700, fontFamily: '"Roboto Mono", monospace' }}>
-                      {language === "ar" ? "١٩:٢٨" : sunsetTime}
-                    </Typography>
-                  </Box>
-                </Box>
-              </Box>
-            </motion.div>
-        </AnimatePresence>
+								<Box
+									sx={{
+										display: "flex",
+										flexDirection: "column",
+										alignItems: "center",
+										justifyContent: "center",
+										px: 1.5,
+										py: 1,
+										borderRadius: "16px",
+										bgcolor: "surface.overlay",
+										border: "1px solid",
+										borderColor: "border.thin",
+										gap: 0.25,
+										minWidth: { xs: 56, sm: 72 },
+									}}>
+									<Box
+										sx={{ fontSize: "16px", lineHeight: 1 }}
+										role="img"
+										aria-label={language === "en" ? "Sunset" : "غروب"}>
+										🌇
+									</Box>
+									<Typography
+										sx={{
+											fontSize: { xs: "8px", lg: "10px" },
+											color: "text.whiteMuted",
+											textTransform: "uppercase",
+											letterSpacing: "0.1em",
+											fontWeight: 600,
+										}}>
+										{language === "en" ? "Sunset" : "الغروب"}
+									</Typography>
+									<Typography
+										sx={{
+											fontSize: { xs: "12px", lg: "14px" },
+											color: "text.primary",
+											fontWeight: 700,
+											fontFamily: '"Roboto Mono", monospace',
+										}}>
+										{language === "ar"
+											? toArabicNumerals(sunsetTime)
+											: sunsetTime}
+									</Typography>
+								</Box>
+							</Box>
+						</Box>
+					</motion.div>
+				</AnimatePresence>
 
-        <AnnouncementsTicker
-          language={language}
-          announcements={t.announcementsList}
-        />
-      </Stack>
+				<AnnouncementsTicker
+					language={language}
+					announcements={t.announcementsList}
+				/>
+			</Stack>
 
-      {showFundraising && (
-        <FundraisingOverlay
-          onClose={() => setShowFundraising(false)}
-          language={language}
-          translations={t}
-        />
-      )}
+			{showFundraising && (
+				<FundraisingOverlay
+					onClose={() => setShowFundraising(false)}
+					language={language}
+					translations={t}
+				/>
+			)}
 
-      {eventMode && (
-        <EventModeDisplay
-          language={language}
-          onClose={() => setEventMode(false)}
-        />
-      )}
-    </Box>
-  );
+			{eventMode && (
+				<EventModeDisplay
+					language={language}
+					onClose={() => setEventMode(false)}
+				/>
+			)}
+		</Box>
+	);
 }
