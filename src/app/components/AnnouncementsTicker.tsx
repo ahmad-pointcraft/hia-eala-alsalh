@@ -1,10 +1,10 @@
 import { useEffect, useRef } from "react";
-import { Megaphone } from "lucide-react";
 import { Language } from "../utils/translations";
-import logo from "../../assets/logo.png";
-import { Paper, Box, Typography } from "@mui/material";
+import masjidLogo from "../../assets/logo-masjid-design-1.png";
+import pointcraftLogo from "../../assets/logo.png";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import { getFontFamily, isRTL, getDirection } from "../utils/helpers";
-import { colors } from "../theme/tokens";
 
 interface AnnouncementsTickerProps {
 	language: Language;
@@ -47,46 +47,47 @@ export function AnnouncementsTicker({
 		return () => cancelAnimationFrame(animationId);
 	}, [language]);
 
-	const separator = language === "ar" ? " • " : " • ";
+	const separator = " • ";
 	const fullText =
 		announcements.join(separator) + separator + announcements.join(separator);
 
 	return (
-		<Paper
+		<Box
 			role="status"
 			aria-label={language === "ar" ? "إعلانات المسجد" : "Masjid announcements"}
+			dir={getDirection(language)}
 			sx={{
 				width: "100%",
 				bgcolor: "surface.raised",
-				backdropFilter: "blur(4px)",
+				backdropFilter: "blur(12px)",
 				borderTop: "1px solid",
-				borderColor: "border.medium",
+				borderColor: "border.thin",
 				overflow: "hidden",
-				borderRadius: 0,
 			}}
-			dir={getDirection(language)}
-			square>
+		>
 			<Box
 				sx={{
 					display: "flex",
 					alignItems: "center",
-					height: { xs: 32, sm: 36, lg: 40 },
-				}}>
+					height: { xs: 36, sm: 40, lg: 44 },
+					px: "48px",
+					gap: 2,
+				}}
+			>
 				<Box
 					sx={{
-						px: { xs: 1, sm: 1.5 },
-						height: "100%",
 						display: "flex",
 						alignItems: "center",
 						justifyContent: "center",
 						flexShrink: 0,
-						bgcolor: "surface.deep",
-					}}>
+						gap: 1,
+					}}
+				>
 					<Box
 						component="img"
-						src={logo}
-						alt="Logo"
-						sx={{ height: { xs: 20, sm: 24, lg: 28 }, width: "auto" }}
+						src={masjidLogo}
+						alt="Masjid Logo"
+						sx={{ height: { xs: 22, sm: 26, lg: 30 }, width: "auto", objectFit: "contain" }}
 					/>
 				</Box>
 
@@ -96,18 +97,19 @@ export function AnnouncementsTicker({
 						sx={{
 							display: "flex",
 							alignItems: "center",
-							gap: { xs: 2, sm: 3 },
 							whiteSpace: "nowrap",
-							px: { xs: 1.5, sm: 2 },
+							px: 1,
 							willChange: "transform",
-						}}>
+						}}
+					>
 						<Typography
 							component="span"
 							sx={{
-								color: "text.primary",
-								fontSize: { xs: "0.75rem", sm: "0.875rem", lg: "1rem" },
+								color: "text.whiteMuted",
+								fontSize: { xs: "0.75rem", sm: "0.875rem", lg: "0.875rem" },
 								fontFamily: getFontFamily(language),
-							}}>
+							}}
+						>
 							{fullText}
 						</Typography>
 					</Box>
@@ -115,19 +117,20 @@ export function AnnouncementsTicker({
 
 				<Box
 					sx={{
-						bgcolor: "primary.main",
-						px: { xs: 1, sm: 1.5 },
-						height: "100%",
 						display: "flex",
 						alignItems: "center",
 						justifyContent: "center",
 						flexShrink: 0,
-					}}>
-					<Megaphone
-						style={{ width: "1em", height: "1em", color: colors.text.onDark }}
+					}}
+				>
+					<Box
+						component="img"
+						src={pointcraftLogo}
+						alt="PointCraft"
+						sx={{ height: { xs: 16, sm: 18, lg: 20 }, width: "auto", objectFit: "contain", opacity: 0.6 }}
 					/>
 				</Box>
 			</Box>
-		</Paper>
+		</Box>
 	);
 }
