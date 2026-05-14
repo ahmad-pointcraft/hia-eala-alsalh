@@ -37,6 +37,16 @@ const floatingCardSx = {
 	boxShadow: `0 8px 32px ${colors.surface.overlay}`,
 } as const;
 
+const FUNDRAISING_PRAYER_GAP_SECONDS = 1 * 60;
+const FUNDRAISING_MIN_SECONDS = 3;
+const FUNDRAISING_MAX_SECONDS = 6;
+
+function getRandomFundraisingDelay() {
+	const range = FUNDRAISING_MAX_SECONDS - FUNDRAISING_MIN_SECONDS;
+	const seconds = FUNDRAISING_MIN_SECONDS + Math.random() * range;
+	return seconds * 1000;
+}
+
 export default function App() {
 	const [showFundraising, setShowFundraising] = useState(false);
 	const [language, setLanguage] = useState<Language>("en");
@@ -93,26 +103,20 @@ export default function App() {
 			if (fundraisingTimerRef.current) {
 				clearTimeout(fundraisingTimerRef.current);
 			}
-			fundraisingTimerRef.current = setTimeout(
-				() => {
-					if (getTimeToNextPrayer(prayers, new Date()) > 10 * 60) {
-						setShowFundraising(true);
-					}
-					scheduleFundraising();
-				},
-				10 * 60 * 1000,
-			);
-		};
-
-		fundraisingTimerRef.current = setTimeout(
-			() => {
-				if (getTimeToNextPrayer(prayers, new Date()) > 10 * 60) {
+			fundraisingTimerRef.current = setTimeout(() => {
+				if (getTimeToNextPrayer(prayers, new Date()) > FUNDRAISING_PRAYER_GAP_SECONDS) {
 					setShowFundraising(true);
 				}
 				scheduleFundraising();
-			},
-			1 * 60 * 1000,
-		);
+			}, getRandomFundraisingDelay());
+		};
+
+		fundraisingTimerRef.current = setTimeout(() => {
+			if (getTimeToNextPrayer(prayers, new Date()) > FUNDRAISING_PRAYER_GAP_SECONDS) {
+				setShowFundraising(true);
+			}
+			scheduleFundraising();
+		}, getRandomFundraisingDelay());
 
 		return () => {
 			if (fundraisingTimerRef.current) {
@@ -278,7 +282,6 @@ export default function App() {
 										</motion.div>
 									</Box>
 								))}
-
 							</Box>
 						</Box>
 					</motion.div>
@@ -297,7 +300,6 @@ export default function App() {
 					translations={t}
 				/>
 			)}
-
 		</Box>
 	);
 }
