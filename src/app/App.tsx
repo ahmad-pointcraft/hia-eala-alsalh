@@ -12,7 +12,7 @@ import { SunTimesWidget } from "./components/SunTimesWidget";
 import { AnnouncementsTicker } from "./components/AnnouncementsTicker";
 import { FundraisingOverlay } from "./components/FundraisingOverlay";
 import { IslamicGeometricOverlay } from "./components/IslamicGeometricOverlay";
-import { EventModeDisplay } from "./components/EventModeDisplay";
+import { EventDialog } from "./components/EventDialog";
 import { ImageCarousel } from "./components/ImageCarousel";
 import { translations, Language } from "./utils/translations";
 import {
@@ -287,7 +287,7 @@ export default function App() {
 			)}
 
 			{eventMode && (
-				<EventModeDisplay
+				<EventDialog
 					language={language}
 					onClose={() => setEventMode(false)}
 				/>
