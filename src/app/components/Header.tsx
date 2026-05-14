@@ -4,7 +4,7 @@ import Toolbar from "@mui/material/Toolbar";
 import ButtonBase from "@mui/material/ButtonBase";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import { Heart, CalendarClock, WifiOff } from "lucide-react";
+import { Heart, WifiOff } from "lucide-react";
 import { Language } from "../utils/translations";
 import type { Translations } from "../utils/translations";
 import {
@@ -15,8 +15,6 @@ import {
 import { colors } from "../theme/tokens";
 
 interface HeaderProps {
-	eventMode: boolean;
-	onToggleEventMode: () => void;
 	language: Language;
 	onToggleLanguage: () => void;
 	onShowFundraising: () => void;
@@ -25,8 +23,6 @@ interface HeaderProps {
 }
 
 export function Header({
-	eventMode,
-	onToggleEventMode,
 	language,
 	onToggleLanguage,
 	onShowFundraising,
@@ -204,36 +200,7 @@ export function Header({
 						flex: 1,
 						display: "flex",
 						justifyContent: "flex-end",
-						gap: 1.5,
 					}}>
-					<ButtonBase
-						onClick={onToggleEventMode}
-						aria-label={
-							eventMode ? translations.exitEvent : translations.comingEvent
-						}
-						sx={{
-							display: "flex",
-							alignItems: "center",
-							gap: 1,
-							px: 3,
-							py: 1,
-							...pillSx,
-							color: "primary.main",
-							fontSize: { xs: "0.75rem", sm: "0.875rem" },
-							fontWeight: 600,
-							fontFamily: getFontFamily(language),
-							textTransform: "none",
-							transition: "all 200ms cubic-bezier(0.25, 1, 0.5, 1)",
-							"&:hover": { borderColor: "border.medium" },
-						}}>
-						<CalendarClock size={16} />
-						<Box
-							component="span"
-							sx={{ display: { xs: "none", sm: "inline" } }}>
-							{eventMode ? translations.exitEvent : translations.comingEvent}
-						</Box>
-					</ButtonBase>
-
 					<ButtonBase
 						onClick={onShowFundraising}
 						aria-label={translations.donate}

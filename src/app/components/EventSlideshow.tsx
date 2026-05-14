@@ -1,0 +1,271 @@
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { ImageCarousel } from "./ImageCarousel";
+import { Language } from "../utils/translations";
+import { getFontFamily, getDirection, toArabicNumerals } from "../utils/helpers";
+import { colors } from "../theme/tokens";
+
+export interface EventSlide {
+	title: string;
+	speakerName: string;
+	dateValue: string;
+	timeValue: string;
+	locationValue: string;
+	badge?: string;
+	cta?: string;
+}
+
+interface EventSlideshowProps {
+	events: EventSlide[];
+	images: string[];
+	interval?: number;
+	language: Language;
+}
+
+export function EventSlideshow({
+	events,
+	images,
+	interval = 5000,
+	language,
+}: EventSlideshowProps) {
+	const [currentIndex, setCurrentIndex] = useState(0);
+	const prefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
+	const dir = getDirection(language);
+
+	useEffect(() => {
+		if (events.length <= 1) return;
+		const timer = setInterval(() => {
+			setCurrentIndex((prev) => (prev + 1) % events.length);
+		}, interval);
+		return () => clearInterval(timer);
+	}, [events.length, interval]);
+
+	if (events.length === 0) {
+		return <ImageCarousel images={images} interval={interval} />;
+	}
+
+	const event = events[currentIndex];
+	if (!event) return null;
+
+	const bgImage = images[currentIndex % images.length];
+
+	return (
+		<Box
+			dir={dir}
+			sx={{
+				position: "relative",
+				width: "100%",
+				height: "100%",
+				overflow: "hidden",
+				borderRadius: "24px",
+				bgcolor: "surface.overlay",
+				border: "1px solid",
+				borderColor: "border.thin",
+				boxShadow: `0 8px 32px ${colors.surface.overlay}`,
+			}}>
+			<AnimatePresence mode="wait">
+				<motion.div
+					key={currentIndex}
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					exit={{ opacity: 0 }}
+					transition={
+						prefersReducedMotion
+							? { duration: 0 }
+							: { duration: 0.6, ease: [0.25, 1, 0.5, 1] }
+					}
+					style={{ width: "100%", height: "100%" }}>
+					<img
+						src={bgImage}
+						alt=""
+						style={{
+							width: "100%",
+							height: "100%",
+							objectFit: "cover",
+						}}
+					/>
+				</motion.div>
+			</AnimatePresence>
+
+			<Box
+				sx={{
+					position: "absolute",
+					inset: 0,
+					display: "flex",
+					flexDirection: "column",
+					justifyContent: "flex-end",
+				}}>
+				{event.badge && (
+					<Box
+						sx={{
+							position: "absolute",
+							top: 16,
+							insetInlineStart: 16,
+							px: 1.5,
+							py: 0.5,
+							bgcolor: "primary.main",
+							borderRadius: "4px",
+						}}>
+						<Typography
+							sx={{
+								color: "text.onGold",
+								fontSize: { xs: "12px", lg: "14px" },
+								fontWeight: 700,
+								fontFamily: getFontFamily(language),
+								textTransform: "uppercase",
+								letterSpacing: "0.1em",
+								lineHeight: 1,
+							}}>
+							{event.badge}
+						</Typography>
+					</Box>
+				)}
+
+				<Box
+					sx={{
+						px: 2.5,
+						pb: events.length > 1 ? 5 : 2.5,
+						pt: 6,
+						background:
+							"linear-gradient(to top, rgba(10,31,10,0.95) 0%, rgba(10,31,10,0.7) 50%, transparent 100%)",
+					}}>
+					<Typography
+						sx={{
+							color: "text.primary",
+							fontSize: {
+								xs: "30px",
+								sm: "34px",
+								lg: "44px",
+							},
+							fontWeight: 800,
+							fontFamily: getFontFamily(language),
+							lineHeight: 1.2,
+							mb: 0.5,
+						}}>
+						{event.title}
+					</Typography>
+
+					<Typography
+						sx={{
+							color: "primary.main",
+							fontSize: { xs: "19px", sm: "21px", lg: "28px" },
+							fontWeight: 600,
+							fontFamily: getFontFamily(language),
+							mb: 0.75,
+						}}>
+						{event.speakerName}
+					</Typography>
+
+					<Box
+						sx={{
+							display: "flex",
+							flexWrap: "wrap",
+							gap: 1.5,
+							alignItems: "center",
+						}}>
+						<Typography
+							sx={{
+								color: "text.whiteSoft",
+								fontSize: { xs: "16px", lg: "20px" },
+								fontWeight: 500,
+								fontFamily: getFontFamily(language),
+							}}>
+							{language === "ar"
+								? toArabicNumerals(event.dateValue)
+								: event.dateValue}{" "}
+							·{" "}
+							{language === "ar"
+								? toArabicNumerals(event.timeValue)
+								: event.timeValue}
+						</Typography>
+
+						<Box
+							sx={{
+								px: 1.5,
+								py: 0.5,
+								bgcolor: "rgba(255,255,255,0.12)",
+								border: "1px solid rgba(255,255,255,0.18)",
+								borderRadius: "8px",
+							}}>
+							<Typography
+								sx={{
+									color: "text.whiteSoft",
+								fontSize: { xs: "14px", lg: "18px" },
+								fontWeight: 500,
+								fontFamily: getFontFamily(language),
+								lineHeight: 1,
+							}}>
+								{event.locationValue}
+							</Typography>
+						</Box>
+					</Box>
+
+					{event.cta && (
+						<Box
+							sx={{
+								display: "inline-flex",
+								mt: 1.5,
+								px: 2,
+								py: 0.75,
+								bgcolor: "primary.main",
+								borderRadius: "10px",
+							}}>
+							<Typography
+								sx={{
+									color: "text.onGold",
+									fontSize: { xs: "14px", lg: "19px" },
+									fontWeight: 700,
+									fontFamily: getFontFamily(language),
+									letterSpacing: "0.02em",
+									lineHeight: 1,
+								}}>
+								{event.cta}
+							</Typography>
+						</Box>
+					)}
+				</Box>
+			</Box>
+
+			{events.length > 1 && (
+				<Box
+					sx={{
+						position: "absolute",
+						bottom: 0,
+						insetInline: 0,
+						height: 48,
+						display: "flex",
+						alignItems: "flex-end",
+						justifyContent: "center",
+						pb: 1.5,
+						gap: 1,
+					}}>
+					{events.map((_, index) => (
+						<Box
+							component="button"
+							key={index}
+							onClick={() => setCurrentIndex(index)}
+							aria-label={`Go to event ${index + 1}`}
+							sx={{
+								width: index === currentIndex ? 28 : 10,
+								height: 10,
+								borderRadius: "4px",
+								bgcolor:
+									index === currentIndex
+										? "primary.main"
+										: colors.text.whiteMuted,
+								border: "none",
+								cursor: "pointer",
+								transition: prefersReducedMotion
+									? "none"
+									: "all 300ms cubic-bezier(0.25, 1, 0.5, 1)",
+							}}
+						/>
+					))}
+				</Box>
+			)}
+		</Box>
+	);
+}

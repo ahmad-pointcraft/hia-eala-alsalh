@@ -12,8 +12,8 @@ import { SunTimesWidget } from "./components/SunTimesWidget";
 import { AnnouncementsTicker } from "./components/AnnouncementsTicker";
 import { FundraisingOverlay } from "./components/FundraisingOverlay";
 import { IslamicGeometricOverlay } from "./components/IslamicGeometricOverlay";
-import { EventDialog } from "./components/EventDialog";
-import { ImageCarousel } from "./components/ImageCarousel";
+import { EventSlideshow } from "./components/EventSlideshow";
+import type { EventSlide } from "./components/EventSlideshow";
 import { translations, Language } from "./utils/translations";
 import {
 	getCurrentPrayer,
@@ -39,7 +39,6 @@ const floatingCardSx = {
 
 export default function App() {
 	const [showFundraising, setShowFundraising] = useState(false);
-	const [eventMode, setEventMode] = useState(false);
 	const [language, setLanguage] = useState<Language>("en");
 	const { currentTime } = useClock();
 	const fundraisingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
@@ -56,6 +55,16 @@ export default function App() {
 	const carouselImages = [mosque1, mosque2, mosque3];
 
 	const t = translations[language];
+
+	const eventSlides: EventSlide[] = t.events.map((e) => ({
+		title: e.title,
+		speakerName: e.speakerName,
+		dateValue: e.dateValue,
+		timeValue: e.timeValue,
+		locationValue: e.locationValue,
+		badge: e.badge,
+		cta: e.cta,
+	}));
 
 	const prayers: PrayerTime[] = [
 		{ name: t.prayers.fajr, key: "Fajr", time: "05:30", iqamaTime: "05:45" },
@@ -148,8 +157,6 @@ export default function App() {
 
 			<Stack sx={{ position: "relative", zIndex: 10, height: "100%" }}>
 				<Header
-					eventMode={eventMode}
-					onToggleEventMode={() => setEventMode(!eventMode)}
 					language={language}
 					onToggleLanguage={toggleLanguage}
 					onShowFundraising={() => setShowFundraising(true)}
@@ -204,8 +211,13 @@ export default function App() {
 								overflow: "hidden",
 							}}>
 							<Box sx={{ display: "flex", gap: 2, flex: 1, minHeight: 0 }}>
-								<Box sx={{ flex: 3, ...floatingCardSx, overflow: "hidden", minWidth: 0 }}>
-									<ImageCarousel images={carouselImages} interval={5000} />
+								<Box sx={{ flex: 3.15, minWidth: 0 }}>
+									<EventSlideshow
+										events={eventSlides}
+										images={carouselImages}
+										interval={5000}
+										language={language}
+									/>
 								</Box>
 								<Box sx={{ flex: 2, ...floatingCardSx, minWidth: 0 }}>
 									<CountdownBar
@@ -286,12 +298,6 @@ export default function App() {
 				/>
 			)}
 
-			{eventMode && (
-				<EventDialog
-					language={language}
-					onClose={() => setEventMode(false)}
-				/>
-			)}
 		</Box>
 	);
 }
