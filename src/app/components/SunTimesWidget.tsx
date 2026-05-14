@@ -60,7 +60,7 @@ export function SunTimesWidget({
 		language === "ar" ? toArabicNumerals(sunsetTime) : sunsetTime;
 
 	return (
-		<Box dir={dir} sx={{ display: "flex", gap: 1.5 }}>
+		<Box dir={dir} sx={{ display: "flex", gap: 1.5, flex: 1, width: "100%" }}>
 			<Box sx={cardSx}>
 				<Sunrise
 					size={26}

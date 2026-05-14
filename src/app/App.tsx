@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
+
 import { Header } from "./components/Header";
 import { PrayerCard } from "./components/PrayerCard";
 import { CountdownBar } from "./components/CountdownBar";
@@ -197,36 +197,17 @@ export default function App() {
 							sx={{
 								flex: 1,
 								display: "flex",
-								gap: 2,
+								flexDirection: "column",
+								gap: 1.5,
 								px: "48px",
 								py: 1.5,
 								overflow: "hidden",
 							}}>
-							<Box
-								sx={{
-									flex: 3,
-									display: "flex",
-									flexDirection: "column",
-									gap: 1.5,
-									minWidth: 0,
-								}}>
-								<Box sx={{ flex: 1, ...floatingCardSx, overflow: "hidden" }}>
+							<Box sx={{ display: "flex", gap: 2, flex: 1, minHeight: 0 }}>
+								<Box sx={{ flex: 3, ...floatingCardSx, overflow: "hidden", minWidth: 0 }}>
 									<ImageCarousel images={carouselImages} interval={5000} />
 								</Box>
-								<Box sx={{ ...floatingCardSx }}>
-									<HadithPanel language={language} translations={t} />
-								</Box>
-							</Box>
-
-							<Box
-								sx={{
-									flex: 2,
-									display: "flex",
-									flexDirection: "column",
-									gap: 1.5,
-									minWidth: 0,
-								}}>
-								<Box sx={{ flex: 1, ...floatingCardSx }}>
+								<Box sx={{ flex: 2, ...floatingCardSx, minWidth: 0 }}>
 									<CountdownBar
 										nextPrayer={nextPrayer.name}
 										nextPrayerTime={nextPrayer.time}
@@ -235,12 +216,20 @@ export default function App() {
 										currentTime={currentTime}
 									/>
 								</Box>
-								<SunTimesWidget
+							</Box>
+
+							<Box sx={{ display: "flex", gap: 2, flexShrink: 0 }}>
+								<Box sx={{ flex: 3, ...floatingCardSx, minWidth: 0 }}>
+									<HadithPanel language={language} translations={t} />
+								</Box>
+								<Box sx={{ flex: 2, display: "flex", minWidth: 0 }}>
+									<SunTimesWidget
 										language={language}
 										translations={t}
 										sunriseTime={sunrisePrayer?.time ?? "--:--"}
 										sunsetTime={sunsetTime}
 									/>
+								</Box>
 							</Box>
 						</Box>
 
