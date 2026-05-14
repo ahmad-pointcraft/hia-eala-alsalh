@@ -8,7 +8,7 @@ import { Header } from "./components/Header";
 import { PrayerCard } from "./components/PrayerCard";
 import { CountdownBar } from "./components/CountdownBar";
 import { HadithPanel } from "./components/HadithPanel";
-import { WeatherWidget } from "./components/WeatherWidget";
+import { SunTimesWidget } from "./components/SunTimesWidget";
 import { AnnouncementsTicker } from "./components/AnnouncementsTicker";
 import { FundraisingOverlay } from "./components/FundraisingOverlay";
 import { IslamicGeometricOverlay } from "./components/IslamicGeometricOverlay";
@@ -22,7 +22,7 @@ import {
 } from "./utils/prayerTimes";
 import type { PrayerTime } from "./utils/prayerTimes";
 import { useClock } from "./utils/useClock";
-import { getDirection, toArabicNumerals } from "./utils/helpers";
+import { getDirection } from "./utils/helpers";
 import { colors } from "./theme/tokens";
 import mosque1 from "../assets/mosque-1.jpg";
 import mosque2 from "../assets/mosque-2.jpg";
@@ -235,9 +235,12 @@ export default function App() {
 										currentTime={currentTime}
 									/>
 								</Box>
-								<Box sx={{ ...floatingCardSx }}>
-									<WeatherWidget language={language} translations={t} />
-								</Box>
+								<SunTimesWidget
+										language={language}
+										translations={t}
+										sunriseTime={sunrisePrayer?.time ?? "--:--"}
+										sunsetTime={sunsetTime}
+									/>
 							</Box>
 						</Box>
 
@@ -249,50 +252,6 @@ export default function App() {
 									gap: 1.5,
 									alignItems: "stretch",
 								}}>
-								<Box
-									sx={{
-										display: "flex",
-										flexDirection: "column",
-										alignItems: "center",
-										justifyContent: "center",
-										px: 1.5,
-										py: 1,
-										borderRadius: "16px",
-										bgcolor: "surface.overlay",
-										border: "1px solid",
-										borderColor: "border.thin",
-										gap: 0.25,
-										minWidth: { xs: 56, sm: 72 },
-									}}>
-									<Box
-										sx={{ fontSize: "16px", lineHeight: 1 }}
-										role="img"
-										aria-label={language === "en" ? "Sunrise" : "شروق"}>
-										🌅
-									</Box>
-									<Typography
-										sx={{
-											fontSize: { xs: "8px", lg: "10px" },
-											color: "text.whiteMuted",
-											textTransform: "uppercase",
-											letterSpacing: "0.1em",
-											fontWeight: 600,
-										}}>
-										{language === "en" ? "Sunrise" : "الشروق"}
-									</Typography>
-									<Typography
-										sx={{
-											fontSize: { xs: "12px", lg: "14px" },
-											color: "text.primary",
-											fontWeight: 700,
-											fontFamily: '"Roboto Mono", monospace',
-										}}>
-										{language === "ar"
-											? toArabicNumerals(sunrisePrayer?.time ?? "--:--")
-											: (sunrisePrayer?.time ?? "--:--")}
-									</Typography>
-								</Box>
-
 								{prayerPrayers.map((prayer, index) => (
 									<Box
 										key={prayer.key}
@@ -319,49 +278,6 @@ export default function App() {
 									</Box>
 								))}
 
-								<Box
-									sx={{
-										display: "flex",
-										flexDirection: "column",
-										alignItems: "center",
-										justifyContent: "center",
-										px: 1.5,
-										py: 1,
-										borderRadius: "16px",
-										bgcolor: "surface.overlay",
-										border: "1px solid",
-										borderColor: "border.thin",
-										gap: 0.25,
-										minWidth: { xs: 56, sm: 72 },
-									}}>
-									<Box
-										sx={{ fontSize: "16px", lineHeight: 1 }}
-										role="img"
-										aria-label={language === "en" ? "Sunset" : "غروب"}>
-										🌇
-									</Box>
-									<Typography
-										sx={{
-											fontSize: { xs: "8px", lg: "10px" },
-											color: "text.whiteMuted",
-											textTransform: "uppercase",
-											letterSpacing: "0.1em",
-											fontWeight: 600,
-										}}>
-										{language === "en" ? "Sunset" : "الغروب"}
-									</Typography>
-									<Typography
-										sx={{
-											fontSize: { xs: "12px", lg: "14px" },
-											color: "text.primary",
-											fontWeight: 700,
-											fontFamily: '"Roboto Mono", monospace',
-										}}>
-										{language === "ar"
-											? toArabicNumerals(sunsetTime)
-											: sunsetTime}
-									</Typography>
-								</Box>
 							</Box>
 						</Box>
 					</motion.div>

@@ -18,6 +18,7 @@ export const translations = {
       cloudy: "Cloudy",
       rainy: "Rainy",
     },
+    sunset: "Sunset",
     announcementsList: [
       "Friday Khutbah at 1:00 PM - Speaker: Imam Abdullah",
       "Quran Study Circle every Tuesday at 7:00 PM",
@@ -107,6 +108,7 @@ export const translations = {
       cloudy: "غائم",
       rainy: "ممطر",
     },
+    sunset: "الغروب",
     announcementsList: [
       "خطبة الجمعة الساعة ١:٠٠ ظهراً - الخطيب: الإمام عبد الله",
       "حلقة دراسة القرآن كل يوم ثلاثاء الساعة ٧:٠٠ مساءً",
