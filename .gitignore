@@ -20,3 +20,7 @@
 
 # Impeccable sidecar (regenerated from DESIGN.md)
 .impeccable/
+
+
+# mocks
+mockups/
