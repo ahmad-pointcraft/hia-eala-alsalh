@@ -2,6 +2,15 @@ import { createTheme } from "@mui/material/styles";
 import { colors } from "./tokens";
 
 const muiTheme = createTheme({
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 640,
+      md: 1024,
+      lg: 1920,
+      xl: 2560,
+    },
+  },
   palette: {
     mode: "dark",
     primary: {
@@ -118,6 +127,14 @@ const muiTheme = createTheme({
     borderRadius: 8,
   },
   components: {
+    MuiButtonBase: {
+      styleOverrides: {
+        root: {
+          minHeight: 44,
+          minWidth: 44,
+        },
+      },
+    },
     MuiCssBaseline: {
       styleOverrides: {
         body: {
