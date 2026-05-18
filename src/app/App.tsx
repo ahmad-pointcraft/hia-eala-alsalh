@@ -150,6 +150,13 @@ export default function App() {
 				width: "100%",
 				height: "100vh",
 				overflow: "hidden",
+				"@media (prefers-reduced-motion: no-preference)": {
+					animation: "pixelShift 60s ease-in-out infinite",
+				},
+				"@keyframes pixelShift": {
+					"0%, 95%": { transform: "translate(0, 0)" },
+					"100%": { transform: "translate(1px, 1px)" },
+				},
 			}}>
 			<Box
 				sx={{

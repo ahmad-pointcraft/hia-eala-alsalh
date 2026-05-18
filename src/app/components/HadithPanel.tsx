@@ -41,7 +41,7 @@ export function HadithPanel({ language, translations }: HadithPanelProps) {
 						color: "text.whiteSoft",
 						fontStyle: "italic",
 						lineHeight: 1.6,
-						fontSize: { xs: "13px", sm: "14px", md: "18px", lg: "24px" },
+						fontSize: { xs: "13px", sm: "14px", md: "18px", lg: "24px", xl: "28px" },
 						fontFamily: getFontFamily(language),
 						textAlign: "center",
 					}}>

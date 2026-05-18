@@ -96,7 +96,7 @@ export function CountdownBar({
 				sx={{
 					color: "primary.main",
 					fontWeight: 800,
-					fontSize: { xs: "28px", sm: "34px", md: "37px", lg: "40px" },
+					fontSize: { xs: "28px", sm: "34px", md: "37px", lg: "40px", xl: "44px" },
 					fontFamily: getFontFamily(language),
 					mt: 1,
 					lineHeight: 1.2,
@@ -111,7 +111,7 @@ export function CountdownBar({
 					fontFamily: '"Roboto Mono", monospace',
 					fontWeight: 700,
 					letterSpacing: "0.05em",
-					fontSize: { xs: "36px", sm: "48px", md: "54px", lg: "64px" },
+					fontSize: { xs: "36px", sm: "48px", md: "54px", lg: "64px", xl: "72px" },
 					lineHeight: 1.1,
 					mt: 1,
 				}}

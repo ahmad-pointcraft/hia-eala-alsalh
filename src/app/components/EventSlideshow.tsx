@@ -142,6 +142,7 @@ export function EventSlideshow({
 								sm: "34px",
 								md: "38px",
 								lg: "44px",
+								xl: "50px",
 							},
 							fontWeight: 800,
 							fontFamily: getFontFamily(language),
@@ -154,7 +155,7 @@ export function EventSlideshow({
 					<Typography
 						sx={{
 							color: "primary.main",
-							fontSize: { xs: "19px", sm: "21px", md: "24px", lg: "28px" },
+							fontSize: { xs: "19px", sm: "21px", md: "24px", lg: "28px", xl: "32px" },
 							fontWeight: 600,
 							fontFamily: getFontFamily(language),
 							mb: 0.75,

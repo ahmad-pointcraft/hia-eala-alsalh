@@ -34,13 +34,13 @@ const labelSx = {
 	textTransform: "uppercase",
 	letterSpacing: "0.15em",
 	fontWeight: 600,
-	fontSize: { xs: "9px", sm: "10px", md: "11px", lg: "12px" },
+	fontSize: { xs: "9px", sm: "10px", md: "11px", lg: "12px", xl: "12px" },
 	lineHeight: 1,
 } as const;
 
 const timeSx = {
 	fontFamily: '"Roboto Mono", monospace',
-	fontSize: { xs: "18px", sm: "20px", md: "22px", lg: "24px" },
+	fontSize: { xs: "18px", sm: "20px", md: "22px", lg: "24px", xl: "26px" },
 	fontWeight: 700,
 	color: "text.primary",
 	letterSpacing: "0.05em",

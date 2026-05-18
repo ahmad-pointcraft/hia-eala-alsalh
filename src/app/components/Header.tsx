@@ -162,7 +162,7 @@ export function Header({
 								color: "text.primary",
 								fontFamily: '"Roboto Mono", monospace',
 								letterSpacing: "0.05em",
-								fontSize: { xs: "28px", sm: "36px", md: "40px", lg: "44px" },
+								fontSize: { xs: "28px", sm: "36px", md: "40px", lg: "44px", xl: "48px" },
 								fontWeight: 700,
 								lineHeight: 1,
 							}}>
