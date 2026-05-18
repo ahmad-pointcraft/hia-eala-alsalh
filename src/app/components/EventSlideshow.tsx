@@ -102,17 +102,17 @@ export function EventSlideshow({
 					<Box
 						sx={{
 							position: "absolute",
-							top: 16,
-							insetInlineStart: 16,
-							px: 1.5,
-							py: 0.5,
+							top: { xs: 1, sm: 1.5, md: 2, lg: 2 },
+							insetInlineStart: { xs: 1, sm: 1.5, md: 2, lg: 2 },
+							px: { xs: 1, sm: 1.5, md: 1.5, lg: 1.5 },
+							py: { xs: 0.25, sm: 0.5, md: 0.5, lg: 0.5 },
 							bgcolor: "primary.main",
 							borderRadius: "4px",
 						}}>
 						<Typography
 							sx={{
 								color: "text.onGold",
-								fontSize: { xs: "12px", lg: "14px" },
+								fontSize: { xs: "12px", sm: "13px", md: "13px", lg: "14px" },
 								fontWeight: 700,
 								fontFamily: getFontFamily(language),
 								textTransform: "uppercase",
@@ -126,9 +126,11 @@ export function EventSlideshow({
 
 				<Box
 					sx={{
-						px: 2.5,
-						pb: events.length > 1 ? 5 : 2.5,
-						pt: 6,
+						px: { xs: 1.5, sm: 2, md: 2.5, lg: 2.5 },
+						pb: events.length > 1
+							? { xs: 3, sm: 4, md: 4, lg: 5 }
+							: { xs: 2, sm: 2.5, md: 2.5, lg: 2.5 },
+						pt: { xs: 4, sm: 5, md: 6, lg: 6 },
 						background:
 							"linear-gradient(to top, rgba(10,31,10,0.95) 0%, rgba(10,31,10,0.7) 50%, transparent 100%)",
 					}}>
@@ -138,6 +140,7 @@ export function EventSlideshow({
 							fontSize: {
 								xs: "30px",
 								sm: "34px",
+								md: "38px",
 								lg: "44px",
 							},
 							fontWeight: 800,
@@ -151,7 +154,7 @@ export function EventSlideshow({
 					<Typography
 						sx={{
 							color: "primary.main",
-							fontSize: { xs: "19px", sm: "21px", lg: "28px" },
+							fontSize: { xs: "19px", sm: "21px", md: "24px", lg: "28px" },
 							fontWeight: 600,
 							fontFamily: getFontFamily(language),
 							mb: 0.75,
@@ -169,7 +172,7 @@ export function EventSlideshow({
 						<Typography
 							sx={{
 								color: "text.whiteSoft",
-								fontSize: { xs: "16px", lg: "20px" },
+								fontSize: { xs: "16px", sm: "17px", md: "18px", lg: "20px" },
 								fontWeight: 500,
 								fontFamily: getFontFamily(language),
 							}}>
@@ -184,8 +187,8 @@ export function EventSlideshow({
 
 						<Box
 							sx={{
-								px: 1.5,
-								py: 0.5,
+								px: { xs: 1, sm: 1.5, md: 1.5, lg: 1.5 },
+								py: { xs: 0.25, sm: 0.5, md: 0.5, lg: 0.5 },
 								bgcolor: "rgba(255,255,255,0.12)",
 								border: "1px solid rgba(255,255,255,0.18)",
 								borderRadius: "8px",
@@ -193,7 +196,7 @@ export function EventSlideshow({
 							<Typography
 								sx={{
 									color: "text.whiteSoft",
-								fontSize: { xs: "14px", lg: "18px" },
+								fontSize: { xs: "14px", sm: "16px", md: "17px", lg: "18px" },
 								fontWeight: 500,
 								fontFamily: getFontFamily(language),
 								lineHeight: 1,
@@ -208,15 +211,15 @@ export function EventSlideshow({
 							sx={{
 								display: "inline-flex",
 								mt: 1.5,
-								px: 2,
-								py: 0.75,
+								px: { xs: 1.5, sm: 2, md: 2, lg: 2 },
+								py: { xs: 0.5, sm: 0.75, md: 0.75, lg: 0.75 },
 								bgcolor: "primary.main",
 								borderRadius: "10px",
 							}}>
 							<Typography
 								sx={{
 									color: "text.onGold",
-									fontSize: { xs: "14px", lg: "19px" },
+									fontSize: { xs: "14px", sm: "16px", md: "17px", lg: "19px" },
 									fontWeight: 700,
 									fontFamily: getFontFamily(language),
 									letterSpacing: "0.02em",
@@ -235,7 +238,7 @@ export function EventSlideshow({
 						position: "absolute",
 						bottom: 0,
 						insetInline: 0,
-						height: 48,
+						height: { xs: 36, sm: 42, md: 48, lg: 48 },
 						display: "flex",
 						alignItems: "flex-end",
 						justifyContent: "center",
@@ -258,6 +261,8 @@ export function EventSlideshow({
 										: colors.text.whiteMuted,
 								border: "none",
 								cursor: "pointer",
+								p: 1.75,
+								m: -1.75,
 								transition: prefersReducedMotion
 									? "none"
 									: "all 300ms cubic-bezier(0.25, 1, 0.5, 1)",
