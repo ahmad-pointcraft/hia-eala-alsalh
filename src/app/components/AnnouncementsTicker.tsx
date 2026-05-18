@@ -69,7 +69,7 @@ export function AnnouncementsTicker({
 					display: "flex",
 					alignItems: "center",
 					height: { xs: 36, sm: 40, lg: 44 },
-					px: "48px",
+					px: { xs: 2, sm: 3, md: 4, lg: 6 },
 					gap: 2,
 				}}
 			>

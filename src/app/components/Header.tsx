@@ -86,7 +86,7 @@ export function Header({
 				sx={{
 					justifyContent: "space-between",
 					gap: 2,
-					px: "48px !important",
+					px: { xs: 2, sm: 3, md: 4, lg: 6 },
 					py: "12px",
 				}}>
 				<Box sx={{ flex: 1, display: "flex", justifyContent: "flex-start" }}>

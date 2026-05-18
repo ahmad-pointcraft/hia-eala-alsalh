@@ -210,9 +210,9 @@ export default function App() {
 								display: "flex",
 								flexDirection: "column",
 								gap: 1.5,
-								px: "48px",
-								py: 1.5,
-								overflow: "hidden",
+							px: { xs: 2, sm: 3, md: 4, lg: 6 },
+							py: 1.5,
+							overflow: "hidden",
 							}}>
 							<Box sx={{ display: "flex", gap: 2, flex: 1, minHeight: 0 }}>
 								<Box sx={{ flex: 3.15, minWidth: 0 }}>
@@ -249,7 +249,7 @@ export default function App() {
 							</Box>
 						</Box>
 
-						<Box sx={{ flexShrink: 0, px: "48px", pb: 1 }}>
+						<Box sx={{ flexShrink: 0, px: { xs: 2, sm: 3, md: 4, lg: 6 }, pb: 1 }}>
 							<Box
 								dir={getDirection(language)}
 								sx={{
