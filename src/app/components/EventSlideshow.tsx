@@ -5,7 +5,11 @@ import Typography from "@mui/material/Typography";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { ImageCarousel } from "./ImageCarousel";
 import { Language } from "../utils/translations";
-import { getFontFamily, getDirection, toArabicNumerals } from "../utils/helpers";
+import {
+	getFontFamily,
+	getDirection,
+	toArabicNumerals,
+} from "../utils/helpers";
 import { colors } from "../theme/tokens";
 
 export interface EventSlide {
@@ -32,7 +36,9 @@ export function EventSlideshow({
 	language,
 }: EventSlideshowProps) {
 	const [currentIndex, setCurrentIndex] = useState(0);
-	const prefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
+	const prefersReducedMotion = useMediaQuery(
+		"(prefers-reduced-motion: reduce)",
+	);
 	const dir = getDirection(language);
 
 	useEffect(() => {
@@ -102,8 +108,8 @@ export function EventSlideshow({
 					<Box
 						sx={{
 							position: "absolute",
-							top: { xs: 1, sm: 1.5, md: 2, lg: 2 },
-							insetInlineStart: { xs: 1, sm: 1.5, md: 2, lg: 2 },
+							top: { xs: 10, sm: 15, md: 20, lg: 20 },
+							insetInlineStart: { xs: 15, sm: 15, md: 20, lg: 20 },
 							px: { xs: 1, sm: 1.5, md: 1.5, lg: 1.5 },
 							py: { xs: 0.25, sm: 0.5, md: 0.5, lg: 0.5 },
 							bgcolor: "primary.main",
@@ -127,9 +133,10 @@ export function EventSlideshow({
 				<Box
 					sx={{
 						px: { xs: 1.5, sm: 2, md: 2.5, lg: 2.5 },
-						pb: events.length > 1
-							? { xs: 3, sm: 4, md: 4, lg: 5 }
-							: { xs: 2, sm: 2.5, md: 2.5, lg: 2.5 },
+						pb:
+							events.length > 1
+								? { xs: 3, sm: 4, md: 4, lg: 5 }
+								: { xs: 2, sm: 2.5, md: 2.5, lg: 2.5 },
 						pt: { xs: 4, sm: 5, md: 6, lg: 6 },
 						background:
 							"linear-gradient(to top, rgba(10,31,10,0.95) 0%, rgba(10,31,10,0.7) 50%, transparent 100%)",
@@ -155,7 +162,13 @@ export function EventSlideshow({
 					<Typography
 						sx={{
 							color: "primary.main",
-							fontSize: { xs: "19px", sm: "21px", md: "24px", lg: "28px", xl: "32px" },
+							fontSize: {
+								xs: "19px",
+								sm: "21px",
+								md: "24px",
+								lg: "28px",
+								xl: "32px",
+							},
 							fontWeight: 600,
 							fontFamily: getFontFamily(language),
 							mb: 0.75,
@@ -197,11 +210,11 @@ export function EventSlideshow({
 							<Typography
 								sx={{
 									color: "text.whiteSoft",
-								fontSize: { xs: "14px", sm: "16px", md: "17px", lg: "18px" },
-								fontWeight: 500,
-								fontFamily: getFontFamily(language),
-								lineHeight: 1,
-							}}>
+									fontSize: { xs: "14px", sm: "16px", md: "17px", lg: "18px" },
+									fontWeight: 500,
+									fontFamily: getFontFamily(language),
+									lineHeight: 1,
+								}}>
 								{event.locationValue}
 							</Typography>
 						</Box>
@@ -237,14 +250,14 @@ export function EventSlideshow({
 				<Box
 					sx={{
 						position: "absolute",
-						bottom: 0,
+						bottom: 5,
 						insetInline: 0,
 						height: { xs: 36, sm: 42, md: 48, lg: 48 },
 						display: "flex",
 						alignItems: "flex-end",
 						justifyContent: "center",
 						pb: 1.5,
-						gap: 1,
+						gap: 5,
 					}}>
 					{events.map((_, index) => (
 						<Box
@@ -255,14 +268,14 @@ export function EventSlideshow({
 							sx={{
 								width: index === currentIndex ? 28 : 10,
 								height: 10,
-								borderRadius: "4px",
+								borderRadius: 50,
 								bgcolor:
 									index === currentIndex
 										? "primary.main"
 										: colors.text.whiteMuted,
 								border: "none",
 								cursor: "pointer",
-								p: 1.75,
+								p: 1,
 								m: -1.75,
 								transition: prefersReducedMotion
 									? "none"
