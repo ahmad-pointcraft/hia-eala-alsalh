@@ -35,7 +35,7 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
     const id = setTimeout(() => {
       const focusables = container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
       if (focusables.length > 0) {
-        focusables[0].focus();
+        focusables[0]?.focus();
       }
     }, 50);
     return () => clearTimeout(id);
@@ -59,8 +59,9 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
       return;
     }
 
-    const first = focusables[0];
-    const last = focusables[focusables.length - 1];
+    // Safe: guarded by focusables.length === 0 early return above
+    const first = focusables[0]!;
+    const last = focusables[focusables.length - 1]!;
     const activeInDialog = container.contains(document.activeElement);
 
     if (!activeInDialog) {
@@ -159,7 +160,7 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
           <Close />
         </IconButton>
 
-          <Box sx={{ textAlign: 'center', mb: { xs: 3, sm: 3, md: 4, lg: 4 } }}>
+        <Box sx={{ textAlign: 'center', mb: { xs: 3, sm: 3, md: 4, lg: 4 } }}>
           <Typography
             sx={{
               color: 'primary.main',
@@ -232,7 +233,7 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
           />
         </Box>
 
-          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', mt: { xs: 3, sm: 3, md: 4, lg: 4 }, pt: { xs: 3, sm: 3, md: 4, lg: 4 }, borderTop: '1px solid', borderTopColor: 'border.thin', gap: 2 }}>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', mt: { xs: 3, sm: 3, md: 4, lg: 4 }, pt: { xs: 3, sm: 3, md: 4, lg: 4 }, borderTop: '1px solid', borderTopColor: 'border.thin', gap: 2 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 2, sm: 2, md: 3, lg: 3 } }}>
             <Box sx={{ width: { xs: 96, sm: 96, md: 128, lg: 128 }, height: { xs: 96, sm: 96, md: 128, lg: 128 }, bgcolor: 'common.white', borderRadius: "8px", display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }} role="img" aria-label={translations.fundraising.scanToDonate}>
               <Box sx={{ textAlign: 'center', fontSize: '0.75rem', color: colors.text.onGold, p: 1 }}>
