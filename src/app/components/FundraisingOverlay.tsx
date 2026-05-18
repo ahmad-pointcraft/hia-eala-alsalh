@@ -243,7 +243,7 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
             </Box>
             <Box>
               <Typography sx={{ color: 'text.whiteMuted', fontSize: '0.875rem', mb: 0.5, fontFamily }}>{translations.fundraising.donateOnline}</Typography>
-              <Typography sx={{ color: 'primary.main', fontSize: { xs: '1rem', sm: '1.125rem' }, fontFamily: 'monospace' }}>
+              <Typography sx={{ color: 'primary.main', fontSize: { xs: '1rem', sm: '1.125rem', md: '1.125rem', lg: '1.125rem' }, fontFamily: 'monospace' }}>
                 masjidalnoor.org/donate
               </Typography>
             </Box>
