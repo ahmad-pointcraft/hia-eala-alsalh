@@ -159,7 +159,7 @@ export default function App() {
 				}}
 			/>
 
-			<Stack sx={{ position: "relative", zIndex: 10, height: "100%" }}>
+			<Stack sx={{ position: "relative", zIndex: 10, height: "100%", maxWidth: "2560px", mx: "auto", width: "100%" }}>
 				<Header
 					language={language}
 					onToggleLanguage={toggleLanguage}
@@ -209,13 +209,19 @@ export default function App() {
 								flex: 1,
 								display: "flex",
 								flexDirection: "column",
-								gap: 1.5,
-							px: { xs: 2, sm: 3, md: 4, lg: 6 },
-							py: 1.5,
-							overflow: "hidden",
+								gap: { xs: 1, sm: 1.5, md: 2, lg: 2 },
+								px: { xs: 2, sm: 3, md: 4, lg: 6 },
+								py: { xs: 1, sm: 1.5, md: 1.5, lg: 1.5 },
+								overflow: "hidden",
 							}}>
-							<Box sx={{ display: "flex", gap: 2, flex: 1, minHeight: 0 }}>
-								<Box sx={{ flex: 3.15, minWidth: 0 }}>
+							<Box sx={{
+								display: "flex",
+								flexDirection: { xs: "column", sm: "row" },
+								gap: { xs: 1, sm: 1.5, md: 2, lg: 2 },
+								flex: 1,
+								minHeight: 0,
+							}}>
+								<Box sx={{ flex: { xs: "none", sm: 3.15 }, minWidth: 0, minHeight: { xs: 220, sm: 0 } }}>
 									<EventSlideshow
 										events={eventSlides}
 										images={carouselImages}
@@ -223,7 +229,7 @@ export default function App() {
 										language={language}
 									/>
 								</Box>
-								<Box sx={{ flex: 2, ...floatingCardSx, minWidth: 0 }}>
+								<Box sx={{ flex: { xs: "none", sm: 2 }, ...floatingCardSx, minWidth: 0, minHeight: { xs: 140, sm: 0 } }}>
 									<CountdownBar
 										nextPrayer={nextPrayer.name}
 										nextPrayerTime={nextPrayer.time}
@@ -234,11 +240,16 @@ export default function App() {
 								</Box>
 							</Box>
 
-							<Box sx={{ display: "flex", gap: 2, flexShrink: 0 }}>
-								<Box sx={{ flex: 3, ...floatingCardSx, minWidth: 0 }}>
+							<Box sx={{
+								display: "flex",
+								flexDirection: { xs: "column", sm: "row" },
+								gap: { xs: 1, sm: 1.5, md: 2, lg: 2 },
+								flexShrink: 0,
+							}}>
+								<Box sx={{ flex: { xs: "none", sm: 3 }, ...floatingCardSx, minWidth: 0 }}>
 									<HadithPanel language={language} translations={t} />
 								</Box>
-								<Box sx={{ flex: 2, display: "flex", minWidth: 0 }}>
+								<Box sx={{ flex: { xs: "none", sm: 2 }, display: "flex", minWidth: 0 }}>
 									<SunTimesWidget
 										language={language}
 										translations={t}
@@ -253,34 +264,36 @@ export default function App() {
 							<Box
 								dir={getDirection(language)}
 								sx={{
-									display: "flex",
-									gap: 1.5,
-									alignItems: "stretch",
+									display: "grid",
+									gridTemplateColumns: {
+										xs: "repeat(2, 1fr)",
+										sm: "repeat(3, 1fr)",
+										md: "repeat(5, 1fr)",
+										lg: "repeat(5, 1fr)",
+									},
+									gap: { xs: 1, sm: 1.5, md: 2, lg: 2 },
 								}}>
 								{prayerPrayers.map((prayer, index) => (
-									<Box
+									<motion.div
 										key={prayer.key}
-										sx={{ flex: prayer.key === activePrayer?.key ? 1.5 : 1 }}>
-										<motion.div
-											initial={{ opacity: 0, y: 20 }}
-											animate={{ opacity: 1, y: 0 }}
-											transition={
-												defaultTransition ?? {
-													delay: index * 0.05,
-													duration: 0.3,
-												}
-											}>
-											<PrayerCard
-												name={prayer.name}
-												time={prayer.time}
-												iqamaTime={prayer.iqamaTime}
-												isActive={prayer.key === activePrayer?.key}
-												language={language}
-												iqamaLabel={t.iqama}
-												prayerKey={prayer.key}
-											/>
-										</motion.div>
-									</Box>
+										initial={{ opacity: 0, y: 20 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={
+											defaultTransition ?? {
+												delay: index * 0.05,
+												duration: 0.3,
+											}
+										}>
+										<PrayerCard
+											name={prayer.name}
+											time={prayer.time}
+											iqamaTime={prayer.iqamaTime}
+											isActive={prayer.key === activePrayer?.key}
+											language={language}
+											iqamaLabel={t.iqama}
+											prayerKey={prayer.key}
+										/>
+									</motion.div>
 								))}
 							</Box>
 						</Box>
