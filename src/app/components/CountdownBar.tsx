@@ -75,8 +75,8 @@ export function CountdownBar({
 				alignItems: "center",
 				justifyContent: "center",
 				height: "100%",
-				py: 3,
-				px: 2,
+				py: { xs: 2, sm: 2.5, md: 3, lg: 3 },
+				px: { xs: 1.5, sm: 2, md: 2, lg: 2 },
 			}}
 		>
 			<Typography
@@ -85,7 +85,7 @@ export function CountdownBar({
 					textTransform: "uppercase",
 					letterSpacing: "0.15em",
 				fontWeight: 600,
-				fontSize: { xs: "10px", sm: "11px", lg: "13px" },
+				fontSize: { xs: "10px", sm: "11px", md: "12px", lg: "13px" },
 				fontFamily: getFontFamily(language),
 				}}
 			>
@@ -96,7 +96,7 @@ export function CountdownBar({
 				sx={{
 					color: "primary.main",
 					fontWeight: 800,
-					fontSize: { xs: "28px", sm: "34px", lg: "40px" },
+					fontSize: { xs: "28px", sm: "34px", md: "37px", lg: "40px" },
 					fontFamily: getFontFamily(language),
 					mt: 1,
 					lineHeight: 1.2,
@@ -111,7 +111,7 @@ export function CountdownBar({
 					fontFamily: '"Roboto Mono", monospace',
 					fontWeight: 700,
 					letterSpacing: "0.05em",
-					fontSize: { xs: "36px", sm: "48px", lg: "64px" },
+					fontSize: { xs: "36px", sm: "48px", md: "54px", lg: "64px" },
 					lineHeight: 1.1,
 					mt: 1,
 				}}
@@ -122,7 +122,7 @@ export function CountdownBar({
 			<Typography
 				sx={{
 					color: "text.whiteMuted",
-					fontSize: { xs: "11px", sm: "12px", lg: "13px" },
+					fontSize: { xs: "11px", sm: "12px", md: "12px", lg: "13px" },
 					fontFamily: getFontFamily(language),
 					mt: 1.25,
 				}}

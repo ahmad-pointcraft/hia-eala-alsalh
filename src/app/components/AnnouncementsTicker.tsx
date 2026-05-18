@@ -68,7 +68,7 @@ export function AnnouncementsTicker({
 				sx={{
 					display: "flex",
 					alignItems: "center",
-					height: { xs: 36, sm: 40, lg: 44 },
+					height: { xs: 36, sm: 40, md: 42, lg: 44 },
 					px: { xs: 2, sm: 3, md: 4, lg: 6 },
 					gap: 2,
 				}}
@@ -86,7 +86,7 @@ export function AnnouncementsTicker({
 						component="img"
 						src={masjidLogo}
 						alt="Masjid Logo"
-						sx={{ height: { xs: 22, sm: 26, lg: 30 }, width: "auto", objectFit: "contain" }}
+						sx={{ height: { xs: 22, sm: 26, md: 28, lg: 30 }, width: "auto", objectFit: "contain" }}
 					/>
 				</Box>
 
@@ -105,7 +105,7 @@ export function AnnouncementsTicker({
 							component="span"
 							sx={{
 								color: "text.whiteMuted",
-								fontSize: { xs: "0.75rem", sm: "0.875rem", lg: "0.875rem" },
+								fontSize: { xs: "0.75rem", sm: "0.875rem", md: "0.875rem", lg: "0.875rem" },
 								fontFamily: getFontFamily(language),
 							}}
 						>
@@ -126,7 +126,7 @@ export function AnnouncementsTicker({
 						component="img"
 						src={pointcraftLogo}
 						alt="PointCraft"
-						sx={{ height: { xs: 16, sm: 18, lg: 20 }, width: "auto", objectFit: "contain", opacity: 0.6 }}
+						sx={{ height: { xs: 16, sm: 18, md: 19, lg: 20 }, width: "auto", objectFit: "contain", opacity: 0.6 }}
 					/>
 				</Box>
 			</Box>

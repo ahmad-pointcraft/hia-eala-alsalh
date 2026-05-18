@@ -15,8 +15,8 @@ export function HadithPanel({ language, translations }: HadithPanelProps) {
 			dir={getDirection(language)}
 			sx={{
 				width: "100%",
-				py: 1.5,
-				px: 2.5,
+				py: { xs: 1, sm: 1.5, md: 1.5, lg: 1.5 },
+				px: { xs: 1.5, sm: 2, md: 2.5, lg: 2.5 },
 				display: "flex",
 				flexDirection: "column",
 				justifyContent: "space-between",
@@ -29,7 +29,7 @@ export function HadithPanel({ language, translations }: HadithPanelProps) {
 						textTransform: "uppercase",
 						letterSpacing: "0.15em",
 						fontWeight: 600,
-						fontSize: "9px",
+						fontSize: { xs: "9px", sm: "10px", md: "11px", lg: "12px" },
 						mb: 0.75,
 						textAlign: "start",
 					}}>
@@ -41,7 +41,7 @@ export function HadithPanel({ language, translations }: HadithPanelProps) {
 						color: "text.whiteSoft",
 						fontStyle: "italic",
 						lineHeight: 1.6,
-						fontSize: { xs: "13px", sm: "14px", lg: "24px" },
+						fontSize: { xs: "13px", sm: "14px", md: "18px", lg: "24px" },
 						fontFamily: getFontFamily(language),
 						textAlign: "center",
 					}}>
@@ -52,7 +52,7 @@ export function HadithPanel({ language, translations }: HadithPanelProps) {
 			<Typography
 				sx={{
 					color: "text.whiteMuted",
-					fontSize: "11px",
+					fontSize: { xs: "10px", sm: "11px", md: "12px", lg: "13px" },
 					mt: 1,
 					fontFamily: getFontFamily(language),
 					textAlign: "end",
