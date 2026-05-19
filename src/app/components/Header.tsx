@@ -85,9 +85,9 @@ export function Header({
 			<Toolbar
 				sx={{
 					justifyContent: "space-between",
-					gap: 2,
-					px: "48px !important",
-					py: "12px",
+					gap: { xs: 1, sm: 1.5, md: 2, lg: 2 },
+					px: { xs: 2, sm: 3, md: 4, lg: 6 },
+					py: { xs: "8px", sm: "10px", md: "12px", lg: "12px" },
 				}}>
 				<Box sx={{ flex: 1, display: "flex", justifyContent: "flex-start" }}>
 					<Box
@@ -100,9 +100,9 @@ export function Header({
 							onClick={language === "en" ? onToggleLanguage : undefined}
 							aria-label="العربية"
 							sx={{
-								px: 2.5,
-								py: 1,
-								fontSize: "0.875rem",
+								px: { xs: 1.5, sm: 2.5 },
+								py: { xs: 0.75, sm: 1 },
+								fontSize: { xs: "0.75rem", sm: "0.875rem" },
 								fontWeight: 600,
 								fontFamily: '"Noto Naskh Arabic", serif',
 								bgcolor: language === "ar" ? "border.default" : "transparent",
@@ -120,9 +120,9 @@ export function Header({
 							onClick={language === "ar" ? onToggleLanguage : undefined}
 							aria-label="English"
 							sx={{
-								px: 2.5,
-								py: 1,
-								fontSize: "0.875rem",
+								px: { xs: 1.5, sm: 2.5 },
+								py: { xs: 0.75, sm: 1 },
+								fontSize: { xs: "0.75rem", sm: "0.875rem" },
 								fontWeight: 600,
 								fontFamily: '"Open Sans", sans-serif',
 								bgcolor: language === "en" ? "border.default" : "transparent",
@@ -149,7 +149,7 @@ export function Header({
 					<Box
 						sx={{
 							...pillSx,
-							px: 4,
+							px: { xs: 2, sm: 3, md: 4, lg: 4 },
 							py: 0.75,
 							display: "flex",
 							alignItems: "center",
@@ -162,7 +162,7 @@ export function Header({
 								color: "text.primary",
 								fontFamily: '"Roboto Mono", monospace',
 								letterSpacing: "0.05em",
-								fontSize: { xs: "28px", sm: "36px", lg: "44px" },
+								fontSize: { xs: "28px", sm: "36px", md: "40px", lg: "44px", xl: "48px" },
 								fontWeight: 700,
 								lineHeight: 1,
 							}}>
@@ -174,7 +174,7 @@ export function Header({
 								role="status"
 								aria-label={language === "en" ? "Offline" : "غير متصل"}
 								sx={{
-									display: "flex",
+									display: { xs: "none", sm: "flex" },
 									alignItems: "center",
 									color: "text.whiteMuted",
 								}}>
@@ -185,13 +185,18 @@ export function Header({
 					<Typography
 						sx={{
 							color: "text.whiteSoft",
-							fontSize: { xs: "13px", sm: "14px", lg: "15px" },
+							fontSize: { xs: "13px", sm: "14px", md: "14px", lg: "15px" },
 							fontWeight: 600,
 							fontFamily: getFontFamily(language),
 							letterSpacing: "0.04em",
 							textAlign: "center",
 						}}>
-						{getHijriDate()} · {getGregorianDate()}
+						<Box
+							component="span"
+							sx={{ display: { xs: "none", sm: "inline" } }}>
+							{getHijriDate()} ·{" "}
+						</Box>
+						{getGregorianDate()}
 					</Typography>
 				</Box>
 
@@ -208,12 +213,12 @@ export function Header({
 							display: "flex",
 							alignItems: "center",
 							gap: 1,
-							px: 3,
-							py: 1,
+							px: { xs: 2, sm: 2.5, md: 3 },
+							py: { xs: 0.75, sm: 1, md: 1 },
 							borderRadius: 24,
 							background: `linear-gradient(135deg, ${colors.gold.dark}, ${colors.gold.main})`,
 							color: "text.onGold",
-							fontSize: { xs: "0.75rem", sm: "0.875rem" },
+							fontSize: { xs: "0.75rem", sm: "0.875rem", md: "0.875rem" },
 							fontWeight: 600,
 							fontFamily: getFontFamily(language),
 							textTransform: "none",
@@ -224,7 +229,7 @@ export function Header({
 						<Heart size={16} />
 						<Box
 							component="span"
-							sx={{ display: { xs: "none", lg: "inline" } }}>
+							sx={{ display: { xs: "none", md: "inline" } }}>
 							{translations.donate}
 						</Box>
 					</ButtonBase>

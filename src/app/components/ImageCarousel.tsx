@@ -59,7 +59,7 @@ export function ImageCarousel({ images, interval = 5000 }: ImageCarouselProps) {
           position: 'absolute',
           bottom: 0,
           insetInline: 0,
-          height: 60,
+          height: { xs: 44, sm: 52, md: 60, lg: 60 },
           background: `linear-gradient(transparent, ${colors.surface.medium})`,
           display: 'flex',
           alignItems: 'flex-end',
@@ -80,6 +80,8 @@ export function ImageCarousel({ images, interval = 5000 }: ImageCarouselProps) {
                 bgcolor: index === currentIndex ? 'primary.main' : colors.text.whiteMuted,
                 border: 'none',
                 cursor: 'pointer',
+                p: 1.75,
+                m: -1.75,
                 transition: prefersReducedMotion ? 'none' : 'all 300ms cubic-bezier(0.25, 1, 0.5, 1)',
               }}
             />

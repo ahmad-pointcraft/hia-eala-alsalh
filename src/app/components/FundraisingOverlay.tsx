@@ -35,7 +35,7 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
     const id = setTimeout(() => {
       const focusables = container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
       if (focusables.length > 0) {
-        focusables[0].focus();
+        focusables[0]?.focus();
       }
     }, 50);
     return () => clearTimeout(id);
@@ -59,8 +59,9 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
       return;
     }
 
-    const first = focusables[0];
-    const last = focusables[focusables.length - 1];
+    // Safe: guarded by focusables.length === 0 early return above
+    const first = focusables[0]!;
+    const last = focusables[focusables.length - 1]!;
     const activeInDialog = container.contains(document.activeElement);
 
     if (!activeInDialog) {
@@ -141,7 +142,7 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
           border: '1px solid',
           borderColor: 'border.thin',
           borderRadius: "24px",
-          p: { xs: 3, sm: 6 },
+          p: { xs: 3, sm: 4, md: 6, lg: 6 },
           maxWidth: '768px',
           width: '100%',
           position: 'relative',
@@ -159,28 +160,28 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
           <Close />
         </IconButton>
 
-        <Box sx={{ textAlign: 'center', mb: { xs: 3, sm: 4 } }}>
+        <Box sx={{ textAlign: 'center', mb: { xs: 3, sm: 3, md: 4, lg: 4 } }}>
           <Typography
             sx={{
               color: 'primary.main',
-              fontSize: { xs: '1.875rem', sm: '3rem' },
-              mb: { xs: 1.5, sm: 2 },
+              fontSize: { xs: '1.875rem', sm: '2.25rem', md: '2.5rem', lg: '3rem' },
+              mb: { xs: 1.5, sm: 1.5, md: 2, lg: 2 },
               fontFamily: getFontFamily(language),
             }}
           >
             {translations.fundraising.title}
           </Typography>
-          <Typography sx={{ color: 'text.whiteSoft', fontSize: { xs: '1rem', sm: '1.125rem' }, fontFamily }}>
+          <Typography sx={{ color: 'text.whiteSoft', fontSize: { xs: '1rem', sm: '1rem', md: '1.125rem', lg: '1.125rem' }, fontFamily }}>
             {translations.fundraising.description}
           </Typography>
         </Box>
 
-        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'center', gap: { xs: 3, sm: 6 }, mb: { xs: 3, sm: 4 } }}>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'center', gap: { xs: 3, sm: 4, md: 6, lg: 6 }, mb: { xs: 3, sm: 3, md: 4, lg: 4 } }}>
           <Box sx={{ textAlign: 'center' }}>
             <Typography sx={{ color: 'text.whiteMuted', fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '0.05em', mb: 1, fontFamily }}>
               {translations.fundraising.collected}
             </Typography>
-            <Typography sx={{ color: 'primary.main', fontSize: { xs: '1.875rem', sm: '2.25rem' }, fontWeight: 'bold', fontFamily }}>
+            <Typography sx={{ color: 'primary.main', fontSize: { xs: '1.875rem', sm: '2rem', md: '2.25rem', lg: '2.25rem' }, fontWeight: 'bold', fontFamily }}>
               ${displayCollected}
             </Typography>
           </Box>
@@ -191,7 +192,7 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
             <Typography sx={{ color: 'text.whiteMuted', fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '0.05em', mb: 1, fontFamily }}>
               {translations.fundraising.goal}
             </Typography>
-            <Typography sx={{ color: 'text.primary', fontSize: { xs: '1.875rem', sm: '2.25rem' }, fontWeight: 'bold', fontFamily }}>
+            <Typography sx={{ color: 'text.primary', fontSize: { xs: '1.875rem', sm: '2rem', md: '2.25rem', lg: '2.25rem' }, fontWeight: 'bold', fontFamily }}>
               ${displayGoal}
             </Typography>
           </Box>
@@ -202,7 +203,7 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
             <Typography sx={{ color: 'text.whiteMuted', fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '0.05em', mb: 1, fontFamily }}>
               {translations.fundraising.donors}
             </Typography>
-            <Typography sx={{ color: 'text.primary', fontSize: { xs: '1.875rem', sm: '2.25rem' }, fontWeight: 'bold', fontFamily }}>
+            <Typography sx={{ color: 'text.primary', fontSize: { xs: '1.875rem', sm: '2rem', md: '2.25rem', lg: '2.25rem' }, fontWeight: 'bold', fontFamily }}>
               {displayDonors}
             </Typography>
           </Box>
@@ -232,17 +233,17 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
           />
         </Box>
 
-          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', mt: { xs: 3, sm: 4 }, pt: { xs: 3, sm: 4 }, borderTop: '1px solid', borderTopColor: 'border.thin', gap: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 2, sm: 3 } }}>
-            <Box sx={{ width: { xs: 96, sm: 128 }, height: { xs: 96, sm: 128 }, bgcolor: 'common.white', borderRadius: "8px", display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }} role="img" aria-label={translations.fundraising.scanToDonate}>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', mt: { xs: 3, sm: 3, md: 4, lg: 4 }, pt: { xs: 3, sm: 3, md: 4, lg: 4 }, borderTop: '1px solid', borderTopColor: 'border.thin', gap: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 2, sm: 2, md: 3, lg: 3 } }}>
+            <Box sx={{ width: { xs: 96, sm: 96, md: 128, lg: 128 }, height: { xs: 96, sm: 96, md: 128, lg: 128 }, bgcolor: 'common.white', borderRadius: "8px", display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }} role="img" aria-label={translations.fundraising.scanToDonate}>
               <Box sx={{ textAlign: 'center', fontSize: '0.75rem', color: colors.text.onGold, p: 1 }}>
                 <Typography sx={{ fontWeight: 'bold', mb: 0.5, fontSize: '0.75rem' }}>QR CODE</Typography>
-                <Typography sx={{ fontSize: '10px', fontFamily }}>{translations.fundraising.scanToDonate}</Typography>
+                <Typography sx={{ fontSize: { xs: '8px', sm: '9px', md: '10px', lg: '10px' }, fontFamily }}>{translations.fundraising.scanToDonate}</Typography>
               </Box>
             </Box>
             <Box>
               <Typography sx={{ color: 'text.whiteMuted', fontSize: '0.875rem', mb: 0.5, fontFamily }}>{translations.fundraising.donateOnline}</Typography>
-              <Typography sx={{ color: 'primary.main', fontSize: { xs: '1rem', sm: '1.125rem' }, fontFamily: 'monospace' }}>
+              <Typography sx={{ color: 'primary.main', fontSize: { xs: '1rem', sm: '1.125rem', md: '1.125rem', lg: '1.125rem' }, fontFamily: 'monospace' }}>
                 masjidalnoor.org/donate
               </Typography>
             </Box>
