@@ -5,6 +5,7 @@
 
 /.agents
 /.opencode
+/.specify
 /docs
 /specs
 .env
