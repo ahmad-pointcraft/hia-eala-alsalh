@@ -12,7 +12,9 @@ export interface NextPrayer extends PrayerTime {
 }
 
 const parseTimeToMinutes = (time: string): number => {
-  const [hours, minutes] = time.split(':').map(Number);
+  const parts = time.split(':').map(Number);
+  const hours = parts[0] ?? 0;
+  const minutes = parts[1] ?? 0;
   return hours * 60 + minutes;
 };
 
@@ -36,7 +38,11 @@ export const getNextPrayer = (prayers: PrayerTime[], now: Date): NextPrayer => {
       return { ...prayer, isTomorrow: false };
     }
   }
-  return { ...prayers[0], isTomorrow: true };
+  const firstPrayer = prayers[0];
+  if (!firstPrayer) {
+    throw new Error('Prayers list cannot be empty');
+  }
+  return { ...firstPrayer, isTomorrow: true };
 };
 
 export const getTimeToNextPrayer = (prayers: PrayerTime[], now: Date): number => {

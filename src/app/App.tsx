@@ -238,14 +238,14 @@ export default function App() {
 							<Box
 								sx={{
 									display: "flex",
-									flexDirection: { xs: "column", sm: "row" },
+									flexDirection: { xs: "column", sm: language === "ar" ? "row-reverse" : "row" },
 									gap: { xs: 1, sm: 1.5, md: 2, lg: 2 },
 									flex: 1,
 									minHeight: 0,
 								}}>
 								<Box
 									sx={{
-										flex: { xs: "none", sm: 3.15 },
+										flex: { xs: "none", sm: 3.15, md: 2 },
 										minWidth: 0,
 										minHeight: { xs: 220, sm: 0 },
 									}}>
@@ -258,7 +258,7 @@ export default function App() {
 								</Box>
 							<Box
 									sx={(theme) => ({
-										flex: { xs: "none", sm: 3 },
+										flex: { xs: "none", sm: 3, md: 1 },
 										...floatingCardSx(theme),
 										minWidth: 0,
 									})}>
@@ -275,7 +275,7 @@ export default function App() {
 							<Box
 								sx={{
 									display: "flex",
-									flexDirection: { xs: "column", sm: "row" },
+									flexDirection: { xs: "column", sm: language === "ar" ? "row-reverse" : "row" },
 									gap: { xs: 1, sm: 1.5, md: 2, lg: 2 },
 									flexShrink: 0,
 								}}>
