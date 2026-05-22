@@ -94,7 +94,7 @@ export function CountdownBar({
 
 			<Typography
 				sx={{
-					color: "primary.main",
+					color: (theme) => theme.palette.gold.onLight,
 					fontWeight: 800,
 					fontSize: { xs: "28px", sm: "34px", md: "37px", lg: "40px", xl: "44px" },
 					fontFamily: getFontFamily(language),

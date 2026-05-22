@@ -80,7 +80,7 @@ export function PrayerCard({
         <Box
           sx={{
             mb: { xs: 0.25, sm: 0.5, md: 0.75, lg: 1 },
-            color: isActive ? 'primary.main' : 'text.secondary',
+            color: isActive ? (theme) => theme.palette.gold.onLight : 'text.secondary',
             '& svg': { width: { xs: 20, sm: 24, md: 26, lg: 28 }, height: { xs: 20, sm: 24, md: 26, lg: 28 } },
           }}
         >
@@ -115,7 +115,7 @@ export function PrayerCard({
 
         <Typography
           sx={{
-            color: 'primary.main',
+            color: (theme) => theme.palette.gold.onLight,
             fontSize: { xs: '8px', sm: '10px', md: '12px', lg: '0.875rem' },
             fontWeight: 'normal',
             fontFamily: getFontFamily(language),

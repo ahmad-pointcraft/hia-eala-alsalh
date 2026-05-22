@@ -138,8 +138,8 @@ export function EventSlideshow({
 								? { xs: 3, sm: 4, md: 4, lg: 5 }
 								: { xs: 2, sm: 2.5, md: 2.5, lg: 2.5 },
 						pt: { xs: 4, sm: 5, md: 6, lg: 6 },
-						background:
-							"linear-gradient(to top, rgba(10,31,10,0.95) 0%, rgba(10,31,10,0.7) 50%, transparent 100%)",
+						background: (theme) =>
+							`linear-gradient(to top, ${theme.palette.background.default}F2 0%, ${theme.palette.background.default}B3 50%, transparent 100%)`,
 					}}>
 					<Typography
 						sx={{
@@ -203,8 +203,8 @@ export function EventSlideshow({
 							sx={{
 								px: { xs: 1, sm: 1.5, md: 1.5, lg: 1.5 },
 								py: { xs: 0.25, sm: 0.5, md: 0.5, lg: 0.5 },
-								bgcolor: "rgba(255,255,255,0.12)",
-								border: "1px solid rgba(255,255,255,0.18)",
+								bgcolor: (theme) => theme.palette.mode === "dark" ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.06)",
+								border: (theme) => theme.palette.mode === "dark" ? "1px solid rgba(255,255,255,0.18)" : "1px solid rgba(0,0,0,0.10)",
 								borderRadius: "8px",
 							}}>
 							<Typography

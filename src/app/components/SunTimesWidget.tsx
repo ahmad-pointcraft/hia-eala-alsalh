@@ -62,20 +62,18 @@ export function SunTimesWidget({
 	return (
 		<Box dir={dir} sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, gap: 1.5, flex: 1, width: "100%" }}>
 			<Box sx={cardSx}>
-				<Sunrise
-					size={26}
-				sx={{ color: "text.muted", flexShrink: 0 }}
-			/>
+				<Box sx={{ color: "text.muted", flexShrink: 0, display: "flex" }}>
+					<Sunrise size={26} />
+				</Box>
 				<Typography sx={labelSx}>
 					{translations.prayers.sunrise}
 				</Typography>
 				<Typography sx={timeSx}>{displaySunrise}</Typography>
 			</Box>
 			<Box sx={cardSx}>
-				<Sunset
-					size={26}
-					sx={{ color: "text.muted", flexShrink: 0 }}
-				/>
+				<Box sx={{ color: "text.muted", flexShrink: 0, display: "flex" }}>
+					<Sunset size={26} />
+				</Box>
 				<Typography sx={labelSx}>{translations.sunset}</Typography>
 				<Typography sx={timeSx}>{displaySunset}</Typography>
 			</Box>
