@@ -2,6 +2,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import { useTheme } from "@mui/material/styles";
 import {
   Moon,
   Sun,
@@ -13,7 +14,6 @@ import {
 import { Language } from '../utils/translations';
 import { toArabicNumerals, getFontFamily, getDirection } from '../utils/helpers';
 import type { PrayerKey } from '../utils/prayerTimes';
-import { colors } from '../theme/tokens';
 
 interface PrayerCardProps {
   name: string;
@@ -43,6 +43,7 @@ export function PrayerCard({
   iqamaLabel,
   prayerKey,
 }: PrayerCardProps) {
+  const theme = useTheme();
   const Icon = prayerIcons[prayerKey] || Star;
 
   const displayTime = language === 'ar' ? toArabicNumerals(time) : time;
@@ -65,7 +66,7 @@ export function PrayerCard({
               bgcolor: 'border.default',
               border: '1px solid',
               borderColor: 'primary.main',
-              boxShadow: `0 0 30px ${colors.glow.medium}`,
+              boxShadow: `0 0 30px ${theme.palette.glow.medium}`,
               transform: 'scale(1.02)',
             }
           : {
@@ -79,7 +80,7 @@ export function PrayerCard({
         <Box
           sx={{
             mb: { xs: 0.25, sm: 0.5, md: 0.75, lg: 1 },
-            color: isActive ? 'primary.main' : 'text.secondary',
+            color: isActive ? (theme) => theme.palette.gold.onLight : 'text.secondary',
             '& svg': { width: { xs: 20, sm: 24, md: 26, lg: 28 }, height: { xs: 20, sm: 24, md: 26, lg: 28 } },
           }}
         >
@@ -114,7 +115,7 @@ export function PrayerCard({
 
         <Typography
           sx={{
-            color: 'primary.main',
+            color: (theme) => theme.palette.gold.onLight,
             fontSize: { xs: '8px', sm: '10px', md: '12px', lg: '0.875rem' },
             fontWeight: 'normal',
             fontFamily: getFontFamily(language),

@@ -2,7 +2,7 @@ import { Language } from './translations';
 
 export const toArabicNumerals = (text: string): string => {
   const arabicNumerals = ['\u0660', '\u0661', '\u0662', '\u0663', '\u0664', '\u0665', '\u0666', '\u0667', '\u0668', '\u0669'];
-  return text.replace(/[0-9]/g, (digit) => arabicNumerals[parseInt(digit)]);
+  return text.replace(/[0-9]/g, (digit) => arabicNumerals[parseInt(digit)] || digit);
 };
 
 export const getFontFamily = (language: Language): string => {

@@ -12,7 +12,7 @@ interface SunTimesWidgetProps {
 	sunsetTime: string;
 }
 
-const cardSx = {
+const cardSx = (theme: { palette: { surface: { overlay: string } } }) => ({
 	flex: 1,
 	display: "flex",
 	flexDirection: "column",
@@ -24,13 +24,13 @@ const cardSx = {
 	borderColor: "border.thin",
 	borderRadius: "24px",
 	backdropFilter: "blur(16px)",
-	boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+	boxShadow: `0 8px 32px ${theme.palette.surface.overlay}`,
 	py: { xs: 1, sm: 1.5, md: 1.5, lg: 1.5 },
 	px: { xs: 1.5, sm: 2.5, md: 2.5, lg: 2.5 },
-} as const;
+});
 
 const labelSx = {
-	color: "text.whiteMuted",
+	color: "text.muted",
 	textTransform: "uppercase",
 	letterSpacing: "0.15em",
 	fontWeight: 600,
@@ -62,20 +62,18 @@ export function SunTimesWidget({
 	return (
 		<Box dir={dir} sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, gap: 1.5, flex: 1, width: "100%" }}>
 			<Box sx={cardSx}>
-				<Sunrise
-					size={26}
-					style={{ color: "rgba(255,255,255,0.4)", flexShrink: 0 }}
-				/>
+				<Box sx={{ color: "text.muted", flexShrink: 0, display: "flex" }}>
+					<Sunrise size={26} />
+				</Box>
 				<Typography sx={labelSx}>
 					{translations.prayers.sunrise}
 				</Typography>
 				<Typography sx={timeSx}>{displaySunrise}</Typography>
 			</Box>
 			<Box sx={cardSx}>
-				<Sunset
-					size={26}
-					style={{ color: "rgba(255,255,255,0.4)", flexShrink: 0 }}
-				/>
+				<Box sx={{ color: "text.muted", flexShrink: 0, display: "flex" }}>
+					<Sunset size={26} />
+				</Box>
 				<Typography sx={labelSx}>{translations.sunset}</Typography>
 				<Typography sx={timeSx}>{displaySunset}</Typography>
 			</Box>

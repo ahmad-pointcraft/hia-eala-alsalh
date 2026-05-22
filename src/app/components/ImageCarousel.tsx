@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import Box from '@mui/material/Box';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { colors } from '../theme/tokens';
 
 interface ImageCarouselProps {
   images: string[];
@@ -35,7 +34,7 @@ export function ImageCarousel({ images, interval = 5000 }: ImageCarouselProps) {
       bgcolor: 'surface.overlay',
       border: '1px solid',
       borderColor: 'border.thin',
-      boxShadow: `0 8px 32px ${colors.surface.overlay}`,
+      boxShadow: (theme) => `0 8px 32px ${theme.palette.surface.overlay}`,
     }}>
       <AnimatePresence mode="wait">
         <motion.div
@@ -60,7 +59,7 @@ export function ImageCarousel({ images, interval = 5000 }: ImageCarouselProps) {
           bottom: 0,
           insetInline: 0,
           height: { xs: 44, sm: 52, md: 60, lg: 60 },
-          background: `linear-gradient(transparent, ${colors.surface.medium})`,
+          background: (theme) => `linear-gradient(transparent, ${theme.palette.surface.medium})`,
           display: 'flex',
           alignItems: 'flex-end',
           justifyContent: 'center',
@@ -77,7 +76,7 @@ export function ImageCarousel({ images, interval = 5000 }: ImageCarouselProps) {
                 width: index === currentIndex ? 28 : 10,
                 height: 10,
                 borderRadius: "4px",
-                bgcolor: index === currentIndex ? 'primary.main' : colors.text.whiteMuted,
+                bgcolor: index === currentIndex ? 'primary.main' : 'text.muted',
                 border: 'none',
                 cursor: 'pointer',
                 p: 1.75,

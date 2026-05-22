@@ -104,7 +104,7 @@ export function AnnouncementsTicker({
 						<Typography
 							component="span"
 							sx={{
-								color: "text.whiteMuted",
+								color: "text.muted",
 								fontSize: { xs: "0.75rem", sm: "0.875rem", md: "0.875rem", lg: "0.875rem" },
 								fontFamily: getFontFamily(language),
 							}}

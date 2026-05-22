@@ -9,7 +9,7 @@ import Close from '@mui/icons-material/Close';
 import { Language } from '../utils/translations';
 import type { Translations } from '../utils/translations';
 import { toArabicNumerals, getFontFamily, getDirection } from '../utils/helpers';
-import { colors } from '../theme/tokens';
+
 
 const FOCUSABLE_SELECTOR = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
@@ -137,7 +137,7 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
         aria-modal="true"
         aria-label={language === 'ar' ? 'لوحة جمع التبرعات' : 'Fundraising overlay'}
         sx={{
-          bgcolor: 'surface.heavy',
+          bgcolor: (theme) => theme.palette.mode === 'light' ? 'rgba(255, 255, 255, 0.8)' : 'surface.heavy',
           backdropFilter: 'blur(16px)',
           border: '1px solid',
           borderColor: 'border.thin',
@@ -147,15 +147,15 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
           width: '100%',
           position: 'relative',
           mx: 2,
-          boxShadow: `0 16px 64px ${colors.surface.medium}`,
+          boxShadow: (theme) => `0 16px 64px ${theme.palette.surface.medium}`,
         }}
       >
-        <Box sx={{ position: 'absolute', top: 0, insetInline: 0, height: 4, background: `linear-gradient(to right, transparent, ${colors.gold.main}, transparent)` }} />
+        <Box sx={{ position: 'absolute', top: 0, insetInline: 0, height: 4, background: (theme) => `linear-gradient(to right, transparent, ${theme.palette.gold.main}, transparent)` }} />
 
         <IconButton
           onClick={onClose}
           aria-label={language === 'ar' ? 'إغلاق' : 'Close'}
-          sx={{ position: 'absolute', top: 16, insetInlineEnd: 16, color: 'text.whiteMuted', '&:hover': { color: 'text.primary' } }}
+          sx={{ position: 'absolute', top: 16, insetInlineEnd: 16, color: 'text.muted', '&:hover': { color: 'text.primary' } }}
         >
           <Close />
         </IconButton>
@@ -163,7 +163,7 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
         <Box sx={{ textAlign: 'center', mb: { xs: 3, sm: 3, md: 4, lg: 4 } }}>
           <Typography
             sx={{
-              color: 'primary.main',
+              color: (theme) => theme.palette.gold.onLight,
               fontSize: { xs: '1.875rem', sm: '2.25rem', md: '2.5rem', lg: '3rem' },
               mb: { xs: 1.5, sm: 1.5, md: 2, lg: 2 },
               fontFamily: getFontFamily(language),
@@ -171,17 +171,17 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
           >
             {translations.fundraising.title}
           </Typography>
-          <Typography sx={{ color: 'text.whiteSoft', fontSize: { xs: '1rem', sm: '1rem', md: '1.125rem', lg: '1.125rem' }, fontFamily }}>
+          <Typography sx={{ color: 'text.soft', fontSize: { xs: '1rem', sm: '1rem', md: '1.125rem', lg: '1.125rem' }, fontFamily }}>
             {translations.fundraising.description}
           </Typography>
         </Box>
 
         <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'center', gap: { xs: 3, sm: 4, md: 6, lg: 6 }, mb: { xs: 3, sm: 3, md: 4, lg: 4 } }}>
           <Box sx={{ textAlign: 'center' }}>
-            <Typography sx={{ color: 'text.whiteMuted', fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '0.05em', mb: 1, fontFamily }}>
+            <Typography sx={{ color: 'text.muted', fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '0.05em', mb: 1, fontFamily }}>
               {translations.fundraising.collected}
             </Typography>
-            <Typography sx={{ color: 'primary.main', fontSize: { xs: '1.875rem', sm: '2rem', md: '2.25rem', lg: '2.25rem' }, fontWeight: 'bold', fontFamily }}>
+            <Typography sx={{ color: (theme) => theme.palette.gold.onLight, fontSize: { xs: '1.875rem', sm: '2rem', md: '2.25rem', lg: '2.25rem' }, fontWeight: 'bold', fontFamily }}>
               ${displayCollected}
             </Typography>
           </Box>
@@ -189,7 +189,7 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
           <Box sx={{ display: { xs: 'none', sm: 'block' }, width: '1px', height: 64, bgcolor: 'border.thin' }} />
 
           <Box sx={{ textAlign: 'center' }}>
-            <Typography sx={{ color: 'text.whiteMuted', fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '0.05em', mb: 1, fontFamily }}>
+            <Typography sx={{ color: 'text.muted', fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '0.05em', mb: 1, fontFamily }}>
               {translations.fundraising.goal}
             </Typography>
             <Typography sx={{ color: 'text.primary', fontSize: { xs: '1.875rem', sm: '2rem', md: '2.25rem', lg: '2.25rem' }, fontWeight: 'bold', fontFamily }}>
@@ -200,7 +200,7 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
           <Box sx={{ display: { xs: 'none', sm: 'block' }, width: '1px', height: 64, bgcolor: 'border.thin' }} />
 
           <Box sx={{ textAlign: 'center' }}>
-            <Typography sx={{ color: 'text.whiteMuted', fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '0.05em', mb: 1, fontFamily }}>
+            <Typography sx={{ color: 'text.muted', fontSize: '0.875rem', textTransform: 'uppercase', letterSpacing: '0.05em', mb: 1, fontFamily }}>
               {translations.fundraising.donors}
             </Typography>
             <Typography sx={{ color: 'text.primary', fontSize: { xs: '1.875rem', sm: '2rem', md: '2.25rem', lg: '2.25rem' }, fontWeight: 'bold', fontFamily }}>
@@ -211,10 +211,10 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
 
         <Box sx={{ mb: 3 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-            <Typography sx={{ color: 'text.whiteMuted', fontSize: '0.875rem', fontFamily }}>
+            <Typography sx={{ color: 'text.muted', fontSize: '0.875rem', fontFamily }}>
               {translations.fundraising.progress}
             </Typography>
-            <Typography sx={{ color: 'primary.main', fontSize: '0.875rem', fontWeight: 'bold', fontFamily }}>
+            <Typography sx={{ color: (theme) => theme.palette.gold.onLight, fontSize: '0.875rem', fontWeight: 'bold', fontFamily }}>
               {displayProgress}%
             </Typography>
           </Box>
@@ -227,7 +227,7 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
               bgcolor: 'surface.heavy',
               '& .MuiLinearProgress-bar': {
                 borderRadius: 6,
-                background: `linear-gradient(to right, ${colors.gold.main}, ${colors.gold.light})`,
+                background: (theme) => `linear-gradient(to right, ${theme.palette.gold.main}, ${theme.palette.gold.light})`,
               },
             }}
           />
@@ -236,20 +236,20 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
         <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', mt: { xs: 3, sm: 3, md: 4, lg: 4 }, pt: { xs: 3, sm: 3, md: 4, lg: 4 }, borderTop: '1px solid', borderTopColor: 'border.thin', gap: 2 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 2, sm: 2, md: 3, lg: 3 } }}>
             <Box sx={{ width: { xs: 96, sm: 96, md: 128, lg: 128 }, height: { xs: 96, sm: 96, md: 128, lg: 128 }, bgcolor: 'common.white', borderRadius: "8px", display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }} role="img" aria-label={translations.fundraising.scanToDonate}>
-              <Box sx={{ textAlign: 'center', fontSize: '0.75rem', color: colors.text.onGold, p: 1 }}>
+              <Box sx={{ textAlign: 'center', fontSize: '0.75rem', color: 'text.onGold', p: 1 }}>
                 <Typography sx={{ fontWeight: 'bold', mb: 0.5, fontSize: '0.75rem' }}>QR CODE</Typography>
                 <Typography sx={{ fontSize: { xs: '8px', sm: '9px', md: '10px', lg: '10px' }, fontFamily }}>{translations.fundraising.scanToDonate}</Typography>
               </Box>
             </Box>
             <Box>
-              <Typography sx={{ color: 'text.whiteMuted', fontSize: '0.875rem', mb: 0.5, fontFamily }}>{translations.fundraising.donateOnline}</Typography>
-              <Typography sx={{ color: 'primary.main', fontSize: { xs: '1rem', sm: '1.125rem', md: '1.125rem', lg: '1.125rem' }, fontFamily: 'monospace' }}>
+              <Typography sx={{ color: 'text.muted', fontSize: '0.875rem', mb: 0.5, fontFamily }}>{translations.fundraising.donateOnline}</Typography>
+              <Typography sx={{ color: (theme) => theme.palette.gold.onLight, fontSize: { xs: '1rem', sm: '1.125rem', md: '1.125rem', lg: '1.125rem' }, fontFamily: 'monospace' }}>
                 masjidalnoor.org/donate
               </Typography>
             </Box>
           </Box>
 
-          <Typography sx={{ color: 'text.whiteMuted', fontSize: '0.875rem', fontFamily }}>
+          <Typography sx={{ color: 'text.muted', fontSize: '0.875rem', fontFamily }}>
             {translations.fundraising.autoClosing} {displayCountdown}{translations.fundraising.seconds}
           </Typography>
         </Box>

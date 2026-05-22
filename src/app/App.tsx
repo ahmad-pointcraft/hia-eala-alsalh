@@ -23,19 +23,19 @@ import {
 import type { PrayerTime } from "./utils/prayerTimes";
 import { useClock } from "./utils/useClock";
 import { getDirection } from "./utils/helpers";
-import { colors } from "./theme/tokens";
+import type { Theme } from "@mui/material/styles";
 import mosque1 from "../assets/mosque-1.jpg";
 import mosque2 from "../assets/mosque-2.jpg";
 import mosque3 from "../assets/mosque-3.jpg";
 
-const floatingCardSx = {
+const floatingCardSx = (theme: Theme) => ({
 	bgcolor: "surface.raised",
 	border: "1px solid",
 	borderColor: "border.thin",
 	borderRadius: "24px",
 	backdropFilter: "blur(16px)",
-	boxShadow: `0 8px 32px ${colors.surface.overlay}`,
-} as const;
+	boxShadow: `0 8px 32px ${theme.palette.surface.overlay}`,
+});
 
 const FUNDRAISING_PRAYER_GAP_SECONDS = 1 * 60;
 const FUNDRAISING_MIN_SECONDS = 3;
@@ -195,15 +195,15 @@ export default function App() {
 						aria-label={
 							language === "en" ? "Prayer in progress" : "الصلاة جارية"
 						}
-						sx={{
+						sx={(theme) => ({
 							position: "absolute",
 							inset: 0,
 							zIndex: 20,
 							display: "flex",
 							alignItems: "center",
 							justifyContent: "center",
-							bgcolor: `${colors.background.default}D9`,
-						}}>
+							bgcolor: `${theme.palette.background.default}D9`,
+						})}>
 						<Box sx={{ opacity: 0.3, position: "absolute", inset: 0 }}>
 							<IslamicGeometricOverlay />
 						</Box>
@@ -238,14 +238,14 @@ export default function App() {
 							<Box
 								sx={{
 									display: "flex",
-									flexDirection: { xs: "column", sm: "row" },
+									flexDirection: { xs: "column", sm: language === "ar" ? "row-reverse" : "row" },
 									gap: { xs: 1, sm: 1.5, md: 2, lg: 2 },
 									flex: 1,
 									minHeight: 0,
 								}}>
 								<Box
 									sx={{
-										flex: { xs: "none", sm: 3.15 },
+										flex: { xs: "none", sm: 3.15, md: 2 },
 										minWidth: 0,
 										minHeight: { xs: 220, sm: 0 },
 									}}>
@@ -256,13 +256,12 @@ export default function App() {
 										language={language}
 									/>
 								</Box>
-								<Box
-									sx={{
-										flex: { xs: "none", sm: 2 },
-										...floatingCardSx,
+							<Box
+									sx={(theme) => ({
+										flex: { xs: "none", sm: 3, md: 1 },
+										...floatingCardSx(theme),
 										minWidth: 0,
-										minHeight: { xs: 140, sm: 0 },
-									}}>
+									})}>
 									<CountdownBar
 										nextPrayer={nextPrayer.name}
 										nextPrayerTime={nextPrayer.time}
@@ -276,16 +275,17 @@ export default function App() {
 							<Box
 								sx={{
 									display: "flex",
-									flexDirection: { xs: "column", sm: "row" },
+									flexDirection: { xs: "column", sm: language === "ar" ? "row-reverse" : "row" },
 									gap: { xs: 1, sm: 1.5, md: 2, lg: 2 },
 									flexShrink: 0,
 								}}>
-								<Box
-									sx={{
-										flex: { xs: "none", sm: 3 },
-										...floatingCardSx,
+							<Box
+									sx={(theme) => ({
+										flex: { xs: "none", sm: 3.15 },
+										...floatingCardSx(theme),
 										minWidth: 0,
-									}}>
+										minHeight: { xs: 220, sm: 0 },
+									})}>
 									<HadithPanel language={language} translations={t} />
 								</Box>
 								<Box
