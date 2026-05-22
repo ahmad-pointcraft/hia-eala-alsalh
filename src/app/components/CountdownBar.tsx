@@ -81,7 +81,7 @@ export function CountdownBar({
 		>
 			<Typography
 				sx={{
-					color: "text.whiteMuted",
+					color: "text.muted",
 					textTransform: "uppercase",
 					letterSpacing: "0.15em",
 				fontWeight: 600,
@@ -121,7 +121,7 @@ export function CountdownBar({
 
 			<Typography
 				sx={{
-					color: "text.whiteMuted",
+					color: "text.muted",
 					fontSize: { xs: "11px", sm: "12px", md: "12px", lg: "13px" },
 					fontFamily: getFontFamily(language),
 					mt: 1.25,

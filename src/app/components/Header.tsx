@@ -5,6 +5,8 @@ import ButtonBase from "@mui/material/ButtonBase";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { Heart, WifiOff } from "lucide-react";
+import LightMode from "@mui/icons-material/LightMode";
+import DarkMode from "@mui/icons-material/DarkMode";
 import { Language } from "../utils/translations";
 import type { Translations } from "../utils/translations";
 import {
@@ -12,7 +14,7 @@ import {
 	getDirection,
 	toArabicNumerals,
 } from "../utils/helpers";
-import { colors } from "../theme/tokens";
+import { useThemeMode } from "../theme/ThemeContext";
 
 interface HeaderProps {
 	language: Language;
@@ -30,6 +32,7 @@ export function Header({
 	currentTime,
 }: HeaderProps) {
 	const [isOffline, setIsOffline] = useState(!navigator.onLine);
+	const { mode, toggleTheme } = useThemeMode();
 
 	useEffect(() => {
 		const goOffline = () => setIsOffline(true);
@@ -106,7 +109,7 @@ export function Header({
 								fontWeight: 600,
 								fontFamily: '"Noto Naskh Arabic", serif',
 								bgcolor: language === "ar" ? "border.default" : "transparent",
-								color: language === "ar" ? "primary.main" : "text.whiteMuted",
+								color: language === "ar" ? "primary.main" : "text.muted",
 								borderRadius: 24,
 								transition: "all 200ms cubic-bezier(0.25, 1, 0.5, 1)",
 								"&:hover": {
@@ -126,7 +129,7 @@ export function Header({
 								fontWeight: 600,
 								fontFamily: '"Open Sans", sans-serif',
 								bgcolor: language === "en" ? "border.default" : "transparent",
-								color: language === "en" ? "primary.main" : "text.whiteMuted",
+								color: language === "en" ? "primary.main" : "text.muted",
 								borderRadius: 24,
 								transition: "all 200ms cubic-bezier(0.25, 1, 0.5, 1)",
 								"&:hover": {
@@ -176,7 +179,7 @@ export function Header({
 								sx={{
 									display: { xs: "none", sm: "flex" },
 									alignItems: "center",
-									color: "text.whiteMuted",
+									color: "text.muted",
 								}}>
 								<WifiOff size={18} aria-hidden="true" />
 							</Box>
@@ -184,7 +187,7 @@ export function Header({
 					</Box>
 					<Typography
 						sx={{
-							color: "text.whiteSoft",
+							color: "text.soft",
 							fontSize: { xs: "13px", sm: "14px", md: "14px", lg: "15px" },
 							fontWeight: 600,
 							fontFamily: getFontFamily(language),
@@ -205,7 +208,37 @@ export function Header({
 						flex: 1,
 						display: "flex",
 						justifyContent: "flex-end",
+						alignItems: "center",
+						gap: 1,
 					}}>
+					<Box
+						component="button"
+						onClick={toggleTheme}
+						aria-label={mode === "dark" ? "Switch to light theme" : "Switch to dark theme"}
+						sx={{
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+							width: 44,
+							height: 44,
+							borderRadius: "50%",
+							border: "1px solid",
+							borderColor: "border.thin",
+							bgcolor: "surface.raised",
+							color: "text.secondary",
+							cursor: "pointer",
+							transition: "transform 0.3s ease, color 0.3s ease",
+							"&:hover": {
+								color: "primary.main",
+								transform: "rotate(15deg)",
+							},
+							"@media (prefers-reduced-motion: reduce)": {
+								transition: "none",
+								"&:hover": { transform: "none" },
+							},
+						}}>
+						{mode === "dark" ? <LightMode fontSize="small" /> : <DarkMode fontSize="small" />}
+					</Box>
 					<ButtonBase
 						onClick={onShowFundraising}
 						aria-label={translations.donate}
@@ -216,7 +249,7 @@ export function Header({
 							px: { xs: 2, sm: 2.5, md: 3 },
 							py: { xs: 0.75, sm: 1, md: 1 },
 							borderRadius: 24,
-							background: `linear-gradient(135deg, ${colors.gold.dark}, ${colors.gold.main})`,
+							background: (theme) => `linear-gradient(135deg, ${theme.palette.gold.dark}, ${theme.palette.gold.main})`,
 							color: "text.onGold",
 							fontSize: { xs: "0.75rem", sm: "0.875rem", md: "0.875rem" },
 							fontWeight: 600,

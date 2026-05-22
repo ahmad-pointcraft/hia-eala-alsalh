@@ -25,7 +25,7 @@ export function HadithPanel({ language, translations }: HadithPanelProps) {
 			<Box>
 				<Typography
 					sx={{
-						color: "text.whiteMuted",
+						color: "text.muted",
 						textTransform: "uppercase",
 						letterSpacing: "0.15em",
 						fontWeight: 600,
@@ -38,7 +38,7 @@ export function HadithPanel({ language, translations }: HadithPanelProps) {
 
 				<Typography
 					sx={{
-						color: "text.whiteSoft",
+						color: "text.soft",
 						fontStyle: "italic",
 						lineHeight: 1.6,
 						fontSize: { xs: "13px", sm: "14px", md: "18px", lg: "24px", xl: "28px" },
@@ -51,7 +51,7 @@ export function HadithPanel({ language, translations }: HadithPanelProps) {
 
 			<Typography
 				sx={{
-					color: "text.whiteMuted",
+					color: "text.muted",
 					fontSize: { xs: "10px", sm: "11px", md: "12px", lg: "13px" },
 					mt: 1,
 					fontFamily: getFontFamily(language),

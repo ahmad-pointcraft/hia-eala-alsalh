@@ -10,7 +10,7 @@ import {
 	getDirection,
 	toArabicNumerals,
 } from "../utils/helpers";
-import { colors } from "../theme/tokens";
+
 
 export interface EventSlide {
 	title: string;
@@ -70,7 +70,7 @@ export function EventSlideshow({
 				bgcolor: "surface.overlay",
 				border: "1px solid",
 				borderColor: "border.thin",
-				boxShadow: `0 8px 32px ${colors.surface.overlay}`,
+				boxShadow: (theme) => `0 8px 32px ${theme.palette.surface.overlay}`,
 			}}>
 			<AnimatePresence mode="wait">
 				<motion.div
@@ -185,7 +185,7 @@ export function EventSlideshow({
 						}}>
 						<Typography
 							sx={{
-								color: "text.whiteSoft",
+								color: "text.soft",
 								fontSize: { xs: "16px", sm: "17px", md: "18px", lg: "20px" },
 								fontWeight: 500,
 								fontFamily: getFontFamily(language),
@@ -209,7 +209,7 @@ export function EventSlideshow({
 							}}>
 							<Typography
 								sx={{
-									color: "text.whiteSoft",
+									color: "text.soft",
 									fontSize: { xs: "14px", sm: "16px", md: "17px", lg: "18px" },
 									fontWeight: 500,
 									fontFamily: getFontFamily(language),
@@ -272,7 +272,7 @@ export function EventSlideshow({
 								bgcolor:
 									index === currentIndex
 										? "primary.main"
-										: colors.text.whiteMuted,
+										: "text.muted",
 								border: "none",
 								cursor: "pointer",
 								p: 1,

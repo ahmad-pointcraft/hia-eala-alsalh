@@ -12,7 +12,7 @@ interface SunTimesWidgetProps {
 	sunsetTime: string;
 }
 
-const cardSx = {
+const cardSx = (theme: { palette: { surface: { overlay: string } } }) => ({
 	flex: 1,
 	display: "flex",
 	flexDirection: "column",
@@ -24,13 +24,13 @@ const cardSx = {
 	borderColor: "border.thin",
 	borderRadius: "24px",
 	backdropFilter: "blur(16px)",
-	boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+	boxShadow: `0 8px 32px ${theme.palette.surface.overlay}`,
 	py: { xs: 1, sm: 1.5, md: 1.5, lg: 1.5 },
 	px: { xs: 1.5, sm: 2.5, md: 2.5, lg: 2.5 },
-} as const;
+});
 
 const labelSx = {
-	color: "text.whiteMuted",
+	color: "text.muted",
 	textTransform: "uppercase",
 	letterSpacing: "0.15em",
 	fontWeight: 600,
@@ -64,8 +64,8 @@ export function SunTimesWidget({
 			<Box sx={cardSx}>
 				<Sunrise
 					size={26}
-					style={{ color: "rgba(255,255,255,0.4)", flexShrink: 0 }}
-				/>
+				sx={{ color: "text.muted", flexShrink: 0 }}
+			/>
 				<Typography sx={labelSx}>
 					{translations.prayers.sunrise}
 				</Typography>
@@ -74,7 +74,7 @@ export function SunTimesWidget({
 			<Box sx={cardSx}>
 				<Sunset
 					size={26}
-					style={{ color: "rgba(255,255,255,0.4)", flexShrink: 0 }}
+					sx={{ color: "text.muted", flexShrink: 0 }}
 				/>
 				<Typography sx={labelSx}>{translations.sunset}</Typography>
 				<Typography sx={timeSx}>{displaySunset}</Typography>

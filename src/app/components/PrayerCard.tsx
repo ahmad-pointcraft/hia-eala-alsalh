@@ -2,6 +2,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import { useTheme } from "@mui/material/styles";
 import {
   Moon,
   Sun,
@@ -13,7 +14,6 @@ import {
 import { Language } from '../utils/translations';
 import { toArabicNumerals, getFontFamily, getDirection } from '../utils/helpers';
 import type { PrayerKey } from '../utils/prayerTimes';
-import { colors } from '../theme/tokens';
 
 interface PrayerCardProps {
   name: string;
@@ -43,6 +43,7 @@ export function PrayerCard({
   iqamaLabel,
   prayerKey,
 }: PrayerCardProps) {
+  const theme = useTheme();
   const Icon = prayerIcons[prayerKey] || Star;
 
   const displayTime = language === 'ar' ? toArabicNumerals(time) : time;
@@ -65,7 +66,7 @@ export function PrayerCard({
               bgcolor: 'border.default',
               border: '1px solid',
               borderColor: 'primary.main',
-              boxShadow: `0 0 30px ${colors.glow.medium}`,
+              boxShadow: `0 0 30px ${theme.palette.glow.medium}`,
               transform: 'scale(1.02)',
             }
           : {
