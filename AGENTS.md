@@ -4,14 +4,14 @@
 
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
-at `specs/006-theme-token-system/plan.md`.
+at `specs/009-light-theme-toggle/plan.md`.
 
 ## Project Context
 
 - **App**: Masjid Prayer Time Display — a 24/7 kiosk display for a mosque
 - **Stack**: React 18 + TypeScript (strict) + MUI v7 + Vite + Yarn
 - **Source**: Figma export migrated to MUI v7 (Spec 001–004 complete)
-- **Current focus**: Polish & theme system — centralized color tokens, palette extension, hardcoded color migration (Spec 006)
+- **Current focus**: Light Theme & Toggle — dual token system, context API, component migration (Spec 009)
 
 ## Spec Files
 
@@ -25,6 +25,7 @@ All implementation specs are in `docs/` (gitignored). Read them in order:
 | 004  | P1       | `docs/spec-004-performance-type-safety.md`   |
 | 005  | P2       | `docs/spec-005-production-hardening.md`      |
 | 006  | P3       | `docs/spec-006-polish-theme-system.md`       |
+| 009  | P2       | `docs/spec-009-light-theme.md`               |
 
 ## Constitution
 
