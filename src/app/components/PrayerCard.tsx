@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import { Moon, Sun, Sunrise, Sunset, CloudSun, Star } from 'lucide-react';
-import { Language } from '../utils/translations';
+import type { Language } from '@/app/types/i18n';
 import { toArabicNumerals, getFontFamily, getDirection } from '../utils/helpers';
 import type { PrayerKey } from '../utils/prayerTimes';
 

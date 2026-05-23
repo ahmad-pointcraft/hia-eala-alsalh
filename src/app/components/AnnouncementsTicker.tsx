@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Language } from '../utils/translations';
+import type { Language } from '@/app/types/i18n';
 import masjidLogo from '../../assets/logo-masjid-design-1.png';
 import pointcraftLogo from '../../assets/logo.png';
 import Box from '@mui/material/Box';

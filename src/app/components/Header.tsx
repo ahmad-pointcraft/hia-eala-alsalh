@@ -7,8 +7,7 @@ import Box from '@mui/material/Box';
 import { Heart, WifiOff } from 'lucide-react';
 import LightMode from '@mui/icons-material/LightMode';
 import DarkMode from '@mui/icons-material/DarkMode';
-import { Language } from '../utils/translations';
-import type { Translations } from '../utils/translations';
+import type { Language, Translations } from '@/app/types/i18n';
 import { getFontFamily, getDirection, toArabicNumerals } from '../utils/helpers';
 import { useThemeMode } from '../theme/ThemeContext';
 

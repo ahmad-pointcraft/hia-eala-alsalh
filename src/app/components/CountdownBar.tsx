@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react';
-import { Language } from '../utils/translations';
+import type { Language } from '@/app/types/i18n';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { toArabicNumerals, getFontFamily, getDirection } from '../utils/helpers';

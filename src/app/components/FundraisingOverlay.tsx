@@ -6,8 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 import Close from '@mui/icons-material/Close';
-import { Language } from '../utils/translations';
-import type { Translations } from '../utils/translations';
+import type { Language, Translations } from '@/app/types/i18n';
 import { toArabicNumerals, getFontFamily, getDirection } from '../utils/helpers';
 
 const FOCUSABLE_SELECTOR =

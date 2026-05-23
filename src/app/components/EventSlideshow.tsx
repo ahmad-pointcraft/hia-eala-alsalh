@@ -4,18 +4,11 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { ImageCarousel } from './ImageCarousel';
-import { Language } from '../utils/translations';
+import type { Language } from '@/app/types/i18n';
 import { getFontFamily, getDirection, toArabicNumerals } from '../utils/helpers';
 
-export interface EventSlide {
-  title: string;
-  speakerName: string;
-  dateValue: string;
-  timeValue: string;
-  locationValue: string;
-  badge?: string;
-  cta?: string;
-}
+import type { EventSlide } from '@/app/types/events';
+export type { EventSlide };
 
 interface EventSlideshowProps {
   events: EventSlide[];

@@ -1,4 +1,4 @@
-import { Language } from './translations';
+import type { Language } from '@/app/types/i18n';
 
 export const toArabicNumerals = (text: string): string => {
   const arabicNumerals = [

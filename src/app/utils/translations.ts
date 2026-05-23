@@ -1,6 +1,8 @@
-export type Language = 'en' | 'ar';
+import type { Language, Translations } from '@/app/types/i18n';
 
-export const translations = {
+export type { Language, Translations };
+
+export const translations: Record<Language, Translations> = {
   en: {
     masjidName: 'Masjid Al-Noor',
     donate: 'Donate',
@@ -198,5 +200,3 @@ export const translations = {
     },
   },
 };
-
-export type Translations = (typeof translations)['en'];
