@@ -1,20 +1,20 @@
-import { useState, useMemo, useEffect, type ReactNode } from "react";
-import { ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
-import { createAppTheme } from "./muiTheme";
-import { ThemeContext, type ThemeContextValue } from "./ThemeContext";
-import type { ThemeMode } from "./tokens";
+import { useState, useMemo, useEffect, type ReactNode } from 'react';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import { createAppTheme } from './muiTheme';
+import { ThemeContext, type ThemeContextValue } from './ThemeContext';
+import type { ThemeMode } from './tokens';
 
-const STORAGE_KEY = "masjid-theme";
+const STORAGE_KEY = 'masjid-theme';
 
 function readStoredMode(): ThemeMode {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored === "light" || stored === "dark") return stored;
+    if (stored === 'light' || stored === 'dark') return stored;
   } catch {
     // localStorage unavailable — fall through to default
   }
-  return "dark";
+  return 'dark';
 }
 
 function writeStoredMode(mode: ThemeMode): void {
@@ -29,9 +29,7 @@ interface ThemeProviderWrapperProps {
   children: ReactNode;
 }
 
-export default function ThemeProviderWrapper({
-  children,
-}: ThemeProviderWrapperProps) {
+export default function ThemeProviderWrapper({ children }: ThemeProviderWrapperProps) {
   const [mode, setModeState] = useState<ThemeMode>(readStoredMode);
 
   const setMode = (next: ThemeMode) => {
@@ -40,7 +38,7 @@ export default function ThemeProviderWrapper({
   };
 
   const toggleTheme = () => {
-    setMode(mode === "dark" ? "light" : "dark");
+    setMode(mode === 'dark' ? 'light' : 'dark');
   };
 
   const theme = useMemo(() => createAppTheme(mode), [mode]);

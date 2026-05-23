@@ -1,7 +1,7 @@
-import { Component, type ReactNode } from "react";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
+import { Component, type ReactNode } from 'react';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -16,10 +16,7 @@ interface ErrorBoundaryState {
 const MAX_RETRIES = 3;
 const RECOVERY_DELAY_MS = 5000;
 
-export class ErrorBoundary extends Component<
-  ErrorBoundaryProps,
-  ErrorBoundaryState
-> {
+export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   private recoveryTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor(props: ErrorBoundaryProps) {
@@ -32,7 +29,7 @@ export class ErrorBoundary extends Component<
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
-    console.error("[ErrorBoundary] Caught error:", error, errorInfo);
+    console.error('[ErrorBoundary] Caught error:', error, errorInfo);
 
     if (this.state.retryCount < MAX_RETRIES) {
       this.scheduleRecovery();
@@ -74,50 +71,34 @@ export class ErrorBoundary extends Component<
     return (
       <Box
         sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          minHeight: "100vh",
-          bgcolor: "background.default",
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '100vh',
+          bgcolor: 'background.default',
           gap: 3,
           p: 4,
         }}
       >
         {exhausted ? (
           <>
-            <Typography
-              variant="h5"
-              sx={{ color: "error.main", textAlign: "center" }}
-            >
+            <Typography variant="h5" sx={{ color: 'error.main', textAlign: 'center' }}>
               Display Error
             </Typography>
-            <Typography
-              variant="body2"
-              sx={{ color: "text.secondary", textAlign: "center" }}
-            >
+            <Typography variant="body2" sx={{ color: 'text.secondary', textAlign: 'center' }}>
               The display encountered a persistent error. Please reload.
             </Typography>
-            <Button
-              variant="contained"
-              onClick={this.handleReload}
-              sx={{ mt: 1 }}
-            >
+            <Button variant="contained" onClick={this.handleReload} sx={{ mt: 1 }}>
               Reload Display
             </Button>
           </>
         ) : (
           <>
-            <Typography
-              variant="h5"
-              sx={{ color: "text.primary", textAlign: "center" }}
-            >
+            <Typography variant="h5" sx={{ color: 'text.primary', textAlign: 'center' }}>
               Recovering...
             </Typography>
-            <Typography
-              variant="body2"
-              sx={{ color: "text.secondary", textAlign: "center" }}
-            >
+            <Typography variant="body2" sx={{ color: 'text.secondary', textAlign: 'center' }}>
               The display will restore automatically.
             </Typography>
           </>

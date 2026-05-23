@@ -1,5 +1,5 @@
-import { createTheme } from "@mui/material/styles";
-import { getTokens, type ThemeMode } from "./tokens";
+import { createTheme } from '@mui/material/styles';
+import { getTokens, type ThemeMode } from './tokens';
 
 export function createAppTheme(mode: ThemeMode) {
   const t = getTokens(mode);
@@ -49,81 +49,81 @@ export function createAppTheme(mode: ThemeMode) {
       h1: {
         fontFamily: '"Open Sans", sans-serif',
         fontWeight: 700,
-        fontSize: "2.5rem",
+        fontSize: '2.5rem',
         lineHeight: 1.2,
       },
       h2: {
         fontFamily: '"Open Sans", sans-serif',
         fontWeight: 700,
-        fontSize: "2rem",
+        fontSize: '2rem',
         lineHeight: 1.3,
       },
       h3: {
         fontFamily: '"Open Sans", sans-serif',
         fontWeight: 600,
-        fontSize: "1.5rem",
+        fontSize: '1.5rem',
         lineHeight: 1.3,
       },
       h4: {
         fontFamily: '"Open Sans", sans-serif',
         fontWeight: 600,
-        fontSize: "1.25rem",
+        fontSize: '1.25rem',
         lineHeight: 1.4,
       },
       h5: {
         fontFamily: '"Open Sans", sans-serif',
         fontWeight: 600,
-        fontSize: "1rem",
+        fontSize: '1rem',
         lineHeight: 1.4,
       },
       h6: {
         fontFamily: '"Open Sans", sans-serif',
         fontWeight: 600,
-        fontSize: "0.875rem",
+        fontSize: '0.875rem',
         lineHeight: 1.5,
       },
       subtitle1: {
         fontFamily: '"Open Sans", sans-serif',
         fontWeight: 500,
-        fontSize: "1rem",
+        fontSize: '1rem',
         lineHeight: 1.5,
       },
       subtitle2: {
         fontFamily: '"Open Sans", sans-serif',
         fontWeight: 500,
-        fontSize: "0.875rem",
+        fontSize: '0.875rem',
         lineHeight: 1.5,
       },
       body1: {
         fontFamily: '"Open Sans", sans-serif',
         fontWeight: 400,
-        fontSize: "1rem",
+        fontSize: '1rem',
         lineHeight: 1.5,
       },
       body2: {
         fontFamily: '"Open Sans", sans-serif',
         fontWeight: 400,
-        fontSize: "0.875rem",
+        fontSize: '0.875rem',
         lineHeight: 1.43,
       },
       button: {
         fontFamily: '"Open Sans", sans-serif',
         fontWeight: 600,
-        textTransform: "none",
+        textTransform: 'none',
       },
       caption: {
         fontFamily: '"Open Sans", sans-serif',
         fontWeight: 400,
-        fontSize: "0.75rem",
+        fontSize: '0.75rem',
         lineHeight: 1.66,
       },
       overline: {
         fontFamily: '"Open Sans", sans-serif',
         fontWeight: 500,
-        fontSize: "0.75rem",
+        fontSize: '0.75rem',
         lineHeight: 2.66,
-        letterSpacing: "0.08em",
-        textTransform: "uppercase",
+        letterSpacing: '0.08em',
+        textTransform: 'uppercase',
       },
     },
     shape: {
@@ -143,11 +143,11 @@ export function createAppTheme(mode: ThemeMode) {
           body: {
             backgroundColor: t.background.default,
             backgroundImage: `linear-gradient(45deg, ${t.border.faint} 25%, transparent 25%, transparent 75%, ${t.border.faint} 75%, ${t.border.faint}), linear-gradient(45deg, ${t.border.faint} 25%, transparent 25%, transparent 75%, ${t.border.faint} 75%, ${t.border.faint})`,
-            backgroundSize: "60px 60px",
-            backgroundPosition: "0 0, 30px 30px",
+            backgroundSize: '60px 60px',
+            backgroundPosition: '0 0, 30px 30px',
           },
-          "*": {
-            scrollbarWidth: "thin",
+          '*': {
+            scrollbarWidth: 'thin',
             scrollbarColor: `${t.border.medium} transparent`,
           },
         },
@@ -155,7 +155,7 @@ export function createAppTheme(mode: ThemeMode) {
       MuiPaper: {
         styleOverrides: {
           root: {
-            backgroundImage: "none",
+            backgroundImage: 'none',
             backgroundColor: t.background.paper,
             border: `1px solid ${t.border.subtle}`,
           },
@@ -164,7 +164,7 @@ export function createAppTheme(mode: ThemeMode) {
       MuiCard: {
         styleOverrides: {
           root: {
-            backgroundImage: "none",
+            backgroundImage: 'none',
             backgroundColor: t.background.paper,
             border: `1px solid ${t.border.subtle}`,
           },
@@ -177,7 +177,7 @@ export function createAppTheme(mode: ThemeMode) {
           },
           containedPrimary: {
             color: t.text.onGold,
-            "&:hover": {
+            '&:hover': {
               backgroundColor: t.gold.light,
             },
           },
@@ -217,7 +217,7 @@ export function createAppTheme(mode: ThemeMode) {
   return theme;
 }
 
-declare module "@mui/material/styles" {
+declare module '@mui/material/styles' {
   interface Palette {
     gold: { main: string; light: string; dark: string; onLight: string };
     surface: {

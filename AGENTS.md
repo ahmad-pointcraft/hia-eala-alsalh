@@ -4,14 +4,14 @@
 
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
-at `specs/009-light-theme-toggle/plan.md`.
+at `specs/010-app-structure-refactor/plan.md`.
 
 ## Project Context
 
 - **App**: Masjid Prayer Time Display — a 24/7 kiosk display for a mosque
 - **Stack**: React 18 + TypeScript (strict) + MUI v7 + Vite + Yarn
 - **Source**: Figma export migrated to MUI v7 (Spec 001–004 complete)
-- **Current focus**: Light Theme & Toggle — dual token system, context API, component migration (Spec 009)
+- **Current focus**: App Structure Refactor — Zustand language store, pure hooks, feature directories, dead code cleanup (Spec 010)
 
 ## Spec Files
 
