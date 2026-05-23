@@ -5,9 +5,9 @@ import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { ImageCarousel } from './ImageCarousel';
 import type { Language } from '@/app/types/i18n';
-import { getFontFamily, getDirection, toArabicNumerals } from '../utils/helpers';
-
 import type { EventSlide } from '@/app/types/events';
+import { getFontFamily, getDirection, toArabicNumerals } from '@/app/utils/helpers';
+
 export type { EventSlide };
 
 interface EventSlideshowProps {

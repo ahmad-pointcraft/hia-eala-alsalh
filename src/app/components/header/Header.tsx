@@ -8,8 +8,8 @@ import { Heart, WifiOff } from 'lucide-react';
 import LightMode from '@mui/icons-material/LightMode';
 import DarkMode from '@mui/icons-material/DarkMode';
 import type { Language, Translations } from '@/app/types/i18n';
-import { getFontFamily, getDirection, toArabicNumerals } from '../utils/helpers';
-import { useThemeMode } from '../theme/ThemeContext';
+import { getFontFamily, getDirection, toArabicNumerals } from '@/app/utils/helpers';
+import { useThemeMode } from '@/app/theme/ThemeContext';
 
 interface HeaderProps {
   language: Language;

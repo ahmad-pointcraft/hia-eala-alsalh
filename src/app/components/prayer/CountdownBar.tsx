@@ -2,7 +2,7 @@ import { useRef, useEffect } from 'react';
 import type { Language } from '@/app/types/i18n';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { toArabicNumerals, getFontFamily, getDirection } from '../utils/helpers';
+import { toArabicNumerals, getFontFamily, getDirection } from '@/app/utils/helpers';
 
 interface CountdownBarProps {
   nextPrayer: string;

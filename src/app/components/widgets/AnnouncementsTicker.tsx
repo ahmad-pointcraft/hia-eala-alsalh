@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
 import type { Language } from '@/app/types/i18n';
-import masjidLogo from '../../assets/logo-masjid-design-1.png';
-import pointcraftLogo from '../../assets/logo.png';
+import masjidLogo from '../../../assets/logo-masjid-design-1.png';
+import pointcraftLogo from '../../../assets/logo.png';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { getFontFamily, isRTL, getDirection } from '../utils/helpers';
+import { getFontFamily, isRTL, getDirection } from '@/app/utils/helpers';
 
 interface AnnouncementsTickerProps {
   language: Language;

@@ -7,7 +7,7 @@ import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 import Close from '@mui/icons-material/Close';
 import type { Language, Translations } from '@/app/types/i18n';
-import { toArabicNumerals, getFontFamily, getDirection } from '../utils/helpers';
+import { toArabicNumerals, getFontFamily, getDirection } from '@/app/utils/helpers';
 
 const FOCUSABLE_SELECTOR =
   'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
@@ -59,7 +59,6 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
         return;
       }
 
-      // Safe: guarded by focusables.length === 0 early return above
       const first = focusables[0]!;
       const last = focusables[focusables.length - 1]!;
       const activeInDialog = container.contains(document.activeElement);

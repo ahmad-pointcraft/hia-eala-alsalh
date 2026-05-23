@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import ThemeProviderWrapper from './app/theme/ThemeProviderWrapper';
-import { ErrorBoundary } from './app/components/ErrorBoundary';
+import { ErrorBoundary } from './app/components/shared';
 import App from './app/App';
 
 const rootElement = document.getElementById('root');

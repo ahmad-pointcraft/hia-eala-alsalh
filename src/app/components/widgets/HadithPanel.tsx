@@ -1,7 +1,7 @@
 import type { Language, Translations } from '@/app/types/i18n';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { getFontFamily, getDirection } from '../utils/helpers';
+import { getFontFamily, getDirection } from '@/app/utils/helpers';
 
 interface HadithPanelProps {
   language: Language;

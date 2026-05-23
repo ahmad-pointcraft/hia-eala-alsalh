@@ -2,7 +2,7 @@ import { Sunrise, Sunset } from 'lucide-react';
 import type { Language, Translations } from '@/app/types/i18n';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { toArabicNumerals, getDirection } from '../utils/helpers';
+import { toArabicNumerals, getDirection } from '@/app/utils/helpers';
 
 interface SunTimesWidgetProps {
   language: Language;
