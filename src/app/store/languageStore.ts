@@ -34,10 +34,7 @@ export const useLanguageStore = create<LanguageState>()(
   ),
 );
 
-export function getTranslations(language: Language): Translations {
-  return translations[language];
-}
+export const getTranslations = (language: Language): Translations => translations[language];
 
-export function getDirection(language: Language): 'rtl' | 'ltr' {
-  return language === 'ar' ? 'rtl' : 'ltr';
-}
+export const getDirection = (language: Language): 'rtl' | 'ltr' =>
+  language === 'ar' ? 'rtl' : 'ltr';
