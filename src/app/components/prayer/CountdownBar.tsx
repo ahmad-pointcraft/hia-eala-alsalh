@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react';
-import type { Language } from '@/app/types/i18n';
+import type { Language, Translations } from '@/app/types/i18n';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { toArabicNumerals, getFontFamily, getDirection } from '@/app/utils/helpers';
@@ -10,6 +10,7 @@ interface CountdownBarProps {
   nextPrayerIqamaTime: string;
   language: Language;
   currentTime: Date;
+  translations: Translations;
 }
 
 export function CountdownBar({
@@ -18,6 +19,7 @@ export function CountdownBar({
   nextPrayerIqamaTime,
   language,
   currentTime,
+  translations,
 }: CountdownBarProps) {
   const lastAnnouncedMinute = useRef<number>(-1);
   const pendingAnnouncement = useRef<string | undefined>(undefined);
@@ -42,12 +44,12 @@ export function CountdownBar({
   const displayIqamaTime =
     language === 'ar' ? toArabicNumerals(nextPrayerIqamaTime) : nextPrayerIqamaTime;
 
-  const nextPrayerLabel = language === 'en' ? 'Next Prayer' : 'الصلاة القادمة';
+  const nextPrayerLabel = translations.nextPrayer;
 
   const subtitleText =
     language === 'en'
-      ? `${nextPrayer} at ${displayPrayerTime} · Iqama ${displayIqamaTime}`
-      : `${nextPrayer} الساعة ${displayPrayerTime} · الإقامة ${displayIqamaTime}`;
+      ? `${nextPrayer} at ${displayPrayerTime} · ${translations.iqama} ${displayIqamaTime}`
+      : `${nextPrayer} الساعة ${displayPrayerTime} · ${translations.iqama} ${displayIqamaTime}`;
 
   const currentMinute = m;
   useEffect(() => {

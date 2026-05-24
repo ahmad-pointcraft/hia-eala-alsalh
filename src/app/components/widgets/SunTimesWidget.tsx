@@ -3,6 +3,8 @@ import type { Language, Translations } from '@/app/types/i18n';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { toArabicNumerals, getDirection } from '@/app/utils/helpers';
+import { floatingCardSx } from '@/app/theme/sharedStyles';
+import type { Theme } from '@mui/material/styles';
 
 interface SunTimesWidgetProps {
   language: Language;
@@ -11,19 +13,14 @@ interface SunTimesWidgetProps {
   sunsetTime: string;
 }
 
-const cardSx = (theme: { palette: { surface: { overlay: string } } }) => ({
+const cardSx = (theme: Theme) => ({
+  ...floatingCardSx(theme),
   flex: 1,
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
+  display: 'flex' as const,
+  flexDirection: 'column' as const,
+  alignItems: 'center' as const,
+  justifyContent: 'center' as const,
   gap: 0.5,
-  bgcolor: 'surface.raised',
-  border: '1px solid',
-  borderColor: 'border.thin',
-  borderRadius: '24px',
-  backdropFilter: 'blur(16px)',
-  boxShadow: `0 8px 32px ${theme.palette.surface.overlay}`,
   py: { xs: 1, sm: 1.5, md: 1.5, lg: 1.5 },
   px: { xs: 1.5, sm: 2.5, md: 2.5, lg: 2.5 },
 });

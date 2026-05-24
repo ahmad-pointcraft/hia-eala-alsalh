@@ -20,19 +20,10 @@ import { getCurrentPrayer, getNextPrayer, getTimeToNextPrayer } from './utils/pr
 import type { PrayerTime } from './utils/prayerTimes';
 import { useClock } from './utils/useClock';
 import { getDirection } from './utils/helpers';
-import type { Theme } from '@mui/material/styles';
+import { floatingCardSx } from '@/app/theme/sharedStyles';
 import mosque1 from '../assets/mosque-1.jpg';
 import mosque2 from '../assets/mosque-2.jpg';
 import mosque3 from '../assets/mosque-3.jpg';
-
-const floatingCardSx = (theme: Theme) => ({
-  bgcolor: 'surface.raised',
-  border: '1px solid',
-  borderColor: 'border.thin',
-  borderRadius: '24px',
-  backdropFilter: 'blur(16px)',
-  boxShadow: `0 8px 32px ${theme.palette.surface.overlay}`,
-});
 
 const FUNDRAISING_PRAYER_GAP_SECONDS = 1 * 60;
 const FUNDRAISING_MIN_SECONDS = 3;
@@ -259,6 +250,7 @@ export default function App() {
                     nextPrayerIqamaTime={nextPrayer.iqamaTime}
                     language={language}
                     currentTime={currentTime}
+                    translations={t}
                   />
                 </Box>
               </Box>
@@ -348,6 +340,7 @@ export default function App() {
           onClose={() => setShowFundraising(false)}
           language={language}
           translations={t}
+          currentTime={currentTime}
         />
       )}
     </Box>

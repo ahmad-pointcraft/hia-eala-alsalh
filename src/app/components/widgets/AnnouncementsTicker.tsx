@@ -4,6 +4,7 @@ import masjidLogo from '../../../assets/logo-masjid-design-1.png';
 import pointcraftLogo from '../../../assets/logo.png';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { getFontFamily, isRTL, getDirection } from '@/app/utils/helpers';
 
 interface AnnouncementsTickerProps {
@@ -13,10 +14,13 @@ interface AnnouncementsTickerProps {
 
 export function AnnouncementsTicker({ language, announcements }: AnnouncementsTickerProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
 
   useEffect(() => {
     const element = scrollRef.current;
     if (!element) return;
+
+    if (prefersReducedMotion) return;
 
     let animationId: number;
     let position = 0;
@@ -41,7 +45,7 @@ export function AnnouncementsTicker({ language, announcements }: AnnouncementsTi
 
     animationId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationId);
-  }, [language]);
+  }, [language, prefersReducedMotion]);
 
   const separator = ' • ';
   const fullText = announcements.join(separator) + separator + announcements.join(separator);

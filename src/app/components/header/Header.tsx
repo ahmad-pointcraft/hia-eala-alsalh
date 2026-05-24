@@ -4,6 +4,7 @@ import Toolbar from '@mui/material/Toolbar';
 import ButtonBase from '@mui/material/ButtonBase';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
 import { Heart, WifiOff } from 'lucide-react';
 import LightMode from '@mui/icons-material/LightMode';
 import DarkMode from '@mui/icons-material/DarkMode';
@@ -221,22 +222,16 @@ export function Header({
             gap: 1,
           }}
         >
-          <Box
-            component="button"
+          <IconButton
             onClick={toggleTheme}
             aria-label={mode === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
             sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
               width: 44,
               height: 44,
-              borderRadius: '50%',
               border: '1px solid',
               borderColor: 'border.thin',
               bgcolor: 'surface.raised',
               color: 'text.secondary',
-              cursor: 'pointer',
               transition: 'transform 0.3s ease, color 0.3s ease',
               '&:hover': {
                 color: 'primary.main',
@@ -249,7 +244,7 @@ export function Header({
             }}
           >
             {mode === 'dark' ? <LightMode fontSize="small" /> : <DarkMode fontSize="small" />}
-          </Box>
+          </IconButton>
           <ButtonBase
             onClick={onShowFundraising}
             aria-label={translations.donate}

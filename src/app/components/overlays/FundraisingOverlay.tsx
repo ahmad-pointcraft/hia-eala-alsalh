@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useMemo } from 'react';
 import Backdrop from '@mui/material/Backdrop';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
@@ -16,12 +16,15 @@ interface FundraisingOverlayProps {
   onClose: () => void;
   language: Language;
   translations: Translations;
+  currentTime: Date;
 }
 
-export function FundraisingOverlay({ onClose, language, translations }: FundraisingOverlayProps) {
-  const [countdown, setCountdown] = useState(10);
+const AUTO_CLOSE_SECONDS = 10;
+
+export function FundraisingOverlay({ onClose, language, translations, currentTime }: FundraisingOverlayProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const previouslyFocusedRef = useRef<HTMLElement | null>(null);
+  const openedAtRef = useRef<number>(Date.now());
 
   useEffect(() => {
     previouslyFocusedRef.current = document.activeElement as HTMLElement;
@@ -98,12 +101,10 @@ export function FundraisingOverlay({ onClose, language, translations }: Fundrais
     };
   }, [handleKeyDown]);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCountdown((prev) => prev - 1);
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
+  const countdown = useMemo(() => {
+    const elapsed = Math.floor((Date.now() - openedAtRef.current) / 1000);
+    return Math.max(0, AUTO_CLOSE_SECONDS - elapsed);
+  }, [currentTime]);
 
   useEffect(() => {
     if (countdown <= 0) {
