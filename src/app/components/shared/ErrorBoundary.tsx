@@ -2,6 +2,7 @@ import { Component, type ReactNode } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import { useLanguageStore, getDirection } from '@/app/store/languageStore';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -67,9 +68,12 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     }
 
     const exhausted = this.state.retryCount >= MAX_RETRIES;
+    const { language } = useLanguageStore.getState();
+    const dir = getDirection(language);
 
     return (
       <Box
+        dir={dir}
         sx={{
           display: 'flex',
           flexDirection: 'column',
@@ -84,22 +88,26 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
         {exhausted ? (
           <>
             <Typography variant="h5" sx={{ color: 'error.main', textAlign: 'center' }}>
-              Display Error
+              {language === 'ar' ? 'خطأ في العرض' : 'Display Error'}
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary', textAlign: 'center' }}>
-              The display encountered a persistent error. Please reload.
+              {language === 'ar'
+                ? 'واجه العرض خطأً مستمراً. يرجى إعادة التحميل.'
+                : 'The display encountered a persistent error. Please reload.'}
             </Typography>
             <Button variant="contained" onClick={this.handleReload} sx={{ mt: 1 }}>
-              Reload Display
+              {language === 'ar' ? 'إعادة تحميل العرض' : 'Reload Display'}
             </Button>
           </>
         ) : (
           <>
             <Typography variant="h5" sx={{ color: 'text.primary', textAlign: 'center' }}>
-              Recovering...
+              {language === 'ar' ? 'جاري الاستعادة...' : 'Recovering...'}
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary', textAlign: 'center' }}>
-              The display will restore automatically.
+              {language === 'ar'
+                ? 'سيتم استعادة العرض تلقائياً.'
+                : 'The display will restore automatically.'}
             </Typography>
           </>
         )}

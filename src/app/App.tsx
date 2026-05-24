@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Box from '@mui/material/Box';
@@ -14,41 +14,35 @@ import { FundraisingOverlay } from './components/overlays';
 import { IslamicGeometricOverlay } from './components/overlays';
 import { EventSlideshow } from './components/events';
 import type { EventSlide } from './components/events';
-import { translations } from './utils/translations';
-import type { Language } from '@/app/types/i18n';
-import { getCurrentPrayer, getNextPrayer, getTimeToNextPrayer } from './utils/prayerTimes';
-import type { PrayerTime } from './utils/prayerTimes';
-import { useClock } from './utils/useClock';
-import { getDirection } from './utils/helpers';
+import { useLanguage } from '@/app/store';
+import { useClock, usePrayerState, useFundraisingScheduler } from '@/app/hooks';
 import { floatingCardSx } from '@/app/theme/sharedStyles';
 import mosque1 from '../assets/mosque-1.jpg';
 import mosque2 from '../assets/mosque-2.jpg';
 import mosque3 from '../assets/mosque-3.jpg';
 
-const FUNDRAISING_PRAYER_GAP_SECONDS = 1 * 60;
-const FUNDRAISING_MIN_SECONDS = 3;
-const FUNDRAISING_MAX_SECONDS = 6;
-
-function getRandomFundraisingDelay() {
-  const range = FUNDRAISING_MAX_SECONDS - FUNDRAISING_MIN_SECONDS;
-  const seconds = FUNDRAISING_MIN_SECONDS + Math.random() * range;
-  return seconds * 1000;
-}
+const carouselImages = [mosque1, mosque2, mosque3];
 
 export default function App() {
-  const [showFundraising, setShowFundraising] = useState(false);
-  const [language, setLanguage] = useState<Language>('en');
+  const { language, toggleLanguage, t, dir } = useLanguage();
   const { currentTime } = useClock();
-  const fundraisingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
   const defaultTransition = useMemo(
     () => (prefersReducedMotion ? { duration: 0 } : undefined),
     [prefersReducedMotion],
   );
 
-  const carouselImages = [mosque1, mosque2, mosque3];
+  useEffect(() => {
+    document.documentElement.dir = dir;
+    document.documentElement.lang = language;
+  }, [dir, language]);
 
-  const t = translations[language];
+  const { prayers, activePrayer, nextPrayer, isPraying, prayerPrayers, sunrisePrayer, sunsetTime } =
+    usePrayerState(currentTime, t.prayers);
+  const { showFundraising, onShowFundraising, onCloseFundraising } = useFundraisingScheduler(
+    prayers,
+    currentTime,
+  );
 
   const eventSlides: EventSlide[] = t.events.map((e) => ({
     title: e.title,
@@ -59,73 +53,6 @@ export default function App() {
     badge: e.badge,
     cta: e.cta,
   }));
-
-  const prayers: PrayerTime[] = [
-    { name: t.prayers.fajr, key: 'Fajr', time: '05:30', iqamaTime: '05:45' },
-    {
-      name: t.prayers.sunrise,
-      key: 'Sunrise',
-      time: '06:52',
-      iqamaTime: '\u2014',
-    },
-    { name: t.prayers.dhuhr, key: 'Dhuhr', time: '12:45', iqamaTime: '13:00' },
-    { name: t.prayers.asr, key: 'Asr', time: '16:15', iqamaTime: '16:30' },
-    {
-      name: t.prayers.maghrib,
-      key: 'Maghrib',
-      time: '19:28',
-      iqamaTime: '19:30',
-    },
-    { name: t.prayers.isha, key: 'Isha', time: '20:45', iqamaTime: '21:00' },
-  ];
-
-  const activePrayer = getCurrentPrayer(prayers, currentTime);
-  const nextPrayer = getNextPrayer(prayers, currentTime);
-
-  useEffect(() => {
-    const scheduleFundraising = () => {
-      if (fundraisingTimerRef.current) {
-        clearTimeout(fundraisingTimerRef.current);
-      }
-      fundraisingTimerRef.current = setTimeout(() => {
-        if (getTimeToNextPrayer(prayers, new Date()) > FUNDRAISING_PRAYER_GAP_SECONDS) {
-          setShowFundraising(true);
-        }
-        scheduleFundraising();
-      }, getRandomFundraisingDelay());
-    };
-
-    fundraisingTimerRef.current = setTimeout(() => {
-      if (getTimeToNextPrayer(prayers, new Date()) > FUNDRAISING_PRAYER_GAP_SECONDS) {
-        setShowFundraising(true);
-      }
-      scheduleFundraising();
-    }, getRandomFundraisingDelay());
-
-    return () => {
-      if (fundraisingTimerRef.current) {
-        clearTimeout(fundraisingTimerRef.current);
-      }
-    };
-  }, [prayers]);
-
-  const toggleLanguage = () => {
-    setLanguage((prev) => (prev === 'en' ? 'ar' : 'en'));
-  };
-
-  const prayerPrayers = prayers.filter((p) => p.key !== 'Sunrise');
-  const sunrisePrayer = prayers.find((p) => p.key === 'Sunrise');
-  const sunsetTime = prayers.find((p) => p.key === 'Maghrib')?.time ?? '19:28';
-
-  const isPraying = useMemo(() => {
-    const nowMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
-    return prayerPrayers.some((p) => {
-      if (p.iqamaTime === '\u2014') return false;
-      const [ih = 0, im = 0] = p.iqamaTime.split(':').map(Number);
-      const iqamaMinutes = ih * 60 + im;
-      return nowMinutes >= iqamaMinutes && nowMinutes < iqamaMinutes + 5;
-    });
-  }, [currentTime, prayerPrayers]);
 
   return (
     <Box
@@ -164,7 +91,7 @@ export default function App() {
         <Header
           language={language}
           onToggleLanguage={toggleLanguage}
-          onShowFundraising={() => setShowFundraising(true)}
+          onShowFundraising={onShowFundraising}
           translations={t}
           currentTime={currentTime}
         />
@@ -292,7 +219,7 @@ export default function App() {
 
             <Box sx={{ flexShrink: 0, px: { xs: 2, sm: 3, md: 4, lg: 6 }, pb: 1 }}>
               <Box
-                dir={getDirection(language)}
+                dir={dir}
                 sx={{
                   display: 'grid',
                   gridTemplateColumns: {
@@ -337,7 +264,7 @@ export default function App() {
 
       {showFundraising && (
         <FundraisingOverlay
-          onClose={() => setShowFundraising(false)}
+          onClose={onCloseFundraising}
           language={language}
           translations={t}
           currentTime={currentTime}
