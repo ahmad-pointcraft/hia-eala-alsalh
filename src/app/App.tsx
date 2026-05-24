@@ -144,7 +144,7 @@ export default function App() {
               <Box
                 sx={{
                   display: 'flex',
-                  flexDirection: { xs: 'column', sm: language === 'ar' ? 'row-reverse' : 'row' },
+                  flexDirection: { xs: 'column', sm: 'row' },
                   gap: { xs: 1, sm: 1.5, md: 2, lg: 2 },
                   flex: 1,
                   minHeight: 0,
@@ -185,7 +185,7 @@ export default function App() {
               <Box
                 sx={{
                   display: 'flex',
-                  flexDirection: { xs: 'column', sm: language === 'ar' ? 'row-reverse' : 'row' },
+                  flexDirection: { xs: 'column', sm: 'row' },
                   gap: { xs: 1, sm: 1.5, md: 2, lg: 2 },
                   flexShrink: 0,
                 }}

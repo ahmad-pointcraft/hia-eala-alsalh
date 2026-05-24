@@ -24,7 +24,7 @@ export function usePrayerState(
   const prayers = useMemo<PrayerTime[]>(() => {
     return DEFAULT_PRAYER_TIMES.map((p) => ({
       ...p,
-      name: prayerNames[p.key] ?? p.key,
+      name: prayerNames[p.key.toLowerCase()] ?? p.key,
     }));
   }, [prayerNames]);
 
