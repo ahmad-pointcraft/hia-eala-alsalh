@@ -1,15 +1,6 @@
-export type PrayerKey = 'Fajr' | 'Sunrise' | 'Dhuhr' | 'Asr' | 'Maghrib' | 'Isha';
+import type { PrayerKey, PrayerSchedule, PrayerTime, NextPrayer } from '@/app/types/prayer';
 
-export interface PrayerTime {
-  key: PrayerKey;
-  name: string;
-  time: string;
-  iqamaTime: string;
-}
-
-export interface NextPrayer extends PrayerTime {
-  isTomorrow: boolean;
-}
+export type { PrayerKey, PrayerSchedule, PrayerTime, NextPrayer };
 
 const parseTimeToMinutes = (time: string): number => {
   const parts = time.split(':').map(Number);

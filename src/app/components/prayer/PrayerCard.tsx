@@ -2,18 +2,11 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { useTheme } from "@mui/material/styles";
-import {
-  Moon,
-  Sun,
-  Sunrise,
-  Sunset,
-  CloudSun,
-  Star,
-} from 'lucide-react';
-import { Language } from '../utils/translations';
-import { toArabicNumerals, getFontFamily, getDirection } from '../utils/helpers';
-import type { PrayerKey } from '../utils/prayerTimes';
+import { useTheme } from '@mui/material/styles';
+import { Moon, Sun, Sunrise, Sunset, CloudSun, Star } from 'lucide-react';
+import type { Language } from '@/app/types/i18n';
+import { toArabicNumerals, getFontFamily, getDirection } from '@/app/utils/helpers';
+import type { PrayerKey } from '@/app/utils/prayerTimes';
 
 interface PrayerCardProps {
   name: string;
@@ -59,7 +52,7 @@ export function PrayerCard({
         alignItems: 'center',
         justifyContent: 'center',
         p: { xs: 0.75, sm: 1, md: 1.25, lg: 1.5 },
-        borderRadius: "16px",
+        borderRadius: '16px',
         transition: 'all 300ms cubic-bezier(0.25, 1, 0.5, 1)',
         ...(isActive
           ? {
@@ -76,12 +69,23 @@ export function PrayerCard({
             }),
       }}
     >
-      <CardContent sx={{ p: 0, '&:last-child': { pb: 0 }, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <CardContent
+        sx={{
+          p: 0,
+          '&:last-child': { pb: 0 },
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
         <Box
           sx={{
             mb: { xs: 0.25, sm: 0.5, md: 0.75, lg: 1 },
             color: isActive ? (theme) => theme.palette.gold.onLight : 'text.secondary',
-            '& svg': { width: { xs: 20, sm: 24, md: 26, lg: 28 }, height: { xs: 20, sm: 24, md: 26, lg: 28 } },
+            '& svg': {
+              width: { xs: 20, sm: 24, md: 26, lg: 28 },
+              height: { xs: 20, sm: 24, md: 26, lg: 28 },
+            },
           }}
         >
           <Icon aria-hidden="true" />

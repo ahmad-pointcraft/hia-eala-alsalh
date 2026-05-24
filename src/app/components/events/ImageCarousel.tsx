@@ -10,7 +10,7 @@ interface ImageCarouselProps {
 
 export function ImageCarousel({ images, interval = 5000 }: ImageCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const prefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
+  const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
 
   useEffect(() => {
     if (images.length <= 1) return;
@@ -25,24 +25,28 @@ export function ImageCarousel({ images, interval = 5000 }: ImageCarouselProps) {
   if (images.length === 0) return null;
 
   return (
-    <Box sx={{
-      position: 'relative',
-      width: '100%',
-      height: '100%',
-      overflow: 'hidden',
-      borderRadius: "24px",
-      bgcolor: 'surface.overlay',
-      border: '1px solid',
-      borderColor: 'border.thin',
-      boxShadow: (theme) => `0 8px 32px ${theme.palette.surface.overlay}`,
-    }}>
+    <Box
+      sx={{
+        position: 'relative',
+        width: '100%',
+        height: '100%',
+        overflow: 'hidden',
+        borderRadius: '24px',
+        bgcolor: 'surface.overlay',
+        border: '1px solid',
+        borderColor: 'border.thin',
+        boxShadow: (theme) => `0 8px 32px ${theme.palette.surface.overlay}`,
+      }}
+    >
       <AnimatePresence mode="wait">
         <motion.div
           key={currentIndex}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.6, ease: [0.25, 1, 0.5, 1] }}
+          transition={
+            prefersReducedMotion ? { duration: 0 } : { duration: 0.6, ease: [0.25, 1, 0.5, 1] }
+          }
           style={{ width: '100%', height: '100%' }}
         >
           <img
@@ -54,18 +58,20 @@ export function ImageCarousel({ images, interval = 5000 }: ImageCarouselProps) {
       </AnimatePresence>
 
       {images.length > 1 && (
-        <Box sx={{
-          position: 'absolute',
-          bottom: 0,
-          insetInline: 0,
-          height: { xs: 44, sm: 52, md: 60, lg: 60 },
-          background: (theme) => `linear-gradient(transparent, ${theme.palette.surface.medium})`,
-          display: 'flex',
-          alignItems: 'flex-end',
-          justifyContent: 'center',
-          pb: 2,
-          gap: 1,
-        }}>
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: 0,
+            insetInline: 0,
+            height: { xs: 44, sm: 52, md: 60, lg: 60 },
+            background: (theme) => `linear-gradient(transparent, ${theme.palette.surface.medium})`,
+            display: 'flex',
+            alignItems: 'flex-end',
+            justifyContent: 'center',
+            pb: 2,
+            gap: 1,
+          }}
+        >
           {images.map((_, index) => (
             <Box
               component="button"
@@ -75,13 +81,15 @@ export function ImageCarousel({ images, interval = 5000 }: ImageCarouselProps) {
               sx={{
                 width: index === currentIndex ? 28 : 10,
                 height: 10,
-                borderRadius: "4px",
+                borderRadius: '4px',
                 bgcolor: index === currentIndex ? 'primary.main' : 'text.muted',
                 border: 'none',
                 cursor: 'pointer',
                 p: 1.75,
                 m: -1.75,
-                transition: prefersReducedMotion ? 'none' : 'all 300ms cubic-bezier(0.25, 1, 0.5, 1)',
+                transition: prefersReducedMotion
+                  ? 'none'
+                  : 'all 300ms cubic-bezier(0.25, 1, 0.5, 1)',
               }}
             />
           ))}
