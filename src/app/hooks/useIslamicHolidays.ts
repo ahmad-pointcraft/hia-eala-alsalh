@@ -1,0 +1,31 @@
+import { useMemo } from 'react';
+import { cacheStore } from '@/app/services/cache';
+import type { HijriDateInfo } from '@/app/types/mosqueConfig';
+
+export interface UseIslamicHolidaysResult {
+  holidays: string[];
+  isHoliday: boolean;
+}
+
+export function useIslamicHolidays(hijriDate: HijriDateInfo): UseIslamicHolidaysResult {
+  const result = useMemo(() => {
+    const cacheKey = cacheStore.buildKey(
+      'aladhan',
+      new Date(),
+    );
+
+    const cached = cacheStore.get<{
+      hijri: HijriDateInfo;
+      holidays: string[];
+      clockOffsetMs: number;
+    }>(cacheKey);
+
+    const holidays = cached?.holidays ?? [];
+    return {
+      holidays,
+      isHoliday: holidays.length > 0,
+    };
+  }, [hijriDate]);
+
+  return result;
+}
