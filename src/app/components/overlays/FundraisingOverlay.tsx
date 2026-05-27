@@ -8,6 +8,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 import Close from '@mui/icons-material/Close';
 import type { Language, Translations } from '@/app/types/i18n';
 import { toArabicNumerals, getFontFamily, getDirection } from '@/app/utils/helpers';
+import qrDonateImage from '../../../assets/qr-donate.svg';
 
 const FOCUSABLE_SELECTOR =
   'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
@@ -370,16 +371,16 @@ export function FundraisingOverlay({ onClose, language, translations, currentTim
               role="img"
               aria-label={translations.fundraising.scanToDonate}
             >
-              <Box sx={{ textAlign: 'center', fontSize: '0.75rem', color: 'text.onGold', p: 1 }}>
-                <Typography sx={{ fontWeight: 'bold', mb: 0.5, fontSize: '0.75rem' }}>
-                  QR CODE
-                </Typography>
-                <Typography
-                  sx={{ fontSize: { xs: '8px', sm: '9px', md: '10px', lg: '10px' }, fontFamily }}
-                >
-                  {translations.fundraising.scanToDonate}
-                </Typography>
-              </Box>
+              <Box
+                component="img"
+                src={qrDonateImage}
+                alt="QR Code"
+                sx={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain',
+                }}
+              />
             </Box>
             <Box>
               <Typography sx={{ color: 'text.muted', fontSize: '0.875rem', mb: 0.5, fontFamily }}>

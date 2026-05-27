@@ -7,15 +7,25 @@ import Stack from '@mui/material/Stack';
 import { Header } from './components/header';
 import { PrayerCard } from './components/prayer';
 import { CountdownBar } from './components/prayer';
-import { HadithPanel } from './components/widgets';
+import { WisdomPanel } from './components/widgets';
 import { SunTimesWidget } from './components/widgets';
 import { AnnouncementsTicker } from './components/widgets';
 import { FundraisingOverlay } from './components/overlays';
 import { IslamicGeometricOverlay } from './components/overlays';
 import { EventSlideshow } from './components/events';
 import type { EventSlide } from './components/events';
+import type { WisdomContent } from '@/app/types/wisdom';
 import { useLanguage } from '@/app/store';
-import { useClock, usePrayerState, useFundraisingScheduler } from '@/app/hooks';
+import {
+  useClock,
+  usePrayerState,
+  useFundraisingScheduler,
+  useHijriDate,
+  useDailyHadith,
+  useDailyQuranVerse,
+  useAnnouncements,
+  useEvents,
+} from '@/app/hooks';
 import { floatingCardSx } from '@/app/theme/sharedStyles';
 import mosque1 from '../assets/mosque-1.jpg';
 import mosque2 from '../assets/mosque-2.jpg';
@@ -44,7 +54,24 @@ export default function App() {
     currentTime,
   );
 
-  const eventSlides: EventSlide[] = t.events.map((e) => ({
+  const { hijriDate, holidays } = useHijriDate(currentTime);
+  const { hadith } = useDailyHadith(hijriDate);
+  const { verse } = useDailyQuranVerse(hijriDate);
+  const { announcements: dynamicAnnouncements } = useAnnouncements(currentTime);
+  const { events: dynamicEvents } = useEvents(currentTime);
+
+  const wisdom: WisdomContent | undefined = useMemo(() => {
+    if (hijriDate.day % 2 === 1) {
+      if (hadith) return { kind: 'hadith', data: hadith };
+      if (verse) return { kind: 'quran', data: verse };
+      return undefined;
+    }
+    if (verse) return { kind: 'quran', data: verse };
+    if (hadith) return { kind: 'hadith', data: hadith };
+    return undefined;
+  }, [hijriDate.day, hadith, verse]);
+
+  const eventSlides: EventSlide[] = dynamicEvents.map((e) => ({
     title: e.title,
     speakerName: e.speakerName,
     dateValue: e.dateValue,
@@ -94,6 +121,8 @@ export default function App() {
           onShowFundraising={onShowFundraising}
           translations={t}
           currentTime={currentTime}
+          hijriDate={hijriDate}
+          holidays={holidays}
         />
 
         {isPraying && (
@@ -198,7 +227,7 @@ export default function App() {
                     minHeight: { xs: 220, sm: 0 },
                   })}
                 >
-                  <HadithPanel language={language} translations={t} />
+                  <WisdomPanel language={language} wisdom={wisdom ?? { kind: 'hadith', data: { text_ar: t.hadithText, text_en: t.hadithText, source: t.hadithSource, narrator: '', book: '', hadithNumber: 0 } }} fallbackTitle={t.hadithOfTheDay} />
                 </Box>
                 <Box
                   sx={{
@@ -259,7 +288,7 @@ export default function App() {
           </motion.div>
         </AnimatePresence>
 
-        <AnnouncementsTicker language={language} announcements={t.announcementsList} />
+        <AnnouncementsTicker language={language} announcements={dynamicAnnouncements} />
       </Stack>
 
       {showFundraising && (
