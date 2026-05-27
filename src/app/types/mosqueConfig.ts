@@ -14,7 +14,7 @@ export type AdhanMethod =
   | 'Tehran'
   | 'NorthAmerica';
 
-export type Madhab = 'Shafi' | 'Hanafi' | 'Maliki' | 'Hanbali';
+export type Madhab = 'Shafi' | 'Hanafi';
 
 export type HighLatitudeRule =
   | 'MiddleOfTheNight'
@@ -73,8 +73,8 @@ export const DEFAULT_MOSQUE_CONFIG: MosqueConfig = {
   timeZone: 'Asia/Riyadh',
   hijriOffset: 0,
   iqamaConfigs: {
-    Fajr: { mode: 'offset', value: 15 },
-    Dhuhr: { mode: 'fixed', value: '13:00' },
+    Fajr: { mode: 'offset', value: 20 },
+    Dhuhr: { mode: 'offset', value: 15 },
     Asr: { mode: 'offset', value: 15 },
     Maghrib: { mode: 'offset', value: 5 },
     Isha: { mode: 'offset', value: 15 },
