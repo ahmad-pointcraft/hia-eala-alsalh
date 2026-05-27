@@ -10,17 +10,11 @@ export const translations: Record<Language, Translations> = {
     exitEvent: 'Exit Event',
     nextPrayer: 'Next prayer',
     hadithOfTheDay: 'Hadith of the Day',
-    hadithText: 'The best of you are those who learn the Quran and teach it to others.',
-    hadithSource: '— Sahih Bukhari —',
+    hadithText: 'The best of you are those who learn the Quran and teach it to others.', // FALLBACK: used when API data unavailable (offline)
+    hadithSource: '— Sahih Bukhari —', // FALLBACK: used when API data unavailable (offline)
     announcements: 'Announcements',
-    weather: {
-      partlyCloudy: 'Partly Cloudy',
-      sunny: 'Sunny',
-      cloudy: 'Cloudy',
-      rainy: 'Rainy',
-    },
     sunset: 'Sunset',
-    announcementsList: [
+    announcementsList: [ // FALLBACK: used when API data unavailable (offline)
       'Friday Khutbah at 1:00 PM - Speaker: Imam Abdullah',
       'Quran Study Circle every Tuesday at 7:00 PM',
       'Donations needed for community food bank',
@@ -36,7 +30,7 @@ export const translations: Record<Language, Translations> = {
       isha: 'Isha',
     },
     iqama: 'Iqama',
-    events: [
+    events: [ // FALLBACK: used when API data unavailable (offline)
       {
         badge: 'Special Islamic Lecture',
         title: 'The Science of the Quran',
@@ -108,17 +102,11 @@ export const translations: Record<Language, Translations> = {
     exitEvent: 'إغلاق الحدث',
     nextPrayer: 'الصلاة القادمة',
     hadithOfTheDay: 'حديث اليوم',
-    hadithText: 'خيركم من تعلم القرآن وعلمه',
-    hadithSource: '— صحيح البخاري ',
+    hadithText: 'خيركم من تعلم القرآن وعلمه', // FALLBACK: used when API data unavailable (offline)
+    hadithSource: '— صحيح البخاري ', // FALLBACK: used when API data unavailable (offline)
     announcements: 'الإعلانات',
-    weather: {
-      partlyCloudy: 'غائم جزئياً',
-      sunny: 'مشمس',
-      cloudy: 'غائم',
-      rainy: 'ممطر',
-    },
     sunset: 'الغروب',
-    announcementsList: [
+    announcementsList: [ // FALLBACK: used when API data unavailable (offline)
       'خطبة الجمعة الساعة ١:٠٠ ظهراً - الخطيب: الإمام عبد الله',
       'حلقة دراسة القرآن كل يوم ثلاثاء الساعة ٧:٠٠ مساءً',
       'التبرعات مطلوبة لبنك الطعام المجتمعي',
@@ -134,7 +122,7 @@ export const translations: Record<Language, Translations> = {
       isha: 'العشاء',
     },
     iqama: 'الإقامة',
-    events: [
+    events: [ // FALLBACK: used when API data unavailable (offline)
       {
         badge: 'محاضرة إسلامية خاصة',
         title: 'العلم في القرآن',

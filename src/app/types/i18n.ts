@@ -12,12 +12,6 @@ export interface Translations {
   announcements: string;
   sunset: string;
   iqama: string;
-  weather: {
-    partlyCloudy: string;
-    sunny: string;
-    cloudy: string;
-    rainy: string;
-  };
   prayers: {
     fajr: string;
     sunrise: string;

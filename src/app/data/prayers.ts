@@ -1,3 +1,4 @@
+// OFFLINE FALLBACK: used by usePrayerState when adhan library calculation is unavailable. Safe to keep — consumed as DEFAULT_PRAYER_TIMES fallback.
 import type { PrayerSchedule } from '@/app/types/prayer';
 
 export const DEFAULT_PRAYER_TIMES: PrayerSchedule[] = [
