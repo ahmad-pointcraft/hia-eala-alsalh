@@ -763,6 +763,11 @@
     "@types/babel__core" "^7.20.5"
     react-refresh "^0.17.0"
 
+adhan@^4.4.3:
+  version "4.4.3"
+  resolved "https://registry.yarnpkg.com/adhan/-/adhan-4.4.3.tgz#a8bccaeadd0669b609657d4069118562dba4763f"
+  integrity sha512-568KkQd8OMLUj7o7+d2FDcm6vZHWQrE7vsm/Evssh8sfUDpPyaboj3PVsScZAr7L7sNRgPrtLMmDZZfM7VeAYw==
+
 array-union@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/array-union/-/array-union-2.1.0.tgz#b798420adbeb1de828d84acd8a2e23d3efe85e8d"
