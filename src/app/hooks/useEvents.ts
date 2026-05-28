@@ -6,6 +6,7 @@ import { useLanguageStore } from '@/app/store/languageStore';
 import { getTranslations } from '@/app/store/languageStore';
 import type { SheetEvent } from '@/app/types/googleSheets';
 import type { Translations } from '@/app/types/i18n';
+import { toArabicNumerals } from '@/app/utils/helpers';
 
 export interface UseEventsResult {
   events: Translations['events'];
@@ -34,10 +35,11 @@ export function useEvents(currentTime: Date): UseEventsResult {
       badge: language === 'ar' ? e.badge_ar : e.badge_en,
       title: language === 'ar' ? e.title_ar : e.title_en,
       speakerName: language === 'ar' ? e.speaker_ar : e.speaker_en,
-      dateValue: e.date,
-      timeValue: e.time,
+      dateValue: language === 'ar' ? toArabicNumerals(e.date_ar || e.date) : (e.date_en || e.date || ''),
+      timeValue: language === 'ar' ? toArabicNumerals(e.time_ar || e.time) : (e.time_en || e.time || ''),
       locationValue: language === 'ar' ? e.location_ar : e.location_en,
       cta: language === 'ar' ? e.cta_ar : e.cta_en,
+      ...(e.image_url ? { imageUrl: e.image_url } : {}),
     }));
   }, [data, language, translations.events]);
 

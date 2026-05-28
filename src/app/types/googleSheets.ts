@@ -13,11 +13,16 @@ export interface SheetEvent {
   title_ar: string;
   speaker_en: string;
   speaker_ar: string;
-  date: string;
-  time: string;
+  date_en: string;
+  date_ar: string;
+  time_en: string;
+  time_ar: string;
+  date?: string;
+  time?: string;
   location_en: string;
   location_ar: string;
   cta_en: string;
   cta_ar: string;
+  image_url: string;
   active: boolean;
 }

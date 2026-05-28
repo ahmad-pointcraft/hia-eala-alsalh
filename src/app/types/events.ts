@@ -6,4 +6,5 @@ export interface EventSlide {
   locationValue: string;
   badge?: string;
   cta?: string;
+  imageUrl?: string;
 }

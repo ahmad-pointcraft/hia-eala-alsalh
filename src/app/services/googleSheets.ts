@@ -1,3 +1,4 @@
+import { getDirectDriveImageUrl } from '@/app/utils/googleDrive';
 import { cacheStore } from './cache';
 import { parseCSV } from '@/app/utils/csv';
 import type { SheetAnnouncement, SheetEvent } from '@/app/types/googleSheets';
@@ -7,7 +8,7 @@ const ANNOUNCEMENTS_TTL = 5 * 60 * 1000;
 const EVENTS_TTL = 5 * 60 * 1000;
 
 function buildSheetUrl(sheetId: string, gid: string): string {
-  return `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=${gid}`;
+  return `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=${gid}&t=${Date.now()}`;
 }
 
 async function fetchAndParse(sheetId: string, gid: string): Promise<string[][]> {
@@ -69,12 +70,17 @@ function mapEvents(rows: string[][]): SheetEvent[] {
       title_ar: get('title_ar'),
       speaker_en: get('speaker_en'),
       speaker_ar: get('speaker_ar'),
+      date_en: get('date_en'),
+      date_ar: get('date_ar'),
+      time_en: get('time_en'),
+      time_ar: get('time_ar'),
       date: get('date'),
       time: get('time'),
       location_en: get('location_en'),
       location_ar: get('location_ar'),
       cta_en: get('cta_en'),
       cta_ar: get('cta_ar'),
+      image_url: getDirectDriveImageUrl(get('image_url')),
       active: get('active').toLowerCase() === 'true',
     });
   }

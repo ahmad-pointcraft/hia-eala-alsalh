@@ -64,5 +64,6 @@ export interface Translations {
     timeValue: string;
     locationValue: string;
     cta: string;
+    imageUrl?: string;
   }[];
 }

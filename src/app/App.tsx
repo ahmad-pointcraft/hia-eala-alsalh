@@ -79,6 +79,7 @@ export default function App() {
     locationValue: e.locationValue,
     badge: e.badge,
     cta: e.cta,
+    imageUrl: e.imageUrl,
   }));
 
   return (

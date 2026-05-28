@@ -20,7 +20,7 @@ interface HeaderProps {
   translations: Translations;
   currentTime: Date;
   hijriDate: HijriDateInfo;
-  holidays: string[];
+  holidays?: string[];
 }
 
 export function Header({
@@ -30,7 +30,6 @@ export function Header({
   translations,
   currentTime,
   hijriDate,
-  holidays,
 }: HeaderProps) {
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
   const { mode, toggleTheme } = useThemeMode();
@@ -57,10 +56,7 @@ export function Header({
   };
 
   const getHijriDate = () => {
-    const dateStr = language === 'ar' ? hijriDate.formatted_ar : hijriDate.formatted_en;
-    if (holidays.length > 0) {
-      return `${dateStr} • ${holidays[0]}`;
-    }
+    const dateStr = language === 'ar' ? toArabicNumerals(hijriDate.formatted_ar) : hijriDate.formatted_en;
     return dateStr;
   };
 
