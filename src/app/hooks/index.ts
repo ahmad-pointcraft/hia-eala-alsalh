@@ -1,3 +1,10 @@
 export { useClock } from './useClock';
 export { usePrayerState } from './usePrayerState';
 export { useFundraisingScheduler } from './useFundraisingScheduler';
+export { useCachedData } from './useCachedData';
+export { useHijriDate } from './useHijriDate';
+export { useDailyHadith } from './useDailyHadith';
+export { useDailyQuranVerse } from './useDailyQuranVerse';
+export { useAnnouncements } from './useAnnouncements';
+export { useEvents } from './useEvents';
+export { useIslamicHolidays } from './useIslamicHolidays';

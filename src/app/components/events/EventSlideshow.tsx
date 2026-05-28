@@ -6,7 +6,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { ImageCarousel } from './ImageCarousel';
 import type { Language } from '@/app/types/i18n';
 import type { EventSlide } from '@/app/types/events';
-import { getFontFamily, getDirection, toArabicNumerals } from '@/app/utils/helpers';
+import { getFontFamily, getDirection } from '@/app/utils/helpers';
 
 export type { EventSlide };
 
@@ -179,8 +179,7 @@ export function EventSlideshow({ events, images, interval = 5000, language }: Ev
                 fontFamily: getFontFamily(language),
               }}
             >
-              {language === 'ar' ? toArabicNumerals(event.dateValue) : event.dateValue} ·{' '}
-              {language === 'ar' ? toArabicNumerals(event.timeValue) : event.timeValue}
+              {event.dateValue} · {event.timeValue}
             </Typography>
 
             <Box

@@ -1,6 +1,7 @@
 import type { Language } from '@/app/types/i18n';
 
-export const toArabicNumerals = (text: string): string => {
+export const toArabicNumerals = (text: string | undefined | null): string => {
+  if (!text) return '';
   const arabicNumerals = [
     '\u0660',
     '\u0661',

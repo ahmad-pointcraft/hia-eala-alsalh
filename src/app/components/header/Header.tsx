@@ -9,6 +9,7 @@ import { Heart, WifiOff } from 'lucide-react';
 import LightMode from '@mui/icons-material/LightMode';
 import DarkMode from '@mui/icons-material/DarkMode';
 import type { Language, Translations } from '@/app/types/i18n';
+import type { HijriDateInfo } from '@/app/types/mosqueConfig';
 import { getFontFamily, getDirection, toArabicNumerals } from '@/app/utils/helpers';
 import { useThemeMode } from '@/app/theme/ThemeContext';
 
@@ -18,6 +19,8 @@ interface HeaderProps {
   onShowFundraising: () => void;
   translations: Translations;
   currentTime: Date;
+  hijriDate: HijriDateInfo;
+  holidays?: string[];
 }
 
 export function Header({
@@ -26,6 +29,7 @@ export function Header({
   onShowFundraising,
   translations,
   currentTime,
+  hijriDate,
 }: HeaderProps) {
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
   const { mode, toggleTheme } = useThemeMode();
@@ -52,7 +56,8 @@ export function Header({
   };
 
   const getHijriDate = () => {
-    return language === 'ar' ? '١٥ ذو القعدة ١٤٤٧' : "15 Dhul-Qa'dah 1447";
+    const dateStr = language === 'ar' ? toArabicNumerals(hijriDate.formatted_ar) : hijriDate.formatted_en;
+    return dateStr;
   };
 
   const getGregorianDate = () => {
