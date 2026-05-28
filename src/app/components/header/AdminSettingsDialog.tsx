@@ -145,7 +145,7 @@ export function AdminSettingsDialog({ open, onClose, language }: AdminSettingsDi
     return (
       <Box sx={{ borderBottom: '1px solid rgba(255,255,255,0.08)', pb: 2, mb: 2 }}>
         <Typography variant="subtitle2" sx={{ mb: 1, color: 'text.soft' }}>{label}</Typography>
-        <Stack direction="row" spacing={2} alignItems="center">
+        <Stack direction="row" gap={2} alignItems="center">
           <ToggleButtonGroup
             value={state.mode}
             exclusive
@@ -159,6 +159,15 @@ export function AdminSettingsDialog({ open, onClose, language }: AdminSettingsDi
               }
             }}
             size="small"
+            sx={{
+              gap: 1,
+              '& .MuiToggleButtonGroup-grouped': {
+                border: '1px solid !important',
+                borderColor: 'border.thin !important',
+                borderRadius: '12px !important',
+                mx: '0px !important',
+              },
+            }}
           >
             <ToggleButton value="offset">
               {t('Offset (mins)', 'إزاحة (دقائق)')}
@@ -407,7 +416,7 @@ export function AdminSettingsDialog({ open, onClose, language }: AdminSettingsDi
         )}
       </DialogContent>
 
-      <DialogActions sx={{ borderTop: '1px solid rgba(255,255,255,0.08)', p: 2 }}>
+      <DialogActions sx={{ borderTop: '1px solid rgba(255,255,255,0.08)', p: 2, gap: 1.5 }}>
         <Button onClick={onClose} variant="outlined" color="inherit">
           {t('Cancel', 'إلغاء')}
         </Button>
