@@ -138,6 +138,23 @@ export function createAppTheme(mode: ThemeMode) {
           },
         },
       },
+      MuiSwitch: {
+        styleOverrides: {
+          switchBase: {
+            minWidth: 0,
+            minHeight: 0,
+          },
+        },
+      },
+      MuiMenu: {
+        styleOverrides: {
+          paper: {
+            backgroundColor: mode === 'dark' ? '#0a1f0a' : '#ffffff',
+            backgroundImage: 'none',
+            border: `1px solid ${t.border.thin}`,
+          },
+        },
+      },
       MuiCssBaseline: {
         styleOverrides: {
           body: {

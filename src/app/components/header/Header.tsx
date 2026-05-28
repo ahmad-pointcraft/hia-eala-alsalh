@@ -1,17 +1,26 @@
 import { useState, useEffect } from 'react';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import ButtonBase from '@mui/material/ButtonBase';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
-import { Heart, WifiOff } from 'lucide-react';
+import {
+  Box,
+  Menu,
+  Switch,
+  AppBar,
+  Toolbar,
+  MenuItem,
+  ButtonBase,
+  Typography,
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+} from '@mui/material';
+
+import { Heart, WifiOff, Settings, Check } from 'lucide-react';
 import LightMode from '@mui/icons-material/LightMode';
 import DarkMode from '@mui/icons-material/DarkMode';
 import type { Language, Translations } from '@/app/types/i18n';
 import type { HijriDateInfo } from '@/app/types/mosqueConfig';
 import { getFontFamily, getDirection, toArabicNumerals } from '@/app/utils/helpers';
 import { useThemeMode } from '@/app/theme/ThemeContext';
+import { AdminSettingsDialog } from './AdminSettingsDialog';
 
 interface HeaderProps {
   language: Language;
@@ -33,6 +42,27 @@ export function Header({
 }: HeaderProps) {
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
   const { mode, toggleTheme } = useThemeMode();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [isAdminOpen, setIsAdminOpen] = useState(false);
+
+  const isSettingsOpen = Boolean(anchorEl);
+
+  const handleOpenSettings = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseSettings = () => {
+    setAnchorEl(null);
+  };
+
+  const handleOpenAdmin = () => {
+    setIsAdminOpen(true);
+    handleCloseSettings();
+  };
+
+  const handleCloseAdmin = () => {
+    setIsAdminOpen(false);
+  };
 
   useEffect(() => {
     const goOffline = () => setIsOffline(true);
@@ -97,55 +127,34 @@ export function Header({
           py: { xs: '8px', sm: '10px', md: '12px', lg: '12px' },
         }}
       >
-        <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-start' }}>
-          <Box
+        <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
+          <ButtonBase
+            onClick={onShowFundraising}
+            aria-label={translations.donate}
             sx={{
-              ...pillSx,
               display: 'flex',
-              overflow: 'hidden',
+              alignItems: 'center',
+              gap: 1,
+              px: { xs: 2, sm: 2.5, md: 3 },
+              py: { xs: 0.75, sm: 1, md: 1 },
+              borderRadius: 24,
+              background: (theme) =>
+                `linear-gradient(135deg, ${theme.palette.gold.dark}, ${theme.palette.gold.main})`,
+              color: 'text.onGold',
+              fontSize: { xs: '0.75rem', sm: '0.875rem', md: '0.875rem' },
+              fontWeight: 600,
+              fontFamily: getFontFamily(language),
+              textTransform: 'none',
+              border: 'none',
+              transition: 'all 200ms cubic-bezier(0.25, 1, 0.5, 1)',
+              '&:hover': { opacity: 0.9 },
             }}
           >
-            <ButtonBase
-              onClick={language === 'en' ? onToggleLanguage : undefined}
-              aria-label="العربية"
-              sx={{
-                px: { xs: 1.5, sm: 2.5 },
-                py: { xs: 0.75, sm: 1 },
-                fontSize: { xs: '0.75rem', sm: '0.875rem' },
-                fontWeight: 600,
-                fontFamily: '"Noto Naskh Arabic", serif',
-                bgcolor: language === 'ar' ? 'border.default' : 'transparent',
-                color: language === 'ar' ? (theme) => theme.palette.gold.onLight : 'text.muted',
-                borderRadius: 24,
-                transition: 'all 200ms cubic-bezier(0.25, 1, 0.5, 1)',
-                '&:hover': {
-                  bgcolor: language === 'ar' ? 'border.medium' : 'surface.raised',
-                },
-              }}
-            >
-              العربية
-            </ButtonBase>
-            <ButtonBase
-              onClick={language === 'ar' ? onToggleLanguage : undefined}
-              aria-label="English"
-              sx={{
-                px: { xs: 1.5, sm: 2.5 },
-                py: { xs: 0.75, sm: 1 },
-                fontSize: { xs: '0.75rem', sm: '0.875rem' },
-                fontWeight: 600,
-                fontFamily: '"Open Sans", sans-serif',
-                bgcolor: language === 'en' ? 'border.default' : 'transparent',
-                color: language === 'en' ? (theme) => theme.palette.gold.onLight : 'text.muted',
-                borderRadius: 24,
-                transition: 'all 200ms cubic-bezier(0.25, 1, 0.5, 1)',
-                '&:hover': {
-                  bgcolor: language === 'en' ? 'border.medium' : 'surface.raised',
-                },
-              }}
-            >
-              English
-            </ButtonBase>
-          </Box>
+            <Heart size={16} />
+            <Box component="span" sx={{ display: { xs: 'none', md: 'inline' } }}>
+              {translations.donate}
+            </Box>
+          </ButtonBase>
         </Box>
 
         <Box
@@ -228,8 +237,12 @@ export function Header({
           }}
         >
           <IconButton
-            onClick={toggleTheme}
-            aria-label={mode === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+            onClick={handleOpenSettings}
+            aria-label="Settings"
+            id="settings-button"
+            aria-controls={isSettingsOpen ? 'settings-menu' : undefined}
+            aria-expanded={isSettingsOpen ? 'true' : undefined}
+            aria-haspopup="true"
             sx={{
               width: 44,
               height: 44,
@@ -240,7 +253,7 @@ export function Header({
               transition: 'transform 0.3s ease, color 0.3s ease',
               '&:hover': {
                 color: 'primary.main',
-                transform: 'rotate(15deg)',
+                transform: 'rotate(45deg)',
               },
               '@media (prefers-reduced-motion: reduce)': {
                 transition: 'none',
@@ -248,37 +261,81 @@ export function Header({
               },
             }}
           >
-            {mode === 'dark' ? <LightMode fontSize="small" /> : <DarkMode fontSize="small" />}
+            <Settings size={20} />
           </IconButton>
-          <ButtonBase
-            onClick={onShowFundraising}
-            aria-label={translations.donate}
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1,
-              px: { xs: 2, sm: 2.5, md: 3 },
-              py: { xs: 0.75, sm: 1, md: 1 },
-              borderRadius: 24,
-              background: (theme) =>
-                `linear-gradient(135deg, ${theme.palette.gold.dark}, ${theme.palette.gold.main})`,
-              color: 'text.onGold',
-              fontSize: { xs: '0.75rem', sm: '0.875rem', md: '0.875rem' },
-              fontWeight: 600,
-              fontFamily: getFontFamily(language),
-              textTransform: 'none',
-              border: 'none',
-              transition: 'all 200ms cubic-bezier(0.25, 1, 0.5, 1)',
-              '&:hover': { opacity: 0.9 },
+
+          <Menu
+            id="settings-menu"
+            anchorEl={anchorEl}
+            open={isSettingsOpen}
+            onClose={handleCloseSettings}
+            MenuListProps={{
+              'aria-labelledby': 'settings-button',
+            }}
+            transformOrigin={{ vertical: 'top', horizontal: language === 'ar' ? 'left' : 'right' }}
+            anchorOrigin={{ vertical: 'bottom', horizontal: language === 'ar' ? 'left' : 'right' }}
+            slotProps={{
+              paper: {
+                sx: {
+                  bgcolor: 'background.default',
+                  backgroundImage: 'none',
+                  borderRadius: '12px',
+                  border: '1px solid',
+                  borderColor: 'border.thin',
+                  minWidth: 200,
+                },
+              },
             }}
           >
-            <Heart size={16} />
-            <Box component="span" sx={{ display: { xs: 'none', md: 'inline' } }}>
-              {translations.donate}
-            </Box>
-          </ButtonBase>
+            <MenuItem onClick={() => { if (language !== 'en') onToggleLanguage(); handleCloseSettings(); }}>
+              <ListItemIcon sx={{ minWidth: '36px !important' }}>
+                {language === 'en' ? <Check size={16} /> : <Box sx={{ width: 16 }} />}
+              </ListItemIcon>
+              <ListItemText>English</ListItemText>
+            </MenuItem>
+            <MenuItem onClick={() => { if (language !== 'ar') onToggleLanguage(); handleCloseSettings(); }}>
+              <ListItemIcon sx={{ minWidth: '36px !important' }}>
+                {language === 'ar' ? <Check size={16} /> : <Box sx={{ width: 16 }} />}
+              </ListItemIcon>
+              <ListItemText>العربية</ListItemText>
+            </MenuItem>
+            
+            <Box sx={{ borderBottom: '1px solid rgba(255,255,255,0.08)', my: 1 }} />
+
+            <MenuItem onClick={toggleTheme}>
+              <ListItemIcon sx={{ minWidth: '36px !important' }}>
+                {mode === 'dark' ? <DarkMode fontSize="small" /> : <LightMode fontSize="small" />}
+              </ListItemIcon>
+              <ListItemText>
+                {mode === 'dark'
+                  ? (language === 'ar' ? 'الوضع الداكن' : 'Dark Mode')
+                  : (language === 'ar' ? 'الوضع الفاتح' : 'Light Mode')}
+              </ListItemText>
+              <Switch
+                edge="end"
+                checked={mode === 'dark'}
+                size="small"
+                sx={{ ml: 'auto' }}
+              />
+            </MenuItem>
+
+            <Box sx={{ borderBottom: '1px solid rgba(255,255,255,0.08)', my: 1 }} />
+
+            <MenuItem onClick={handleOpenAdmin}>
+              <ListItemIcon sx={{ minWidth: '36px !important' }}>
+                <Settings size={16} />
+              </ListItemIcon>
+              <ListItemText>{language === 'ar' ? 'إعدادات المسجد' : 'Mosque Settings'}</ListItemText>
+            </MenuItem>
+          </Menu>
         </Box>
       </Toolbar>
+
+      <AdminSettingsDialog
+        open={isAdminOpen}
+        onClose={handleCloseAdmin}
+        language={language}
+      />
     </AppBar>
   );
 }

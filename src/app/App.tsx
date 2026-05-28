@@ -15,7 +15,7 @@ import { IslamicGeometricOverlay } from './components/overlays';
 import { EventSlideshow } from './components/events';
 import type { EventSlide } from './components/events';
 import type { WisdomContent } from '@/app/types/wisdom';
-import { useLanguage } from '@/app/store';
+import { useLanguage, useMosqueConfigStore } from '@/app/store';
 import {
   useClock,
   usePrayerState,
@@ -35,6 +35,40 @@ const carouselImages = [mosque1, mosque2, mosque3];
 
 export default function App() {
   const { language, toggleLanguage, t, dir } = useLanguage();
+  const { config, setConfig } = useMosqueConfigStore();
+
+  useEffect(() => {
+    // Only auto-detect on startup if coordinates or timezone are at defaults
+    const isDefaultLocation =
+      Math.abs(config.latitude - 24.7136) < 0.0001 &&
+      Math.abs(config.longitude - 46.6753) < 0.0001;
+    const isDefaultTimeZone = config.timeZone === 'Asia/Riyadh';
+
+    if (isDefaultTimeZone) {
+      const systemTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      if (systemTimeZone) {
+        setConfig({ timeZone: systemTimeZone });
+      }
+    }
+
+    if (isDefaultLocation && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setConfig({
+            latitude: parseFloat(latitude.toFixed(6)),
+            longitude: parseFloat(longitude.toFixed(6)),
+          });
+        },
+        (error) => {
+          console.warn('[Location] Auto-detect failed:', error.message);
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const { currentTime } = useClock();
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
   const defaultTransition = useMemo(
