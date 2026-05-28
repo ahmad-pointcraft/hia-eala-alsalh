@@ -4,7 +4,7 @@ import type { HadithData } from '@/app/types/hadith';
 import type { QuranVerse } from '@/app/types/quran';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { getFontFamily, getDirection } from '@/app/utils/helpers';
+import { getFontFamily, getDirection, toArabicNumerals } from '@/app/utils/helpers';
 
 interface WisdomPanelProps {
   language: Language;
@@ -20,8 +20,12 @@ export function WisdomPanel({ language, wisdom, fallbackTitle }: WisdomPanelProp
   const textAr = data.text_ar;
   const textEn = data.text_en;
   const source = isHadith
-    ? (data as HadithData).source
-    : `${(data as QuranVerse).surahName_en} ${(data as QuranVerse).ayahNumber}`;
+    ? (language === 'ar'
+        ? `صحيح البخاري · حديث رقم ${toArabicNumerals(String((data as HadithData).hadithNumber))}`
+        : `Sahih Bukhari · Hadith ${(data as HadithData).hadithNumber}`)
+    : (language === 'ar'
+        ? `${(data as QuranVerse).surahName_ar} · آية ${toArabicNumerals(String((data as QuranVerse).ayahNumber))}`
+        : `${(data as QuranVerse).surahName_en} · Ayah ${(data as QuranVerse).ayahNumber}`);
 
   return (
     <Box
