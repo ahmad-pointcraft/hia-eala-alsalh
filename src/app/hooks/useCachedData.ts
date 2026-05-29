@@ -107,7 +107,7 @@ export function useCachedData<T>(
       }
       triggerFetch(cacheKey);
     }
-  }, [cacheKey, fallback, triggerFetch]);
+  }, [cacheKey, fallback, triggerFetch, currentTime]);
 
   return { data, isLoading, error };
 }

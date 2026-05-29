@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { useCachedData } from '@/app/hooks/useCachedData';
 import { fetchHijriDate } from '@/app/services/aladhan';
 import { computeHijriDate } from '@/app/utils/hijri';
@@ -108,10 +108,6 @@ export function useHijriDate(currentTime: Date): UseHijriDateResult {
         formatted_ar: `${offsetApplied.day} ${data.hijri.monthName_ar} ${offsetApplied.year}`,
       };
 
-      if (data.clockOffsetMs !== 0 && data.clockOffsetMs !== config.clockOffsetMs) {
-        setConfig({ clockOffsetMs: data.clockOffsetMs });
-      }
-
       return { hijriDate: hijri, holidays: data.holidays };
     }
 
@@ -132,7 +128,14 @@ export function useHijriDate(currentTime: Date): UseHijriDateResult {
     };
 
     return { hijriDate: hijri, holidays: [] };
-  }, [data, config.hijriOffset, config.clockOffsetMs, currentTime, setConfig]);
+  }, [data, config.hijriOffset, currentTime]);
+
+  const clockOffsetMs = data?.clockOffsetMs;
+  useEffect(() => {
+    if (clockOffsetMs !== undefined && clockOffsetMs !== 0 && clockOffsetMs !== config.clockOffsetMs) {
+      setConfig({ clockOffsetMs });
+    }
+  }, [clockOffsetMs, config.clockOffsetMs, setConfig]);
 
   return { ...result, isLoading };
 }
