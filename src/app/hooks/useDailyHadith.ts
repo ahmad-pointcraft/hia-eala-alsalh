@@ -1,4 +1,5 @@
 import { useCachedData } from '@/app/hooks/useCachedData';
+import { hijriDayOfYear } from '@/app/utils/hijri';
 import { fetchDailyHadith } from '@/app/services/hadith';
 import type { HijriDateInfo } from '@/app/types/mosqueConfig';
 import type { HadithData } from '@/app/types/hadith';
@@ -8,17 +9,14 @@ export interface UseDailyHadithResult {
   isLoading: boolean;
 }
 
-export function useDailyHadith(hijriDate: HijriDateInfo): UseDailyHadithResult {
-  const hijriDayOfYear =
-    (hijriDate.month - 1) * 30 -
-    Math.floor((hijriDate.month - 1) / 2) +
-    hijriDate.day;
+export function useDailyHadith(hijriDate: HijriDateInfo, currentTime: Date): UseDailyHadithResult {
+  const doy = hijriDayOfYear(hijriDate.month, hijriDate.day);
 
   const { data, isLoading } = useCachedData<HadithData>(
     'hadith',
-    () => fetchDailyHadith(hijriDayOfYear, new Date()),
+    () => fetchDailyHadith(doy),
     24 * 60 * 60 * 1000,
-    { dateScoped: true, currentTime: new Date(), fallback: undefined },
+    { dateScoped: true, currentTime, fallback: undefined },
   );
 
   return { hadith: data, isLoading };

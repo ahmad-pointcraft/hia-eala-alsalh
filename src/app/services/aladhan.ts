@@ -1,4 +1,4 @@
-import { cacheStore } from './cache';
+import { ServiceError } from './ServiceError';
 import type { HijriDateInfo } from '@/app/types/mosqueConfig';
 
 interface AladhanResponse {
@@ -15,31 +15,12 @@ interface AladhanResponse {
   };
 }
 
-class ServiceError extends Error {
-  constructor(
-    public readonly feature: string,
-    message: string,
-    public readonly cause?: unknown,
-  ) {
-    super(`[${feature}] ${message}`);
-    this.name = 'ServiceError';
-  }
-}
-
-export { ServiceError };
-
 export async function fetchHijriDate(params: {
   latitude: number;
   longitude: number;
   method: number;
   date: Date;
 }): Promise<{ hijri: HijriDateInfo; holidays: string[]; clockOffsetMs: number }> {
-  const cacheKey = cacheStore.buildKey('aladhan', params.date);
-  const cached = cacheStore.get<{ hijri: HijriDateInfo; holidays: string[]; clockOffsetMs: number }>(cacheKey);
-  if (cached && !cacheStore.isExpired(cacheKey)) {
-    return cached;
-  }
-
   try {
     const timestamp = Math.floor(params.date.getTime() / 1000);
     const url = new URL('https://api.aladhan.com/v1/timings/' + timestamp);
@@ -50,14 +31,17 @@ export async function fetchHijriDate(params: {
     const response = await fetch(url.toString());
 
     if (!response.ok) {
-      if (cached) return cached;
       throw new ServiceError('aladhan', `HTTP ${response.status}`);
     }
 
+    let clockOffsetMs = 0;
     const dateHeader = response.headers.get('Date');
-    const clockOffsetMs = dateHeader
-      ? Date.parse(dateHeader) - Date.now()
-      : 0;
+    if (dateHeader) {
+      const parsed = Date.parse(dateHeader);
+      if (!Number.isNaN(parsed)) {
+        clockOffsetMs = parsed - Date.now();
+      }
+    }
 
     const json: AladhanResponse = await response.json();
     const h = json.data.date.hijri;
@@ -78,11 +62,8 @@ export async function fetchHijriDate(params: {
       formatted_ar: `${day} ${h.month.ar} ${year}`,
     };
 
-    const result = { hijri, holidays: h.holidays ?? [], clockOffsetMs };
-    cacheStore.set(cacheKey, result, 24 * 60 * 60 * 1000);
-    return result;
+    return { hijri, holidays: h.holidays ?? [], clockOffsetMs };
   } catch (err) {
-    if (cached) return cached;
     if (err instanceof ServiceError) throw err;
     throw new ServiceError('aladhan', 'Fetch failed', err);
   }

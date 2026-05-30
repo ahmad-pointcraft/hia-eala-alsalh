@@ -7,12 +7,9 @@ export interface UseIslamicHolidaysResult {
   isHoliday: boolean;
 }
 
-export function useIslamicHolidays(hijriDate: HijriDateInfo): UseIslamicHolidaysResult {
+export function useIslamicHolidays(hijriDate: HijriDateInfo, currentTime: Date): UseIslamicHolidaysResult {
   const result = useMemo(() => {
-    const cacheKey = cacheStore.buildKey(
-      'aladhan',
-      new Date(),
-    );
+    const cacheKey = cacheStore.buildKey('aladhan', currentTime);
 
     const cached = cacheStore.get<{
       hijri: HijriDateInfo;
@@ -25,7 +22,7 @@ export function useIslamicHolidays(hijriDate: HijriDateInfo): UseIslamicHolidays
       holidays,
       isHoliday: holidays.length > 0,
     };
-  }, [hijriDate]);
+  }, [hijriDate, currentTime]);
 
   return result;
 }

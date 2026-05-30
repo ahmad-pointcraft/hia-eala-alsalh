@@ -16,6 +16,7 @@ import { EventSlideshow } from './components/events';
 import type { EventSlide } from './components/events';
 import type { WisdomContent } from '@/app/types/wisdom';
 import { useLanguage, useMosqueConfigStore } from '@/app/store';
+import { translations as allTranslations } from '@/app/utils/translations';
 import {
   useClock,
   usePrayerState,
@@ -89,10 +90,22 @@ export default function App() {
   );
 
   const { hijriDate, holidays } = useHijriDate(currentTime);
-  const { hadith } = useDailyHadith(hijriDate);
-  const { verse } = useDailyQuranVerse(hijriDate);
+  const { hadith } = useDailyHadith(hijriDate, currentTime);
+  const { verse } = useDailyQuranVerse(hijriDate, currentTime);
   const { announcements: dynamicAnnouncements } = useAnnouncements(currentTime);
   const { events: dynamicEvents } = useEvents(currentTime);
+
+  const fallbackHadith = useMemo(() => ({
+    kind: 'hadith' as const,
+    data: {
+      text_ar: allTranslations.ar.hadithText,
+      text_en: allTranslations.en.hadithText,
+      source: language === 'ar' ? allTranslations.ar.hadithSource : allTranslations.en.hadithSource,
+      narrator: '',
+      book: '',
+      hadithNumber: 0,
+    },
+  }), [language]);
 
   const wisdom: WisdomContent | undefined = useMemo(() => {
     if (hijriDate.day % 2 === 1) {
@@ -262,7 +275,7 @@ export default function App() {
                     minHeight: { xs: 220, sm: 0 },
                   })}
                 >
-                  <WisdomPanel language={language} wisdom={wisdom ?? { kind: 'hadith', data: { text_ar: t.hadithText, text_en: t.hadithText, source: t.hadithSource, narrator: '', book: '', hadithNumber: 0 } }} fallbackTitle={t.hadithOfTheDay} />
+                  <WisdomPanel language={language} wisdom={wisdom ?? fallbackHadith} fallbackTitle={t.hadithOfTheDay} />
                 </Box>
                 <Box
                   sx={{

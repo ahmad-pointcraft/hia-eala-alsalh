@@ -98,14 +98,22 @@ export function useHijriDate(currentTime: Date): UseHijriDateResult {
         config.hijriOffset,
       );
 
+      const monthChanged = offsetApplied.month !== data.hijri.month;
+      const monthName_en = monthChanged
+        ? (HIJRI_MONTHS_EN[offsetApplied.month - 1] ?? data.hijri.monthName_en)
+        : data.hijri.monthName_en;
+      const monthName_ar = monthChanged
+        ? (HIJRI_MONTHS_AR[offsetApplied.month - 1] ?? data.hijri.monthName_ar)
+        : data.hijri.monthName_ar;
+
       const hijri: HijriDateInfo = {
         ...offsetApplied,
-        monthName_en: data.hijri.monthName_en,
-        monthName_ar: data.hijri.monthName_ar,
+        monthName_en,
+        monthName_ar,
         weekday_en: data.hijri.weekday_en,
         weekday_ar: data.hijri.weekday_ar,
-        formatted_en: `${offsetApplied.day} ${data.hijri.monthName_en} ${offsetApplied.year}`,
-        formatted_ar: `${offsetApplied.day} ${data.hijri.monthName_ar} ${offsetApplied.year}`,
+        formatted_en: `${offsetApplied.day} ${monthName_en} ${offsetApplied.year}`,
+        formatted_ar: `${offsetApplied.day} ${monthName_ar} ${offsetApplied.year}`,
       };
 
       return { hijriDate: hijri, holidays: data.holidays };

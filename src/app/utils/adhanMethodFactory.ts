@@ -42,18 +42,18 @@ export function getHighLatitudeRule(rule: MosqueHighLatitudeRule): 'middleofthen
 
 export function adhanMethodToAladhanId(method: AdhanMethod): number {
   const mapping: Record<AdhanMethod, number> = {
-    MuslimWorldLeague: 1,
+    MuslimWorldLeague: 3,
     Egyptian: 5,
-    Karachi: 2,
+    Karachi: 1,
     UmmAlQura: 4,
-    Dubai: 12,
-    Qatar: 11,
-    Kuwait: 8,
-    MoonsightingCommittee: 7,
-    Singapore: 10,
+    Dubai: 16,
+    Qatar: 10,
+    Kuwait: 9,
+    MoonsightingCommittee: 15,
+    Singapore: 11,
     Turkey: 13,
-    Tehran: 3,
-    NorthAmerica: 15,
+    Tehran: 7,
+    NorthAmerica: 2,
   };
   return mapping[method];
 }

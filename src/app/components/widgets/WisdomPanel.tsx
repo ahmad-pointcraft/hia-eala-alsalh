@@ -1,7 +1,5 @@
 import type { Language } from '@/app/types/i18n';
 import type { WisdomContent } from '@/app/types/wisdom';
-import type { HadithData } from '@/app/types/hadith';
-import type { QuranVerse } from '@/app/types/quran';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { getFontFamily, getDirection, toArabicNumerals } from '@/app/utils/helpers';
@@ -13,19 +11,22 @@ interface WisdomPanelProps {
 }
 
 export function WisdomPanel({ language, wisdom, fallbackTitle }: WisdomPanelProps) {
-  const isHadith = wisdom.kind === 'hadith';
-  const data = wisdom.data;
+  const title = wisdom.kind === 'hadith' ? fallbackTitle : 'Quran';
+  const textAr = wisdom.data.text_ar;
+  const textEn = wisdom.data.text_en;
 
-  const title = isHadith ? fallbackTitle : 'Quran';
-  const textAr = data.text_ar;
-  const textEn = data.text_en;
-  const source = isHadith
-    ? (language === 'ar'
-        ? `صحيح البخاري · حديث رقم ${toArabicNumerals(String((data as HadithData).hadithNumber))}`
-        : `Sahih Bukhari · Hadith ${(data as HadithData).hadithNumber}`)
-    : (language === 'ar'
-        ? `${(data as QuranVerse).surahName_ar} · آية ${toArabicNumerals(String((data as QuranVerse).ayahNumber))}`
-        : `${(data as QuranVerse).surahName_en} · Ayah ${(data as QuranVerse).ayahNumber}`);
+  let source: string;
+  if (wisdom.kind === 'hadith') {
+    const { hadithNumber } = wisdom.data;
+    source = language === 'ar'
+      ? `\u0635\u062D\u064A\u062D \u0627\u0644\u0628\u062E\u0627\u0631\u064A \u00B7 \u062D\u062F\u064A\u062B \u0631\u0642\u0645 ${toArabicNumerals(String(hadithNumber))}`
+      : `Sahih Bukhari \u00B7 Hadith ${hadithNumber}`;
+  } else {
+    const { surahName_ar, surahName_en, ayahNumber } = wisdom.data;
+    source = language === 'ar'
+      ? `${surahName_ar} \u00B7 \u0622\u064A\u0629 ${toArabicNumerals(String(ayahNumber))}`
+      : `${surahName_en} \u00B7 Ayah ${ayahNumber}`;
+  }
 
   return (
     <Box

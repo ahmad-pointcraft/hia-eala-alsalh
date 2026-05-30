@@ -1,14 +1,13 @@
 import { getDirectDriveImageUrl } from '@/app/utils/googleDrive';
-import { cacheStore } from './cache';
 import { parseCSV } from '@/app/utils/csv';
 import type { SheetAnnouncement, SheetEvent } from '@/app/types/googleSheets';
-import { ServiceError } from './aladhan';
-
-const ANNOUNCEMENTS_TTL = 5 * 60 * 1000;
-const EVENTS_TTL = 5 * 60 * 1000;
+import { ServiceError } from './ServiceError';
+import { cacheStore } from './cache';
 
 function buildSheetUrl(sheetId: string, gid: string): string {
-  return `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=${gid}&t=${Date.now()}`;
+  const existing = cacheStore.get<{ fetchedAt: number }>(`sheet-url-${gid}`);
+  const t = existing?.fetchedAt ?? Date.now();
+  return `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=${gid}&t=${t}`;
 }
 
 async function fetchAndParse(sheetId: string, gid: string): Promise<string[][]> {
@@ -92,19 +91,10 @@ export async function fetchAnnouncements(
   sheetId: string,
   gid: string,
 ): Promise<SheetAnnouncement[]> {
-  const cacheKey = cacheStore.buildKey('announcements');
-  const cached = cacheStore.get<SheetAnnouncement[]>(cacheKey);
-  if (cached && !cacheStore.isExpired(cacheKey)) {
-    return cached;
-  }
-
   try {
     const rows = await fetchAndParse(sheetId, gid);
-    const result = mapAnnouncements(rows);
-    cacheStore.set(cacheKey, result, ANNOUNCEMENTS_TTL);
-    return result;
+    return mapAnnouncements(rows);
   } catch (err) {
-    if (cached) return cached;
     if (err instanceof ServiceError) throw err;
     throw new ServiceError('googleSheets', 'Announcements fetch failed', err);
   }
@@ -114,19 +104,10 @@ export async function fetchEvents(
   sheetId: string,
   gid: string,
 ): Promise<SheetEvent[]> {
-  const cacheKey = cacheStore.buildKey('events');
-  const cached = cacheStore.get<SheetEvent[]>(cacheKey);
-  if (cached && !cacheStore.isExpired(cacheKey)) {
-    return cached;
-  }
-
   try {
     const rows = await fetchAndParse(sheetId, gid);
-    const result = mapEvents(rows);
-    cacheStore.set(cacheKey, result, EVENTS_TTL);
-    return result;
+    return mapEvents(rows);
   } catch (err) {
-    if (cached) return cached;
     if (err instanceof ServiceError) throw err;
     throw new ServiceError('googleSheets', 'Events fetch failed', err);
   }

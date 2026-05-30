@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { Coordinates, PrayerTimes } from 'adhan';
+import { DEFAULT_SUNSET_TIME } from '@/app/data/prayers';
 import type { PrayerTime, NextPrayer } from '@/app/types/prayer';
 import { getCurrentPrayer, getNextPrayer } from '@/app/utils/prayerTimes';
 import { useMosqueConfigStore } from '@/app/store/mosqueConfigStore';
@@ -97,7 +98,7 @@ export function usePrayerState(
 
       const prayerPrayers = prayers.filter((p) => p.key !== 'Sunrise');
       const sunrisePrayer = prayers.find((p) => p.key === 'Sunrise');
-      const sunsetTime = prayers.find((p) => p.key === 'Maghrib')?.time ?? '19:28';
+      const sunsetTime = prayers.find((p) => p.key === 'Maghrib')?.time ?? DEFAULT_SUNSET_TIME;
 
       const nowMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
       const isPraying = prayerPrayers.some((p) => {

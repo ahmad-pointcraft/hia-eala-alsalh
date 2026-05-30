@@ -10,10 +10,9 @@ import { getFontFamily, isRTL, getDirection } from '@/app/utils/helpers';
 interface AnnouncementsTickerProps {
   language: Language;
   announcements: string[];
-  isLoading?: boolean;
 }
 
-export function AnnouncementsTicker({ language, announcements, isLoading: _isLoading }: AnnouncementsTickerProps) {
+export function AnnouncementsTicker({ language, announcements }: AnnouncementsTickerProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
 

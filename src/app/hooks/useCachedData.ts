@@ -84,6 +84,9 @@ export function useCachedData<T>(
     [ttlMs],
   );
 
+  const currentMinute = currentTime.getMinutes();
+  const currentHour = currentTime.getHours();
+
   useEffect(() => {
     if (prevKeyRef.current !== cacheKey) {
       prevKeyRef.current = cacheKey;
@@ -107,7 +110,7 @@ export function useCachedData<T>(
       }
       triggerFetch(cacheKey);
     }
-  }, [cacheKey, fallback, triggerFetch, currentTime]);
+  }, [cacheKey, fallback, triggerFetch, currentMinute, currentHour]);
 
   return { data, isLoading, error };
 }

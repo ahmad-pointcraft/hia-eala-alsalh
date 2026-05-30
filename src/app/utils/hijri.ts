@@ -30,8 +30,14 @@ function hijriMonthLength(month: number): number {
   return month % 2 === 1 ? 30 : 29;
 }
 
-function hijriYearLength(): number {
-  return 354;
+function isHijriLeapYear(year: number): boolean {
+  const leapYearsInCycle = [2, 5, 7, 10, 13, 16, 18, 21, 24, 26, 29];
+  const yearInCycle = ((year - 1) % 30 + 30) % 30;
+  return leapYearsInCycle.includes(yearInCycle === 0 ? 29 : yearInCycle);
+}
+
+function hijriYearLength(year: number): number {
+  return isHijriLeapYear(year) ? 355 : 354;
 }
 
 function hijriDayOfYear(month: number, day: number): number {
@@ -50,13 +56,13 @@ export function computeHijriDate(gregorianDate: Date): {
   const daysSinceEpoch = jd - HIJRI_EPOCH_JD + HIJRI_EPOCH_DOY - 1;
 
   const totalDays = Math.floor(daysSinceEpoch);
-  const y30Cycles = Math.floor(totalDays / (30 * hijriYearLength() + 11));
-  let remainingDays = totalDays - y30Cycles * (30 * hijriYearLength() + 11);
+  const y30Cycles = Math.floor(totalDays / (30 * 354 + 11));
+  let remainingDays = totalDays - y30Cycles * (30 * 354 + 11);
 
   let year = HIJRI_EPOCH_YEAR + y30Cycles * 30;
   let yearLen: number;
 
-  while (remainingDays >= (yearLen = hijriYearLength())) {
+  while (remainingDays >= (yearLen = hijriYearLength(year))) {
     remainingDays -= yearLen;
     year++;
   }

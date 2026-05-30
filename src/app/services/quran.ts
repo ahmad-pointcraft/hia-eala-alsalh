@@ -1,6 +1,5 @@
-import { cacheStore } from './cache';
 import type { QuranVerse } from '@/app/types/quran';
-import { ServiceError } from './aladhan';
+import { ServiceError } from './ServiceError';
 
 const TOTAL_AYAHS = 6236;
 
@@ -19,14 +18,7 @@ interface QuranApiResponse {
 
 export async function fetchDailyVerse(
   hijriDayOfYear: number,
-  dateScope: Date,
 ): Promise<QuranVerse> {
-  const cacheKey = cacheStore.buildKey('quran', dateScope);
-  const cached = cacheStore.get<QuranVerse>(cacheKey);
-  if (cached && !cacheStore.isExpired(cacheKey)) {
-    return cached;
-  }
-
   const ayahNumber = (hijriDayOfYear % TOTAL_AYAHS) + 1;
 
   try {
@@ -34,7 +26,6 @@ export async function fetchDailyVerse(
     const response = await fetch(url);
 
     if (!response.ok) {
-      if (cached) return cached;
       throw new ServiceError('quran', `HTTP ${response.status}`);
     }
 
@@ -43,11 +34,10 @@ export async function fetchDailyVerse(
     const english = json.data[1];
 
     if (!arabic || !english) {
-      if (cached) return cached;
       throw new ServiceError('quran', 'Missing edition data');
     }
 
-    const result: QuranVerse = {
+    return {
       text_ar: arabic.text,
       text_en: english.text,
       surahName_ar: arabic.surah.name,
@@ -56,11 +46,7 @@ export async function fetchDailyVerse(
       ayahNumber: arabic.numberInSurah,
       surahNumber: arabic.surah.number,
     };
-
-    cacheStore.set(cacheKey, result, 24 * 60 * 60 * 1000);
-    return result;
   } catch (err) {
-    if (cached) return cached;
     if (err instanceof ServiceError) throw err;
     throw new ServiceError('quran', 'Fetch failed', err);
   }
