@@ -283,7 +283,7 @@ declare module '@mui/material/styles' {
     };
     glow?: { subtle: string; medium: string; strong: string };
   }
-  interface PaletteText {
+  interface TypeText {
     muted: string;
     soft: string;
   }

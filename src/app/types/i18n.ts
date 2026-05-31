@@ -12,6 +12,8 @@ export interface Translations {
   announcements: string;
   sunset: string;
   iqama: string;
+  prayerInProgress: string;
+  pleaseObserveSilence: string;
   prayers: {
     fajr: string;
     sunrise: string;

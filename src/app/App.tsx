@@ -10,8 +10,7 @@ import { CountdownBar } from './components/prayer';
 import { WisdomPanel } from './components/widgets';
 import { SunTimesWidget } from './components/widgets';
 import { AnnouncementsTicker } from './components/widgets';
-import { FundraisingOverlay } from './components/overlays';
-import { IslamicGeometricOverlay } from './components/overlays';
+import { FundraisingOverlay, SilenceOverlay } from './components/overlays';
 import { EventSlideshow } from './components/events';
 import type { EventSlide } from './components/events';
 import type { WisdomContent } from '@/app/types/wisdom';
@@ -82,7 +81,7 @@ export default function App() {
     document.documentElement.lang = language;
   }, [dir, language]);
 
-  const { prayers, activePrayer, nextPrayer, isPraying, prayerPrayers, sunrisePrayer, sunsetTime } =
+  const { prayers, activePrayer, nextPrayer, isPraying, prayingPrayer, prayerPrayers, sunrisePrayer, sunsetTime } =
     usePrayerState(currentTime, t.prayers);
   const { showFundraising, onShowFundraising, onCloseFundraising } = useFundraisingScheduler(
     prayers,
@@ -174,23 +173,12 @@ export default function App() {
         />
 
         {isPraying && (
-          <Box
-            role="alert"
-            aria-label={language === 'en' ? 'Prayer in progress' : 'الصلاة جارية'}
-            sx={(theme) => ({
-              position: 'absolute',
-              inset: 0,
-              zIndex: 20,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              bgcolor: `${theme.palette.background.default}D9`,
-            })}
-          >
-            <Box sx={{ opacity: 0.3, position: 'absolute', inset: 0 }}>
-              <IslamicGeometricOverlay />
-            </Box>
-          </Box>
+          <SilenceOverlay
+            language={language}
+            prayingPrayer={prayingPrayer}
+            currentTime={currentTime}
+            translations={t}
+          />
         )}
 
         <AnimatePresence mode="wait">

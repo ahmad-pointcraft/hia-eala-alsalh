@@ -16,6 +16,7 @@ interface PrayerStateResult {
   activePrayer: PrayerTime | null;
   nextPrayer: NextPrayer;
   isPraying: boolean;
+  prayingPrayer: PrayerTime | null;
   prayerPrayers: PrayerTime[];
   sunrisePrayer: PrayerTime | undefined;
   sunsetTime: string;
@@ -91,7 +92,7 @@ export function usePrayerState(
     prayerNames,
   ]);
 
-  const { activePrayer, nextPrayer, isPraying, prayerPrayers, sunrisePrayer, sunsetTime } =
+  const { activePrayer, nextPrayer, isPraying, prayingPrayer, prayerPrayers, sunrisePrayer, sunsetTime } =
     useMemo(() => {
       const activePrayer = getCurrentPrayer(prayers, currentTime);
       const nextPrayer = getNextPrayer(prayers, currentTime);
@@ -101,17 +102,18 @@ export function usePrayerState(
       const sunsetTime = prayers.find((p) => p.key === 'Maghrib')?.time ?? DEFAULT_SUNSET_TIME;
 
       const nowMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
-      const isPraying = prayerPrayers.some((p) => {
+      const prayingPrayer = prayerPrayers.find((p) => {
         if (p.iqamaTime === '\u2014') return false;
         const parts = p.iqamaTime.split(':').map(Number);
         const ih = parts[0] ?? 0;
         const im = parts[1] ?? 0;
         const iqamaMinutes = ih * 60 + im;
-        return nowMinutes >= iqamaMinutes && nowMinutes < iqamaMinutes + 5;
-      });
+        return nowMinutes >= iqamaMinutes && nowMinutes < iqamaMinutes + 8;
+      }) ?? null;
+      const isPraying = !!prayingPrayer;
 
-      return { activePrayer, nextPrayer, isPraying, prayerPrayers, sunrisePrayer, sunsetTime };
+      return { activePrayer, nextPrayer, isPraying, prayingPrayer, prayerPrayers, sunrisePrayer, sunsetTime };
     }, [prayers, currentTime]);
 
-  return { prayers, activePrayer, nextPrayer, isPraying, prayerPrayers, sunrisePrayer, sunsetTime };
+  return { prayers, activePrayer, nextPrayer, isPraying, prayingPrayer, prayerPrayers, sunrisePrayer, sunsetTime };
 }

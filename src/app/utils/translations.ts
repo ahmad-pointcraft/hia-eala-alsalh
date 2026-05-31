@@ -30,6 +30,8 @@ export const translations: Record<Language, Translations> = {
       isha: 'Isha',
     },
     iqama: 'Iqama',
+    prayerInProgress: 'Prayer in Progress',
+    pleaseObserveSilence: 'Please observe silence',
     events: [ // FALLBACK: used when API data unavailable (offline)
       {
         badge: 'Special Islamic Lecture',
@@ -122,6 +124,8 @@ export const translations: Record<Language, Translations> = {
       isha: 'العشاء',
     },
     iqama: 'الإقامة',
+    prayerInProgress: 'الصلاة جارية',
+    pleaseObserveSilence: 'يُرجى الالتزام بالهدوء',
     events: [ // FALLBACK: used when API data unavailable (offline)
       {
         badge: 'محاضرة إسلامية خاصة',
