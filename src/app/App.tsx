@@ -172,14 +172,25 @@ export default function App() {
           holidays={holidays}
         />
 
-        {isPraying && (
-          <SilenceOverlay
-            language={language}
-            prayingPrayer={prayingPrayer}
-            currentTime={currentTime}
-            translations={t}
-          />
-        )}
+        <AnimatePresence>
+          {isPraying && (
+            <motion.div
+              key="silence-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={defaultTransition ?? { duration: 1.5, ease: [0.25, 1, 0.5, 1] }}
+              style={{ position: 'absolute', inset: 0, zIndex: 20 }}
+            >
+              <SilenceOverlay
+                language={language}
+                prayingPrayer={prayingPrayer}
+                currentTime={currentTime}
+                translations={t}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <AnimatePresence mode="wait">
           <motion.div

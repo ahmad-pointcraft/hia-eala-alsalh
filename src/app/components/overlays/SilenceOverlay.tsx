@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { motion } from 'motion/react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
@@ -35,7 +34,7 @@ export function SilenceOverlay({
     iqamaDate.setHours(iqamaHours, iqamaMinutes, 0, 0);
 
     const elapsedMs = currentTime.getTime() - iqamaDate.getTime();
-    const totalMs = 8 * 60 * 1000; // 8 minutes countdown
+    const totalMs = 8 * 60 * 1000;
     return Math.min(1, Math.max(0, 1 - elapsedMs / totalMs));
   }, [prayingPrayer, currentTime]);
 
@@ -46,7 +45,6 @@ export function SilenceOverlay({
   const textColor = theme.palette.text.primary;
   const softText = theme.palette.text.soft;
 
-  // Custom styling for the badge based on theme
   const badgeBg = isLight ? 'rgba(154, 125, 0, 0.08)' : 'rgba(0, 0, 0, 0.4)';
   const badgeBorder = isLight ? '1px solid rgba(154, 125, 0, 0.2)' : `1px solid ${theme.palette.border.medium}`;
 
@@ -57,24 +55,21 @@ export function SilenceOverlay({
       sx={{
         position: 'absolute',
         inset: 0,
-        zIndex: 20,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        bgcolor: `${theme.palette.background.default}D9`, // 85% opacity backdrop
+        bgcolor: `${theme.palette.background.default}D9`,
         color: textColor,
         overflow: 'hidden',
       }}
     >
-      {/* Background Pattern */}
       <Box sx={{ opacity: 0.3, position: 'absolute', inset: 0, pointerEvents: 'none' }}>
         <IslamicGeometricOverlay />
       </Box>
 
-      {/* Top Countdown Line */}
-      <motion.div
-        style={{
+      <Box
+        sx={{
           position: 'absolute',
           top: 0,
           left: '50%',
@@ -87,7 +82,6 @@ export function SilenceOverlay({
         }}
       />
 
-      {/* Content Stack */}
       <Box
         sx={{
           display: 'flex',
@@ -101,7 +95,6 @@ export function SilenceOverlay({
           maxWidth: '100%',
         }}
       >
-        {/* Prayer Badge */}
         <Box
           sx={{
             bgcolor: badgeBg,
@@ -122,11 +115,10 @@ export function SilenceOverlay({
               fontFamily: getFontFamily(language),
             }}
           >
-            {language === 'ar' ? `صلاة ${prayingPrayer.name}` : `${prayingPrayer.name} Prayer`}
+            {language === 'ar' ? `\u0635\u0644\u0627\u0629 ${prayingPrayer.name}` : `${prayingPrayer.name} Prayer`}
           </Typography>
         </Box>
 
-        {/* Crescent Moon Icon */}
         <Box
           sx={{
             display: 'flex',
@@ -141,15 +133,14 @@ export function SilenceOverlay({
           </svg>
         </Box>
 
-        {/* Primary Calligraphy / Text */}
         {language === 'ar' ? (
           <Box
             component="img"
             src={isLight ? calligraphyLight : calligraphyDark}
-            alt="الصلاة جارية"
+            alt="\u0627\u0644\u0635\u0644\u0627\u0629 \u062C\u0627\u0631\u064A\u0629"
             sx={{
               maxWidth: '90%',
-              width: { xs: 320, sm: 450, md: 550 },
+              width: { xs: 320, sm: 450, md: 550, lg: 700, xl: 850 },
               height: 'auto',
               filter: isLight ? 'drop-shadow(0 2px 4px rgba(0,0,0,0.05))' : `drop-shadow(0 0 8px ${theme.palette.glow.subtle})`,
             }}
@@ -159,7 +150,7 @@ export function SilenceOverlay({
             sx={{
               fontFamily: getFontFamily(language),
               fontWeight: 700,
-              fontSize: { xs: '32px', sm: '48px', md: '64px' },
+              fontSize: { xs: '32px', sm: '48px', md: '64px', lg: '80px', xl: '96px' },
               color: goldColor,
               letterSpacing: '-0.02em',
               textShadow: isLight ? 'none' : `0 0 20px ${theme.palette.glow.subtle}`,
@@ -169,12 +160,11 @@ export function SilenceOverlay({
           </Typography>
         )}
 
-        {/* Secondary Text */}
         <Typography
           sx={{
             fontFamily: getFontFamily(language),
             fontWeight: 400,
-            fontSize: { xs: '16px', sm: '20px', md: '28px' },
+            fontSize: { xs: '16px', sm: '20px', md: '28px', lg: '32px' },
             color: softText,
             maxWidth: '600px',
             lineHeight: 1.5,
@@ -184,9 +174,8 @@ export function SilenceOverlay({
         </Typography>
       </Box>
 
-      {/* Bottom Countdown Line */}
-      <motion.div
-        style={{
+      <Box
+        sx={{
           position: 'absolute',
           bottom: 0,
           left: '50%',
