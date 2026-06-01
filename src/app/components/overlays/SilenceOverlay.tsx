@@ -173,7 +173,9 @@ export function SilenceOverlay({
             textShadow: isLight ? 'none' : `0 0 24px ${theme.palette.glow.subtle}`,
           }}
         >
-          {translations.prayerInProgress}
+          {language === 'ar'
+            ? `صلاة ${prayingPrayer.name} جارية`
+            : `${prayingPrayer.name} in Progress`}
         </Typography>
 
         {/* Secondary Text */}
