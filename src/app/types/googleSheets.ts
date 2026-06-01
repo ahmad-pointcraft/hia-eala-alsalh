@@ -6,6 +6,7 @@ export interface SheetAnnouncement {
 }
 
 export interface SheetFundraising {
+  id: string;
   title_en: string;
   title_ar: string;
   description_en: string;

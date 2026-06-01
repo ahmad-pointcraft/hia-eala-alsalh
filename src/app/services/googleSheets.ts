@@ -128,6 +128,7 @@ function mapFundraising(rows: string[][]): SheetFundraising[] {
     };
 
     items.push({
+      id: get('id'),
       title_en: get('title_en'),
       title_ar: get('title_ar'),
       description_en: get('description_en'),
