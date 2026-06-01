@@ -15,7 +15,7 @@ import { EventSlideshow } from './components/events';
 import type { EventSlide } from './components/events';
 import type { WisdomContent } from '@/app/types/wisdom';
 import { useLanguage, useMosqueConfigStore } from '@/app/store';
-import { translations as allTranslations } from '@/app/utils/translations';
+import { translations as allTranslations } from '@/app/data/translations';
 import {
   useClock,
   usePrayerState,
@@ -25,6 +25,7 @@ import {
   useDailyQuranVerse,
   useAnnouncements,
   useEvents,
+  useFundraising,
 } from '@/app/hooks';
 import { floatingCardSx } from '@/app/theme/sharedStyles';
 import mosque1 from '../assets/mosque-1.jpg';
@@ -93,6 +94,7 @@ export default function App() {
   const { verse } = useDailyQuranVerse(hijriDate, currentTime);
   const { announcements: dynamicAnnouncements } = useAnnouncements(currentTime);
   const { events: dynamicEvents } = useEvents(currentTime);
+  const { fundraising: fundraisingData } = useFundraising(currentTime);
 
   const fallbackHadith = useMemo(() => ({
     kind: 'hadith' as const,
@@ -344,6 +346,7 @@ export default function App() {
           language={language}
           translations={t}
           currentTime={currentTime}
+          fundraising={fundraisingData}
         />
       )}
     </Box>

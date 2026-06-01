@@ -5,6 +5,19 @@ export interface SheetAnnouncement {
   active: boolean;
 }
 
+export interface SheetFundraising {
+  title_en: string;
+  title_ar: string;
+  description_en: string;
+  description_ar: string;
+  collected: number;
+  goal: number;
+  donors: number;
+  donate_url: string;
+  qr_image_url: string;
+  active: boolean;
+}
+
 export interface SheetEvent {
   id: string;
   badge_en: string;

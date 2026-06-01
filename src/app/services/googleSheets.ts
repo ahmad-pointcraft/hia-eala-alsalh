@@ -1,6 +1,6 @@
 import { getDirectDriveImageUrl } from '@/app/utils/googleDrive';
 import { parseCSV } from '@/app/utils/csv';
-import type { SheetAnnouncement, SheetEvent } from '@/app/types/googleSheets';
+import type { SheetAnnouncement, SheetEvent, SheetFundraising } from '@/app/types/googleSheets';
 import { ServiceError } from './ServiceError';
 import { cacheStore } from './cache';
 
@@ -110,5 +110,49 @@ export async function fetchEvents(
   } catch (err) {
     if (err instanceof ServiceError) throw err;
     throw new ServiceError('googleSheets', 'Events fetch failed', err);
+  }
+}
+
+function mapFundraising(rows: string[][]): SheetFundraising[] {
+  if (rows.length < 2) return [];
+  const header = (rows[0] as string[]).map((h) => h.toLowerCase().trim());
+  const items: SheetFundraising[] = [];
+
+  for (let i = 1; i < rows.length; i++) {
+    const row = rows[i];
+    if (!row) continue;
+    const get = (name: string): string => {
+      const idx = header.indexOf(name);
+      const val = idx >= 0 ? row[idx] : undefined;
+      return val !== undefined ? val : '';
+    };
+
+    items.push({
+      title_en: get('title_en'),
+      title_ar: get('title_ar'),
+      description_en: get('description_en'),
+      description_ar: get('description_ar'),
+      collected: parseFloat(get('collected')) || 0,
+      goal: parseFloat(get('goal')) || 0,
+      donors: parseFloat(get('donors')) || 0,
+      donate_url: get('donate_url'),
+      qr_image_url: getDirectDriveImageUrl(get('qr_image_url')),
+      active: get('active').toLowerCase() === 'true',
+    });
+  }
+
+  return items;
+}
+
+export async function fetchFundraising(
+  sheetId: string,
+  gid: string,
+): Promise<SheetFundraising[]> {
+  try {
+    const rows = await fetchAndParse(sheetId, gid);
+    return mapFundraising(rows);
+  } catch (err) {
+    if (err instanceof ServiceError) throw err;
+    throw new ServiceError('googleSheets', 'Fundraising fetch failed', err);
   }
 }

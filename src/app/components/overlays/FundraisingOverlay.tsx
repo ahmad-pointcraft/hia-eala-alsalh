@@ -7,8 +7,8 @@ import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 import Close from '@mui/icons-material/Close';
 import type { Language, Translations } from '@/app/types/i18n';
+import type { FundraisingData } from '@/app/hooks/useFundraising';
 import { toArabicNumerals, getFontFamily, getDirection } from '@/app/utils/helpers';
-import qrDonateImage from '../../../assets/qr-donate.svg';
 
 const FOCUSABLE_SELECTOR =
   'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
@@ -18,11 +18,12 @@ interface FundraisingOverlayProps {
   language: Language;
   translations: Translations;
   currentTime: Date;
+  fundraising: FundraisingData;
 }
 
 const AUTO_CLOSE_SECONDS = 10;
 
-export function FundraisingOverlay({ onClose, language, translations, currentTime }: FundraisingOverlayProps) {
+export function FundraisingOverlay({ onClose, language, translations, currentTime, fundraising }: FundraisingOverlayProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const previouslyFocusedRef = useRef<HTMLElement | null>(null);
   const openedAtRef = useRef<number>(Date.now());
@@ -113,10 +114,8 @@ export function FundraisingOverlay({ onClose, language, translations, currentTim
     }
   }, [countdown, onClose]);
 
-  const collected = 87500;
-  const goal = 120000;
-  const donors = 243;
-  const progress = (collected / goal) * 100;
+  const { collected, goal, donors, donateUrl, qrImageUrl } = fundraising;
+  const progress = goal > 0 ? (collected / goal) * 100 : 0;
 
   const fontFamily = getFontFamily(language);
 
@@ -192,7 +191,7 @@ export function FundraisingOverlay({ onClose, language, translations, currentTim
               fontFamily: getFontFamily(language),
             }}
           >
-            {translations.fundraising.title}
+            {fundraising.title}
           </Typography>
           <Typography
             sx={{
@@ -201,7 +200,7 @@ export function FundraisingOverlay({ onClose, language, translations, currentTim
               fontFamily,
             }}
           >
-            {translations.fundraising.description}
+            {fundraising.description}
           </Typography>
         </Box>
 
@@ -348,7 +347,7 @@ export function FundraisingOverlay({ onClose, language, translations, currentTim
             display: 'flex',
             flexDirection: { xs: 'column', sm: 'row' },
             alignItems: 'center',
-            justifyContent: 'space-between',
+            justifyContent: qrImageUrl ? 'space-between' : 'center',
             mt: { xs: 3, sm: 3, md: 4, lg: 4 },
             pt: { xs: 3, sm: 3, md: 4, lg: 4 },
             borderTop: '1px solid',
@@ -356,47 +355,51 @@ export function FundraisingOverlay({ onClose, language, translations, currentTim
             gap: 2,
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 2, sm: 2, md: 3, lg: 3 } }}>
-            <Box
-              sx={{
-                width: { xs: 96, sm: 96, md: 128, lg: 128 },
-                height: { xs: 96, sm: 96, md: 128, lg: 128 },
-                bgcolor: 'common.white',
-                borderRadius: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0,
-              }}
-              role="img"
-              aria-label={translations.fundraising.scanToDonate}
-            >
+          {qrImageUrl && (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 2, sm: 2, md: 3, lg: 3 } }}>
               <Box
-                component="img"
-                src={qrDonateImage}
-                alt="QR Code"
                 sx={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'contain',
+                  width: { xs: 96, sm: 96, md: 128, lg: 128 },
+                  height: { xs: 96, sm: 96, md: 128, lg: 128 },
+                  bgcolor: 'common.white',
+                  borderRadius: '8px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
                 }}
-              />
-            </Box>
-            <Box>
-              <Typography sx={{ color: 'text.muted', fontSize: '0.875rem', mb: 0.5, fontFamily }}>
-                {translations.fundraising.donateOnline}
-              </Typography>
-              <Typography
-                sx={{
-                  color: (theme) => theme.palette.gold.onLight,
-                  fontSize: { xs: '1rem', sm: '1.125rem', md: '1.125rem', lg: '1.125rem' },
-                  fontFamily: 'monospace',
-                }}
+                role="img"
+                aria-label={translations.fundraising.scanToDonate}
               >
-                masjidalnoor.org/donate
-              </Typography>
+                <Box
+                  component="img"
+                  src={qrImageUrl}
+                  alt="QR Code"
+                  sx={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'contain',
+                  }}
+                />
+              </Box>
+              {donateUrl && (
+                <Box>
+                  <Typography sx={{ color: 'text.muted', fontSize: '0.875rem', mb: 0.5, fontFamily }}>
+                    {translations.fundraising.donateOnline}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      color: (theme) => theme.palette.gold.onLight,
+                      fontSize: { xs: '1rem', sm: '1.125rem', md: '1.125rem', lg: '1.125rem' },
+                      fontFamily: 'monospace',
+                    }}
+                  >
+                    {donateUrl}
+                  </Typography>
+                </Box>
+              )}
             </Box>
-          </Box>
+          )}
 
           <Typography sx={{ color: 'text.muted', fontSize: '0.875rem', fontFamily }}>
             {translations.fundraising.autoClosing} {displayCountdown}

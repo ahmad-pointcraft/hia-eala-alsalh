@@ -7,4 +7,5 @@ export { useDailyHadith } from './useDailyHadith';
 export { useDailyQuranVerse } from './useDailyQuranVerse';
 export { useAnnouncements } from './useAnnouncements';
 export { useEvents } from './useEvents';
+export { useFundraising } from './useFundraising';
 export { useIslamicHolidays } from './useIslamicHolidays';

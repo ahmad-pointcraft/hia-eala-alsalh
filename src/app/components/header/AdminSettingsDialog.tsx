@@ -63,6 +63,7 @@ export function AdminSettingsDialog({ open, onClose, language }: AdminSettingsDi
   const [googleSheetId, setGoogleSheetId] = useState(config.googleSheetId);
   const [announcementsGid, setAnnouncementsGid] = useState(config.announcementsGid);
   const [eventsGid, setEventsGid] = useState(config.eventsGid);
+  const [fundraisingGid, setFundraisingGid] = useState(config.fundraisingGid);
 
   const [latitude, setLatitude] = useState(config.latitude);
   const [longitude, setLongitude] = useState(config.longitude);
@@ -108,6 +109,7 @@ export function AdminSettingsDialog({ open, onClose, language }: AdminSettingsDi
   const handleSyncNow = () => {
     cacheStore.invalidate('announcements');
     cacheStore.invalidate('events');
+    cacheStore.invalidate('fundraising');
     alert(t('Google Sheets cache cleared! Reloading dashboard...', 'تم مسح ذاكرة التخزين المؤقت لـ Google Sheets! جاري إعادة التحميل...'));
     window.location.reload();
   };
@@ -119,6 +121,7 @@ export function AdminSettingsDialog({ open, onClose, language }: AdminSettingsDi
       googleSheetId,
       announcementsGid,
       eventsGid,
+      fundraisingGid,
       latitude,
       longitude,
       timeZone,
@@ -281,6 +284,14 @@ export function AdminSettingsDialog({ open, onClose, language }: AdminSettingsDi
                   label={t('Events Sheet GID', 'معرّف صفحة الفعاليات (GID)')}
                   value={eventsGid}
                   onChange={(e) => setEventsGid(e.target.value)}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <TextField
+                  fullWidth
+                  label={t('Fundraising Sheet GID', 'معرّف صفحة التبرعات (GID)')}
+                  value={fundraisingGid}
+                  onChange={(e) => setFundraisingGid(e.target.value)}
                 />
               </Grid>
             </Grid>

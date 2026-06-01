@@ -10,11 +10,11 @@ export const translations: Record<Language, Translations> = {
     exitEvent: 'Exit Event',
     nextPrayer: 'Next prayer',
     hadithOfTheDay: 'Hadith of the Day',
-    hadithText: 'The best of you are those who learn the Quran and teach it to others.', // FALLBACK: used when API data unavailable (offline)
-    hadithSource: '— Sahih Bukhari —', // FALLBACK: used when API data unavailable (offline)
+    hadithText: 'The best of you are those who learn the Quran and teach it to others.',
+    hadithSource: '— Sahih Bukhari —',
     announcements: 'Announcements',
     sunset: 'Sunset',
-    announcementsList: [ // FALLBACK: used when API data unavailable (offline)
+    announcementsList: [
       'Friday Khutbah at 1:00 PM - Speaker: Imam Abdullah',
       'Quran Study Circle every Tuesday at 7:00 PM',
       'Donations needed for community food bank',
@@ -32,7 +32,7 @@ export const translations: Record<Language, Translations> = {
     iqama: 'Iqama',
     prayerInProgress: 'Prayer in Progress',
     pleaseObserveSilence: 'Please observe silence',
-    events: [ // FALLBACK: used when API data unavailable (offline)
+    events: [ 
       {
         badge: 'Special Islamic Lecture',
         title: 'The Science of the Quran',
@@ -104,11 +104,11 @@ export const translations: Record<Language, Translations> = {
     exitEvent: 'إغلاق الحدث',
     nextPrayer: 'الصلاة القادمة',
     hadithOfTheDay: 'حديث اليوم',
-    hadithText: 'خيركم من تعلم القرآن وعلمه', // FALLBACK: used when API data unavailable (offline)
-    hadithSource: '— صحيح البخاري ', // FALLBACK: used when API data unavailable (offline)
+    hadithText: 'خيركم من تعلم القرآن وعلمه', 
+    hadithSource: '— صحيح البخاري ', 
     announcements: 'الإعلانات',
     sunset: 'الغروب',
-    announcementsList: [ // FALLBACK: used when API data unavailable (offline)
+    announcementsList: [ 
       'خطبة الجمعة الساعة ١:٠٠ ظهراً - الخطيب: الإمام عبد الله',
       'حلقة دراسة القرآن كل يوم ثلاثاء الساعة ٧:٠٠ مساءً',
       'التبرعات مطلوبة لبنك الطعام المجتمعي',
@@ -126,7 +126,7 @@ export const translations: Record<Language, Translations> = {
     iqama: 'الإقامة',
     prayerInProgress: 'الصلاة جارية',
     pleaseObserveSilence: 'يُرجى الالتزام بالهدوء',
-    events: [ // FALLBACK: used when API data unavailable (offline)
+    events: [ 
       {
         badge: 'محاضرة إسلامية خاصة',
         title: 'العلم في القرآن',

@@ -37,7 +37,7 @@ export function EventSlideshow({ events, images, interval = 5000, language }: Ev
   const event = events[currentIndex];
   if (!event) return null;
 
-  const bgImage = images[currentIndex % images.length];
+  const bgImage = event.imageUrl || images[currentIndex % images.length];
 
   return (
     <Box
