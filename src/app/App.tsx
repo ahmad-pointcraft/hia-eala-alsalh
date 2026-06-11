@@ -5,14 +5,12 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 
 import { Header } from './components/header';
-import { PrayerCard } from './components/prayer';
-import { CountdownBar } from './components/prayer';
-import { WisdomPanel } from './components/widgets';
-import { SunTimesWidget } from './components/widgets';
-import { AnnouncementsTicker } from './components/widgets';
+import { PrayerCard, CountdownBar, PrayerStatusWidget } from './components/prayer';
+
+import { AnnouncementsTicker, WisdomPanel, SunTimesWidget } from './components/widgets';
 import { FundraisingOverlay, SilenceOverlay } from './components/overlays';
-import { EventSlideshow } from './components/events';
-import type { EventSlide } from './components/events';
+
+import { EventSlide, EventSlideshow } from './components/events';
 import type { WisdomContent } from '@/app/types/wisdom';
 import { useLanguage, useMosqueConfigStore } from '@/app/store';
 import { translations as allTranslations } from '@/app/data/translations';
@@ -82,7 +80,7 @@ export default function App() {
     document.documentElement.lang = language;
   }, [dir, language]);
 
-  const { prayers, activePrayer, nextPrayer, isPraying, prayingPrayer, prayerPrayers, sunrisePrayer, sunsetTime } =
+  const { prayers, activePrayer, nextPrayer, prayingPrayer, prayerPrayers, sunrisePrayer, sunsetTime, widgetState } =
     usePrayerState(currentTime, t.prayers);
   const { showFundraising, onShowFundraising, onCloseFundraising } = useFundraisingScheduler(
     prayers,
@@ -177,7 +175,7 @@ export default function App() {
 
         {/* -------- THE SILENCE OVERLAY -------- */}
         <AnimatePresence>
-          {isPraying && (
+          {widgetState.phase === 'silence' && (
             <motion.div
               key="silence-overlay"
               initial={{ opacity: 0 }}
@@ -231,7 +229,7 @@ export default function App() {
                   minHeight: 0,
                 }}
               >
-                {/* -------- THE EVENT SLIDESHOW -------- */}
+                {/* -------- THE EVENT SLIDESHOW / PRAYER WIDGET -------- */}
                 <Box
                   sx={{
                     flex: { xs: 'none', sm: 3.15, md: 2 },
@@ -239,12 +237,40 @@ export default function App() {
                     minHeight: { xs: 220, sm: 0 },
                   }}
                 >
-                  <EventSlideshow
-                    events={eventSlides}
-                    images={carouselImages}
-                    interval={5000}
-                    language={language}
-                  />
+                  <AnimatePresence mode="wait">
+                    {widgetState.phase !== 'none' && widgetState.phase !== 'silence' ? (
+                      <motion.div
+                        key="prayer-status-widget"
+                        initial={{ opacity: 0, scale: 0.98 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.98 }}
+                        transition={defaultTransition ?? { duration: 0.4, ease: 'easeInOut' }}
+                        style={{ width: '100%', height: '100%' }}
+                      >
+                        <PrayerStatusWidget
+                          widgetState={widgetState}
+                          language={language}
+                          translations={t}
+                        />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="event-slideshow"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={defaultTransition ?? { duration: 0.4, ease: 'easeInOut' }}
+                        style={{ width: '100%', height: '100%' }}
+                      >
+                        <EventSlideshow
+                          events={eventSlides}
+                          images={carouselImages}
+                          interval={5000}
+                          language={language}
+                        />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </Box>
                 
                 {/* -------- THE COUNTDOWN BAR -------- */}
