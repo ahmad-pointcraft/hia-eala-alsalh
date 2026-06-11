@@ -68,4 +68,13 @@ export interface Translations {
     cta: string;
     imageUrl?: string;
   }[];
+  // PRAYER WIDGET TRANSLATION STRUCT
+  prayerWidget: {
+    adhanInProgress: string;
+    pleasePrepare: string;
+    iqamaCountdown: string;
+    nextPrayerLabel: string;
+    standStraighten: string;
+    congregationStarting: string;
+  };
 }

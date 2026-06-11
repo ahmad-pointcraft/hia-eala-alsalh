@@ -164,6 +164,7 @@ export default function App() {
           width: '100%',
         }}
       >
+        {/* -------- THE HEADER -------- */}
         <Header
           language={language}
           onToggleLanguage={toggleLanguage}
@@ -174,6 +175,7 @@ export default function App() {
           holidays={holidays}
         />
 
+        {/* -------- THE SILENCE OVERLAY -------- */}
         <AnimatePresence>
           {isPraying && (
             <motion.div
@@ -194,6 +196,7 @@ export default function App() {
           )}
         </AnimatePresence>
 
+        {/* -------- THE NORMAL MODE -------- */}
         <AnimatePresence mode="wait">
           <motion.div
             key="normal-mode"
@@ -228,6 +231,7 @@ export default function App() {
                   minHeight: 0,
                 }}
               >
+                {/* -------- THE EVENT SLIDESHOW -------- */}
                 <Box
                   sx={{
                     flex: { xs: 'none', sm: 3.15, md: 2 },
@@ -242,6 +246,8 @@ export default function App() {
                     language={language}
                   />
                 </Box>
+                
+                {/* -------- THE COUNTDOWN BAR -------- */}
                 <Box
                   sx={(theme) => ({
                     flex: { xs: 'none', sm: 3, md: 1 },
@@ -276,6 +282,7 @@ export default function App() {
                     minHeight: { xs: 220, sm: 0 },
                   })}
                 >
+                  {/* -------- THE WISDOM PANEL -------- */}
                   <WisdomPanel language={language} wisdom={wisdom ?? fallbackHadith} fallbackTitle={t.hadithOfTheDay} />
                 </Box>
                 <Box
@@ -285,6 +292,7 @@ export default function App() {
                     minWidth: 0,
                   }}
                 >
+                  {/* -------- THE SUN TIMES WIDGET -------- */}
                   <SunTimesWidget
                     language={language}
                     translations={t}
@@ -295,6 +303,7 @@ export default function App() {
               </Box>
             </Box>
 
+            {/* -------- THE PRAYER CARDS -------- */}
             <Box sx={{ flexShrink: 0, px: { xs: 2, sm: 3, md: 4, lg: 6 }, pb: 1 }}>
               <Box
                 dir={dir}
@@ -337,6 +346,7 @@ export default function App() {
           </motion.div>
         </AnimatePresence>
 
+        {/* -------- THE ANNOUNCEMENTS TICKER -------- */}
         <AnnouncementsTicker language={language} announcements={dynamicAnnouncements} />
       </Stack>
 

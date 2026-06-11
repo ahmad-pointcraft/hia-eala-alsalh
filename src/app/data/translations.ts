@@ -96,6 +96,15 @@ export const translations: Record<Language, Translations> = {
       november: 'November',
       december: 'December',
     },
+    // PRAYER WIDGET LOCALIZATION
+    prayerWidget: {
+      adhanInProgress: 'ADHAN IN PROGRESS',
+      pleasePrepare: 'Please prepare for prayer',
+      iqamaCountdown: 'Iqama Countdown',
+      nextPrayerLabel: 'Next Prayer:',
+      standStraighten: 'Stand & Straighten Rows',
+      congregationStarting: 'Congregation is starting',
+    },
   },
   ar: {
     masjidName: 'مسجد النور',
@@ -189,6 +198,15 @@ export const translations: Record<Language, Translations> = {
       october: 'أكتوبر',
       november: 'نوفمبر',
       december: 'ديسمبر',
+    },
+    // PRAYER WIDGET LOCALIZATION
+    prayerWidget: {
+      adhanInProgress: 'الأذان الآن',
+      pleasePrepare: 'يرجى الاستعداد للصلاة',
+      iqamaCountdown: 'الإقامة',
+      nextPrayerLabel: 'الصلاة القادمة:',
+      standStraighten: 'استووا واعتدلوا',
+      congregationStarting: 'تقام الصلاة الآن',
     },
   },
 };
