@@ -8,6 +8,7 @@ import { IslamicGeometricOverlay } from './IslamicGeometricOverlay';
 import type { Language, Translations } from '@/app/types/i18n';
 import type { PrayerTime } from '@/app/types/prayer';
 import { getFontFamily } from '@/app/utils/helpers';
+import { STANDING_DURATION_SEC, SILENCE_DURATION_SEC } from '@/app/constants/prayerPhases';
 
 interface SilenceOverlayProps {
   language: Language;
@@ -43,8 +44,10 @@ export function SilenceOverlay({
     const iqamaDate = new Date(currentTime);
     iqamaDate.setHours(iqamaHours, iqamaMinutes, 0, 0);
 
-    const elapsedMs = currentTime.getTime() - iqamaDate.getTime();
-    const totalMs = 8 * 60 * 1000; // 8 minutes countdown
+    // SILENCE OVERLAY STARTS EXACTLY STANDING_DURATION_SEC SECONDS AFTER IQAMA
+    const overlayStartMs = iqamaDate.getTime() + STANDING_DURATION_SEC * 1000;
+    const elapsedMs = currentTime.getTime() - overlayStartMs;
+    const totalMs = SILENCE_DURATION_SEC * 1000;
     return Math.min(1, Math.max(0, 1 - elapsedMs / totalMs));
   }, [prayingPrayer, currentTime]);
 
