@@ -41,17 +41,24 @@ export function PrayerStatusWidget({
   let phaseSubtitle = '';
   let Icon = Star;
   let timerText = '';
+  let showTimer = true;
   let pulseAnimation = false;
 
   if (widgetState.phase === 'azan') {
-    phaseTitle = translations.prayerWidget.adhanInProgress;
+    // DYNAMIC FORMAT FOR ADHAN
+    phaseTitle = language === 'ar'
+      ? `${translations.prayerWidget.adhanLabel} ${prayerName}`
+      : `${prayerName} ${translations.prayerWidget.adhanLabel}`;
     phaseSubtitle = translations.prayerWidget.pleasePrepare;
     Icon = Volume2;
-    timerText = formatMMSS(timeRemainingSec);
+    showTimer = false;
     pulseAnimation = true;
   } else if (widgetState.phase === 'countdown') {
-    phaseTitle = translations.prayerWidget.iqamaCountdown;
-    phaseSubtitle = `${prayerName} ${translations.iqama}`;
+    phaseTitle = translations.prayerWidget.iqamaIn;
+    // DYNAMIC FORMAT FOR IQAMA
+    phaseSubtitle = language === 'ar'
+      ? `${translations.prayerWidget.iqamaPrayerLabel} ${prayerName}`
+      : `${prayerName} ${translations.prayerWidget.iqamaPrayerLabel}`;
     Icon = Clock;
     timerText = formatMMSS(timeRemainingSec);
   } else if (widgetState.phase === 'standing') {
@@ -134,8 +141,12 @@ export function PrayerStatusWidget({
       <Typography
         sx={{
           color: theme.palette.gold.onLight,
-          fontWeight: 800,
-          fontSize: { xs: '20px', sm: '24px', md: '28px' },
+          // BOLDER WEIGHT IN ADHAN PHASE
+          fontWeight: widgetState.phase === 'azan' ? 900 : 800,
+          // LARGER SIZE IN ADHAN PHASE
+          fontSize: widgetState.phase === 'azan'
+            ? { xs: '26px', sm: '36px', md: '44px' }
+            : { xs: '20px', sm: '24px', md: '28px' },
           fontFamily: getFontFamily(language),
           zIndex: 1,
           lineHeight: 1.2,
@@ -148,20 +159,22 @@ export function PrayerStatusWidget({
       </Typography>
 
       {/* PHASE TIMER */}
-      <Typography
-        sx={{
-          color: 'text.primary',
-          fontFamily: '"Roboto Mono", monospace',
-          fontWeight: 700,
-          letterSpacing: '0.05em',
-          fontSize: { xs: '38px', sm: '52px', md: '60px' },
-          lineHeight: 1.1,
-          my: 1.5,
-          zIndex: 1,
-        }}
-      >
-        {displayTimer}
-      </Typography>
+      {showTimer && (
+        <Typography
+          sx={{
+            color: 'text.primary',
+            fontFamily: '"Roboto Mono", monospace',
+            fontWeight: 700,
+            letterSpacing: '0.05em',
+            fontSize: { xs: '38px', sm: '52px', md: '60px' },
+            lineHeight: 1.1,
+            my: 1.5,
+            zIndex: 1,
+          }}
+        >
+          {displayTimer}
+        </Typography>
+      )}
 
       {/* SUBTITLE LABELS */}
       <Typography

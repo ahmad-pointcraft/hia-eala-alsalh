@@ -9,6 +9,9 @@ interface MosqueConfigStore {
   config: MosqueConfig;
   setConfig: (partial: Partial<MosqueConfig>) => void;
   resetConfig: () => void;
+  // DEVELOPER CLOCK SPOOFING STATE
+  mockClockOffsetMs: number;
+  setMockClockOffsetMs: (offset: number) => void;
 }
 
 export const useMosqueConfigStore = create<MosqueConfigStore>()(
@@ -20,9 +23,13 @@ export const useMosqueConfigStore = create<MosqueConfigStore>()(
           config: { ...state.config, ...partial },
         })),
       resetConfig: () => set({ config: DEFAULT_MOSQUE_CONFIG }),
+      mockClockOffsetMs: 0,
+      setMockClockOffsetMs: (offset) => set({ mockClockOffsetMs: offset }),
     }),
     {
       name: 'hia-mosque-config',
+      // ONLY PERSIST THE PERMANENT CONFIG LAYER
+      partialize: (state) => ({ config: state.config }),
     },
   ),
 );

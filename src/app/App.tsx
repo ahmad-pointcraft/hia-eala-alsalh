@@ -11,6 +11,7 @@ import { AnnouncementsTicker, WisdomPanel, SunTimesWidget } from './components/w
 import { FundraisingOverlay, SilenceOverlay } from './components/overlays';
 
 import { EventSlide, EventSlideshow } from './components/events';
+import { DevTimeController } from './components/DevTimeController';
 import type { WisdomContent } from '@/app/types/wisdom';
 import { useLanguage, useMosqueConfigStore } from '@/app/store';
 import { translations as allTranslations } from '@/app/data/translations';
@@ -376,6 +377,8 @@ export default function App() {
         <AnnouncementsTicker language={language} announcements={dynamicAnnouncements} />
       </Stack>
 
+
+      {/* -------- THE FUNDRAISING OVERLAY -------- */}
       {showFundraising && (
         <FundraisingOverlay
           onClose={onCloseFundraising}
@@ -385,6 +388,9 @@ export default function App() {
           fundraising={fundraisingData}
         />
       )}
+
+      {/* RENDER DEV PANEL IN LOCAL ENVIRONMENT */}
+      {import.meta.env.DEV && <DevTimeController prayers={prayers} language={language} />}
     </Box>
   );
 }

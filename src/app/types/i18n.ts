@@ -70,9 +70,10 @@ export interface Translations {
   }[];
   // PRAYER WIDGET TRANSLATION STRUCT
   prayerWidget: {
-    adhanInProgress: string;
+    adhanLabel: string;
     pleasePrepare: string;
-    iqamaCountdown: string;
+    iqamaIn: string;
+    iqamaPrayerLabel: string;
     nextPrayerLabel: string;
     standStraighten: string;
     congregationStarting: string;

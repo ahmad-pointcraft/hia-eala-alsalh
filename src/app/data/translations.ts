@@ -98,9 +98,10 @@ export const translations: Record<Language, Translations> = {
     },
     // PRAYER WIDGET LOCALIZATION
     prayerWidget: {
-      adhanInProgress: 'ADHAN IN PROGRESS',
+      adhanLabel: 'Adhan',
       pleasePrepare: 'Please prepare for prayer',
-      iqamaCountdown: 'Iqama Countdown',
+      iqamaIn: 'Iqama In',
+      iqamaPrayerLabel: 'Iqama Prayer',
       nextPrayerLabel: 'Next Prayer:',
       standStraighten: 'Stand & Straighten Rows',
       congregationStarting: 'Congregation is starting',
@@ -201,9 +202,10 @@ export const translations: Record<Language, Translations> = {
     },
     // PRAYER WIDGET LOCALIZATION
     prayerWidget: {
-      adhanInProgress: 'الأذان الآن',
+      adhanLabel: 'آذان',
       pleasePrepare: 'يرجى الاستعداد للصلاة',
-      iqamaCountdown: 'الإقامة',
+      iqamaIn: 'الإقامة بعد',
+      iqamaPrayerLabel: 'إقامة صلاة',
       nextPrayerLabel: 'الصلاة القادمة:',
       standStraighten: 'استووا واعتدلوا',
       congregationStarting: 'تقام الصلاة الآن',
