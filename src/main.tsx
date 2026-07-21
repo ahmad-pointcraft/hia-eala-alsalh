@@ -1,7 +1,7 @@
 import { createRoot } from 'react-dom/client';
-import ThemeProviderWrapper from './app/theme/ThemeProviderWrapper';
-import { ErrorBoundary } from './app/components/shared';
-import App from './app/App';
+import ThemeProviderWrapper from './display/theme/ThemeProviderWrapper';
+import { ErrorBoundary } from './display/components/shared';
+import App from './display/App';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {

@@ -4,29 +4,29 @@
 
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
-at `specs/012-dynamic-data-integration/plan.md`.
+at `specs/013-admin-portal-pairing/plan.md`.
 
 ## Project Context
 
 - **App**: Masjid Prayer Time Display — a 24/7 kiosk display for a mosque
 - **Stack**: React 18 + TypeScript (strict) + MUI v7 + Vite + Yarn
 - **Source**: Figma export migrated to MUI v7 (Spec 001–004 complete)
-- **Current focus**: Dynamic Data Integration — Replace hardcoded data with API-backed sources, offline caching, adhan prayer calculation (Spec 012)
+- **Current focus**: Admin Portal & Device Pairing Foundation — single repo, single `package.json`, Vite native two-entry MPA (`src/display/` + `src/admin/` + `src/shared/`); device pairing via a typed `ApiClient` contract backed by MSW mocks (Spec 013)
 
-## Spec 012 Implementation Artifacts
+## Spec 013 Implementation Artifacts
 
 Read these IN ORDER before implementing any task:
 
 | Priority | File | Purpose |
 |----------|------|---------|
-| REQUIRED | `specs/012-dynamic-data-integration/tasks.md` | 44 tasks (T001–T044) across 9 phases — **authoritative task definitions** |
-| REQUIRED | `specs/012-dynamic-data-integration/spec.md` | Feature spec with TR-01→TR-08 technical reference (types, API contracts) |
-| REQUIRED | `specs/012-dynamic-data-integration/plan.md` | Architecture, project structure, constitution check |
+| REQUIRED | `specs/013-admin-portal-pairing/plan.md` | Architecture, monorepo structure, constitution check |
+| REQUIRED | `specs/013-admin-portal-pairing/spec.md` | Feature spec (FR-001→FR-020, SC-001→SC-007, two clarification sessions, tech-lead review notes) |
+| REQUIRED | `specs/013-admin-portal-pairing/research.md` | Design decisions + rationale (incl. cross-origin mock strategy) |
+| REQUIRED | `specs/013-admin-portal-pairing/contracts/api-client.md` | The `ApiClient` interface contract (AuthApi/DeviceApi/ContentApi/RealtimeApi) |
+| REQUIRED | `specs/013-admin-portal-pairing/data-model.md` | Entities, localStorage shapes, display state machine |
+| REQUIRED | `specs/013-admin-portal-pairing/quickstart.md` | Dev setup (single-origin dev server), pairing demo, mock→real swap |
 | REQUIRED | `.specify/memory/constitution.md` | Articles I–IX — non-negotiable constraints |
-| Reference | `specs/012-dynamic-data-integration/data-model.md` | Entity relationships, type definitions, validation rules |
-| Reference | `specs/012-dynamic-data-integration/contracts/hooks.md` | Hook interface contracts (props, return types, behavior) |
-| Reference | `specs/012-dynamic-data-integration/research.md` | Design decisions and rationale for each data source |
-| Reference | `specs/012-dynamic-data-integration/quickstart.md` | Architecture overview, data flow, offline behavior matrix |
+| Reference | `specs/013-admin-portal-pairing/checklists/foundation.md` | 41-item requirements-quality checklist (all pass) |
 
 ## Key Design Decisions (post-analysis)
 
