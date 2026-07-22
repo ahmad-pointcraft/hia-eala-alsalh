@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import { useCachedData } from '@/display/hooks/useCachedData';
-import { fetchEvents } from '@/display/services/googleSheets';
+import { api } from '@/shared/api';
+import type { MasjidEvent } from '@/shared/api';
 import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
 import { useLanguageStore } from '@/display/store/languageStore';
 import { getTranslations } from '@/display/store/languageStore';
-import type { SheetEvent } from '@/display/types/googleSheets';
 import type { Translations } from '@/display/types/i18n';
 import { toArabicNumerals } from '@/display/utils/helpers';
 
@@ -14,32 +14,30 @@ export interface UseEventsResult {
 }
 
 export function useEvents(currentTime: Date): UseEventsResult {
-  const config = useMosqueConfigStore((s) => s.config);
+  const masjidId = useMosqueConfigStore((s) => s.masjidId);
   const language = useLanguageStore((s) => s.language);
   const translations = getTranslations(language);
 
-  const { data, isLoading } = useCachedData<SheetEvent[]>(
-    'events',
-    () => fetchEvents(config.googleSheetId, config.eventsGid),
+  const { data, isLoading } = useCachedData<MasjidEvent[]>(
+    `events-${masjidId ?? 'none'}`,
+    () => api.listEvents(masjidId ?? ''),
     5 * 60 * 1000,
     { currentTime, fallback: undefined },
   );
 
   const events = useMemo(() => {
     if (!data) return translations.events;
-
     const active = data.filter((e) => e.active);
     if (active.length === 0) return translations.events;
 
     return active.map((e) => ({
-      badge: language === 'ar' ? e.badge_ar : e.badge_en,
+      badge: language === 'ar' ? 'حدث' : 'Event',
       title: language === 'ar' ? e.title_ar : e.title_en,
-      speakerName: language === 'ar' ? e.speaker_ar : e.speaker_en,
-      dateValue: language === 'ar' ? toArabicNumerals(e.date_ar || e.date) : (e.date_en || e.date || ''),
-      timeValue: language === 'ar' ? toArabicNumerals(e.time_ar || e.time) : (e.time_en || e.time || ''),
-      locationValue: language === 'ar' ? e.location_ar : e.location_en,
-      cta: language === 'ar' ? e.cta_ar : e.cta_en,
-      ...(e.image_url ? { imageUrl: e.image_url } : {}),
+      speakerName: '',
+      dateValue: language === 'ar' ? toArabicNumerals(e.date) : e.date,
+      timeValue: language === 'ar' ? toArabicNumerals(e.time) : e.time,
+      locationValue: '',
+      cta: '',
     }));
   }, [data, language, translations.events]);
 

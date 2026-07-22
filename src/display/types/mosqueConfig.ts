@@ -34,10 +34,6 @@ export interface MosqueConfig {
   timeZone: string;
   hijriOffset: -2 | -1 | 0 | 1 | 2;
   iqamaConfigs: Record<Exclude<PrayerKey, 'Sunrise'>, IqamaPrayerConfig>;
-  googleSheetId: string;
-  announcementsGid: string;
-  eventsGid: string;
-  fundraisingGid: string;
   masjidName_en: string;
   masjidName_ar: string;
   clockOffsetMs: number;
@@ -80,10 +76,6 @@ export const DEFAULT_MOSQUE_CONFIG: MosqueConfig = {
     Maghrib: { mode: 'offset', value: 5 },
     Isha: { mode: 'offset', value: 15 },
   },
-  googleSheetId: '17BA53zSTe-mNfBifBIB-axyyIWw2UwWmqoaXeO_UWYA',
-  announcementsGid: '1818541265',
-  eventsGid: '0',
-  fundraisingGid: '1568874771',
   masjidName_en: 'Mosque',
   masjidName_ar: '\u0645\u0633\u062C\u062F',
   clockOffsetMs: 0,

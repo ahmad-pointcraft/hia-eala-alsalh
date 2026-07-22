@@ -24,7 +24,6 @@ import {
 import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
 import type { Language } from '@/display/types/i18n';
 import type { AdhanMethod, Madhab, HighLatitudeRule, IqamaPrayerConfig } from '@/display/types/mosqueConfig';
-import { cacheStore } from '@/display/services/cache';
 
 interface AdminSettingsDialogProps {
   open: boolean;
@@ -60,10 +59,6 @@ export function AdminSettingsDialog({ open, onClose, language }: AdminSettingsDi
   // Form states initialized from store config
   const [masjidNameEn, setMasjidNameEn] = useState(config.masjidName_en);
   const [masjidNameAr, setMasjidNameAr] = useState(config.masjidName_ar);
-  const [googleSheetId, setGoogleSheetId] = useState(config.googleSheetId);
-  const [announcementsGid, setAnnouncementsGid] = useState(config.announcementsGid);
-  const [eventsGid, setEventsGid] = useState(config.eventsGid);
-  const [fundraisingGid, setFundraisingGid] = useState(config.fundraisingGid);
 
   const [latitude, setLatitude] = useState(config.latitude);
   const [longitude, setLongitude] = useState(config.longitude);
@@ -106,22 +101,10 @@ export function AdminSettingsDialog({ open, onClose, language }: AdminSettingsDi
     }
   };
 
-  const handleSyncNow = () => {
-    cacheStore.invalidate('announcements');
-    cacheStore.invalidate('events');
-    cacheStore.invalidate('fundraising');
-    alert(t('Google Sheets cache cleared! Reloading dashboard...', 'تم مسح ذاكرة التخزين المؤقت لـ Google Sheets! جاري إعادة التحميل...'));
-    window.location.reload();
-  };
-
   const handleSave = () => {
     setConfig({
       masjidName_en: masjidNameEn,
       masjidName_ar: masjidNameAr,
-      googleSheetId,
-      announcementsGid,
-      eventsGid,
-      fundraisingGid,
       latitude,
       longitude,
       timeZone,
@@ -259,47 +242,6 @@ export function AdminSettingsDialog({ open, onClose, language }: AdminSettingsDi
                 />
               </Grid>
             </Grid>
-
-            <Typography variant="subtitle1" sx={{ color: 'primary.main', fontWeight: 600, mt: 2 }}>
-              {t('Google Sheets Sync', 'مزامنة جداول بيانات Google')}
-            </Typography>
-            <TextField
-              fullWidth
-              label={t('Google Sheet ID', 'معرّف جدول بيانات Google')}
-              value={googleSheetId}
-              onChange={(e) => setGoogleSheetId(e.target.value)}
-            />
-            <Grid container spacing={2}>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
-                  fullWidth
-                  label={t('Announcements Sheet GID', 'معرّف صفحة الإعلانات (GID)')}
-                  value={announcementsGid}
-                  onChange={(e) => setAnnouncementsGid(e.target.value)}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
-                  fullWidth
-                  label={t('Events Sheet GID', 'معرّف صفحة الفعاليات (GID)')}
-                  value={eventsGid}
-                  onChange={(e) => setEventsGid(e.target.value)}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
-                  fullWidth
-                  label={t('Fundraising Sheet GID', 'معرّف صفحة التبرعات (GID)')}
-                  value={fundraisingGid}
-                  onChange={(e) => setFundraisingGid(e.target.value)}
-                />
-              </Grid>
-            </Grid>
-            <Box>
-              <Button variant="outlined" color="primary" onClick={handleSyncNow}>
-                {t('Force Sync & Clear Cache', 'مزامنة فورية ومسح الكاش')}
-              </Button>
-            </Box>
           </Stack>
         )}
 
