@@ -1,1 +1,2 @@
-export const generateId = (prefix: string): string => `${prefix}-${crypto.randomUUID()}`;
+export * from './date';
+export * from './id';

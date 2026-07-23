@@ -3,9 +3,12 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { adminTheme } from '@/admin/theme/adminTheme';
 import { AuthGate } from '@/admin/components/AuthGate';
+import { AdminLayout } from '@/admin/components/AdminLayout';
 import { SignIn } from '@/admin/routes/SignIn';
 import { SignUp } from '@/admin/routes/SignUp';
-import { Dashboard } from '@/admin/routes/Dashboard';
+import { Devices } from '@/admin/routes/Devices';
+import { Preview } from '@/admin/routes/Preview';
+import { TimingsStub, ContentStub, ImagesStub, SetupsStub } from '@/admin/routes/Stubs';
 
 export function AdminApp() {
   return (
@@ -16,7 +19,15 @@ export function AdminApp() {
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route element={<AuthGate />}>
-            <Route path="/" element={<Dashboard />} />
+            <Route element={<AdminLayout />}>
+              <Route path="/" element={<Navigate to="/devices" replace />} />
+              <Route path="/devices" element={<Devices />} />
+              <Route path="/timings" element={<TimingsStub />} />
+              <Route path="/content" element={<ContentStub />} />
+              <Route path="/images" element={<ImagesStub />} />
+              <Route path="/setups" element={<SetupsStub />} />
+              <Route path="/preview" element={<Preview />} />
+            </Route>
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
