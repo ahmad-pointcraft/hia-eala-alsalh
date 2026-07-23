@@ -1,8 +1,17 @@
 import { createRoot } from 'react-dom/client';
+import { AdminApp } from './AdminApp';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
   throw new Error('Root element not found. Ensure admin/index.html contains <div id="root"></div>.');
 }
 
-createRoot(rootElement).render(<div>Admin placeholder — built in Phase 3</div>);
+async function bootstrap(root: HTMLElement) {
+  if (import.meta.env.DEV && import.meta.env.VITE_MOCK === 'true') {
+    const { worker } = await import('@/shared/api/mock/browser');
+    await worker.start({ onUnhandledRequest: 'bypass' });
+  }
+  createRoot(root).render(<AdminApp />);
+}
+
+void bootstrap(rootElement);
