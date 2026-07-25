@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import type { PrayerTime } from '@/display/types/prayer';
+import type { PrayerTime } from '@/shared/types/prayer';
 import {
   FUNDRAISING_PRAYER_GAP_SECONDS,
   getRandomFundraisingDelay,

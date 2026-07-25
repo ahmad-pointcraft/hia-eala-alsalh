@@ -3,7 +3,7 @@ import {
   Madhab as AdhanMadhab,
   HighLatitudeRule as AdhanHighLatitudeRule,
 } from 'adhan';
-import type { AdhanMethod, Madhab as MosqueMadhab, HighLatitudeRule as MosqueHighLatitudeRule } from '@/display/types/mosqueConfig';
+import type { AdhanMethod, Madhab as MosqueMadhab, HighLatitudeRule as MosqueHighLatitudeRule } from '@/shared/types/mosqueConfig';
 
 export function getCalculationParams(method: AdhanMethod) {
   const factories: Record<AdhanMethod, () => ReturnType<typeof CalculationMethod.MuslimWorldLeague>> = {

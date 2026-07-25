@@ -1,5 +1,5 @@
 // OFFLINE FALLBACK: used by usePrayerState when adhan library calculation is unavailable. Safe to keep — consumed as DEFAULT_PRAYER_TIMES fallback.
-import type { PrayerSchedule } from '@/display/types/prayer';
+import type { PrayerSchedule } from '@/shared/types/prayer';
 
 export const DEFAULT_SUNSET_TIME = '19:28';
 

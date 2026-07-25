@@ -6,7 +6,7 @@ import { useTheme } from '@mui/material/styles';
 import { Sunrise, Sun, CloudSun, Sunset, Moon, Star, type LucideIcon } from 'lucide-react';
 import { IslamicGeometricOverlay } from './IslamicGeometricOverlay';
 import type { Language, Translations } from '@/display/types/i18n';
-import type { PrayerTime } from '@/display/types/prayer';
+import type { PrayerTime } from '@/shared/types/prayer';
 import { getFontFamily } from '@/display/utils/helpers';
 import { STANDING_DURATION_SEC, SILENCE_DURATION_SEC } from '@/display/constants/prayerPhases';
 

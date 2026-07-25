@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 import {
   DEFAULT_MOSQUE_CONFIG,
   type MosqueConfig,
-} from '@/display/types/mosqueConfig';
+} from '@/shared/types/mosqueConfig';
 
 interface MosqueConfigStore {
   masjidId: string | null;

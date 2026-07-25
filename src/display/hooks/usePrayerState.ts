@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 import { Coordinates, PrayerTimes } from 'adhan';
 import { DEFAULT_SUNSET_TIME } from '@/display/data/prayers';
-import type { PrayerTime, NextPrayer } from '@/display/types/prayer';
+import type { PrayerTime, NextPrayer } from '@/shared/types/prayer';
 import { getCurrentPrayer, getNextPrayer } from '@/display/utils/prayerTimes';
 import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
 import { getCalculationParams, getMadhab, getHighLatitudeRule } from '@/display/utils/adhanMethodFactory';
-import type { IqamaPrayerConfig } from '@/display/types/mosqueConfig';
+import type { IqamaPrayerConfig } from '@/shared/types/mosqueConfig';
 import {
   AZAN_MAX_DURATION_SEC,
   STANDING_DURATION_SEC,

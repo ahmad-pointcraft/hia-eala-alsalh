@@ -23,7 +23,7 @@ import {
 
 import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
 import type { Language } from '@/display/types/i18n';
-import type { AdhanMethod, Madhab, HighLatitudeRule, IqamaPrayerConfig } from '@/display/types/mosqueConfig';
+import type { AdhanMethod, Madhab, HighLatitudeRule, IqamaPrayerConfig } from '@/shared/types/mosqueConfig';
 
 interface AdminSettingsDialogProps {
   open: boolean;

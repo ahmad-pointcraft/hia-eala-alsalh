@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { cacheStore } from '@/display/services/cache';
-import type { HijriDateInfo } from '@/display/types/mosqueConfig';
+import type { HijriDateInfo } from '@/shared/types/mosqueConfig';
 
 export interface UseIslamicHolidaysResult {
   holidays: string[];

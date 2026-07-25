@@ -1,4 +1,4 @@
-import type { PrayerKey } from '@/display/types/prayer';
+import type { PrayerKey } from './prayer';
 
 export type AdhanMethod =
   | 'MuslimWorldLeague'

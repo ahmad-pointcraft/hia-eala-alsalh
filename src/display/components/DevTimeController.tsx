@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
-import type { PrayerTime } from '@/display/types/prayer';
+import type { PrayerTime } from '@/shared/types/prayer';
 import type { Language } from '@/display/types/i18n';
 import { getDirection } from '@/display/utils/helpers';
 import { Wrench, Minus } from 'lucide-react';

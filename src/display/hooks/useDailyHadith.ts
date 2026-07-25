@@ -1,7 +1,7 @@
 import { useCachedData } from '@/display/hooks/useCachedData';
 import { hijriDayOfYear } from '@/display/utils/hijri';
 import { fetchDailyHadith } from '@/display/services/hadith';
-import type { HijriDateInfo } from '@/display/types/mosqueConfig';
+import type { HijriDateInfo } from '@/shared/types/mosqueConfig';
 import type { HadithData } from '@/display/types/hadith';
 
 export interface UseDailyHadithResult {
