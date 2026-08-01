@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import Typography from '@mui/material/Typography';
+import {
+  Box,
+  Button,
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Typography,
+} from '@mui/material';
 import { useSession } from '@/admin/hooks/useSession';
 import { api } from '@/shared/api';
 import type { MosqueConfig } from '@/shared/types/mosqueConfig';
@@ -25,6 +28,7 @@ const NAV_ITEMS = [
 export function Sidebar() {
   const location = useLocation();
   const session = useSession((s) => s.session);
+  const signOut = useSession((s) => s.signOut);
   const [config, setConfig] = useState<MosqueConfig | null>(null);
 
   useEffect(() => {
@@ -55,13 +59,17 @@ export function Sidebar() {
 
   const title = config?.masjidName_en ? `${config.masjidName_en}` : 'Masjid Admin';
 
+  const handleSignOut = async () => {
+    await signOut();
+  };
+
   return (
     <Drawer
       variant="permanent"
       sx={{
         width: DRAWER_WIDTH,
         flexShrink: 0,
-        '& .MuiDrawer-paper': { width: DRAWER_WIDTH, boxSizing: 'border-box' },
+        '& .MuiDrawer-paper': { width: DRAWER_WIDTH, boxSizing: 'border-box', display: 'flex', flexDirection: 'column' },
       }}
     >
       <Box sx={{ p: 2 }}>
@@ -69,7 +77,7 @@ export function Sidebar() {
           {title}
         </Typography>
       </Box>
-      <List>
+      <List sx={{ flexGrow: 1 }}>
         {NAV_ITEMS.map((item) => (
           <ListItem key={item.path} disablePadding>
             <ListItemButton
@@ -82,6 +90,11 @@ export function Sidebar() {
           </ListItem>
         ))}
       </List>
+      <Box sx={{ p: 2 }}>
+        <Button fullWidth variant="outlined" color="error" onClick={handleSignOut}>
+          Sign Out
+        </Button>
+      </Box>
     </Drawer>
   );
 }
