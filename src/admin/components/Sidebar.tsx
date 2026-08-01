@@ -91,8 +91,17 @@ export function Sidebar() {
         ))}
       </List>
       <Box sx={{ p: 2 }}>
-        <Button fullWidth variant="outlined" color="error" onClick={handleSignOut}>
-          Sign Out
+        <Button fullWidth variant="outlined" onClick={handleSignOut} sx={{
+          transition: 'all 0.3s ease',
+          "&:hover": {
+            backgroundColor: 'primary.light',
+            color: 'white',
+            transform: 'scale(1.05)'
+          },
+        }}>
+          <Typography variant="button" fontWeight={700} noWrap title="Sign Out">
+            Sign Out
+          </Typography>
         </Button>
       </Box>
     </Drawer>

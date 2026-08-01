@@ -24,33 +24,13 @@ import {
 import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
 import type { Language } from '@/display/types/i18n';
 import type { AdhanMethod, Madhab, HighLatitudeRule, IqamaPrayerConfig } from '@/shared/types/mosqueConfig';
+import { ADHAN_METHODS, HIGH_LATITUDE_RULES } from '@/shared/constants';
 
 interface AdminSettingsDialogProps {
   open: boolean;
   onClose: () => void;
   language: Language;
 }
-
-const ADHAN_METHODS: { value: AdhanMethod; label: string }[] = [
-  { value: 'MuslimWorldLeague', label: 'Muslim World League' },
-  { value: 'Egyptian', label: 'Egyptian General Authority of Survey' },
-  { value: 'Karachi', label: 'University of Islamic Sciences, Karachi' },
-  { value: 'UmmAlQura', label: 'Umm Al-Qura University, Makkah' },
-  { value: 'Dubai', label: 'Dubai' },
-  { value: 'Qatar', label: 'Qatar' },
-  { value: 'Kuwait', label: 'Kuwait' },
-  { value: 'MoonsightingCommittee', label: 'Moonsighting Committee' },
-  { value: 'Singapore', label: 'Majlis Ugama Islam Singapura' },
-  { value: 'Turkey', label: 'Diyanet İşleri Başkanlığı, Turkey' },
-  { value: 'Tehran', label: 'Institute of Geophysics, University of Tehran' },
-  { value: 'NorthAmerica', label: 'ISNA (North America)' },
-];
-
-const HIGH_LATITUDE_RULES: { value: HighLatitudeRule; label: string }[] = [
-  { value: 'MiddleOfTheNight', label: 'Middle of the Night' },
-  { value: 'SeventhOfTheNight', label: 'Seventh of the Night' },
-  { value: 'TwilightAngle', label: 'Twilight Angle' },
-];
 
 export function AdminSettingsDialog({ open, onClose, language }: AdminSettingsDialogProps) {
   const { config, setConfig } = useMosqueConfigStore();
