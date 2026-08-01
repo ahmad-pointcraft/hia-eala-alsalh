@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -6,6 +7,9 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
+import { useSession } from '@/admin/hooks/useSession';
+import { api } from '@/shared/api';
+import type { MosqueConfig } from '@/shared/types/mosqueConfig';
 
 const DRAWER_WIDTH = 240;
 
@@ -20,6 +24,36 @@ const NAV_ITEMS = [
 
 export function Sidebar() {
   const location = useLocation();
+  const session = useSession((s) => s.session);
+  const [config, setConfig] = useState<MosqueConfig | null>(null);
+
+  useEffect(() => {
+    if (!session?.masjidId) return;
+
+    let mounted = true;
+
+    api.getMasjidConfig(session.masjidId)
+      .then((cfg) => {
+        if (mounted) setConfig(cfg);
+      })
+      .catch(() => {
+        /* fallback */
+      });
+
+    const unsub = api.subscribe(session.masjidId, {
+      onConfigChange: (newCfg) => {
+        if (mounted) setConfig(newCfg);
+      },
+      onContentChange: () => {},
+    });
+
+    return () => {
+      mounted = false;
+      unsub();
+    };
+  }, [session?.masjidId]);
+
+  const title = config?.masjidName_en ? `${config.masjidName_en}` : 'Masjid Admin';
 
   return (
     <Drawer
@@ -31,8 +65,8 @@ export function Sidebar() {
       }}
     >
       <Box sx={{ p: 2 }}>
-        <Typography variant="h6" color="primary" fontWeight={700}>
-          Masjid Admin
+        <Typography variant="h6" color="primary" fontWeight={700} noWrap title={title}>
+          {title}
         </Typography>
       </Box>
       <List>
