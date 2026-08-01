@@ -19,6 +19,10 @@ function generatePairingCode(): string {
 }
 
 
+// ============================================================================
+// MOCK API CLIENT (DEV & DEMO MODE)
+// ============================================================================
+
 export class MockApiClient implements ApiClient {
   private store: MockStore;
   private currentSession: Session | null = null;
@@ -35,6 +39,7 @@ export class MockApiClient implements ApiClient {
     }
   }
 
+  // NOTIFY ALL SUBSCRIBERS ACROSS TABS WHEN STORAGE CHANGES
   private notifyAllSubscribers(): void {
     for (const sub of this.store.realtimeSubscribers) {
       const masjid = this.store.masjids[sub.masjidId];
@@ -44,10 +49,12 @@ export class MockApiClient implements ApiClient {
     }
   }
 
+  // PERSIST MOCK STORE TO LOCALSTORAGE
   private persist(): void {
     saveStore(this.store);
   }
 
+  // NOTIFY SUBSCRIBERS OF CONFIG CHANGES FOR A SPECIFIC MASJID
   private notifyConfigChange(masjidId: string, config: MosqueConfig): void {
     for (const sub of this.store.realtimeSubscribers) {
       if (sub.masjidId === masjidId) {
@@ -56,6 +63,11 @@ export class MockApiClient implements ApiClient {
     }
   }
 
+  // ============================================================================
+  // AUTH API
+  // ============================================================================
+
+  // SIGN IN ADMIN USER
   async signIn(email: string, _password: string): Promise<Session> {
     const session: Session = {
       user: { id: generateId('user'), email },
@@ -66,18 +78,26 @@ export class MockApiClient implements ApiClient {
     return session;
   }
 
+  // REGISTER NEW ADMIN ACCOUNT
   async signUp(email: string, _password: string): Promise<Session> {
     return this.signIn(email, _password);
   }
 
+  // END CURRENT ADMIN SESSION
   async signOut(): Promise<void> {
     this.currentSession = null;
   }
 
+  // GET CURRENT ACTIVE SESSION
   async getSession(): Promise<Session | null> {
     return this.currentSession;
   }
 
+  // ============================================================================
+  // DEVICE PAIRING API
+  // ============================================================================
+
+  // REGISTER UNPAIRED DISPLAY DEVICE & GENERATE 6-DIGIT CODE
   async registerDevice(): Promise<{ deviceId: string; pairingCode: string; expiresAt: number }> {
     const deviceId = generateId('device');
     const pairingCode = generatePairingCode();
@@ -95,12 +115,14 @@ export class MockApiClient implements ApiClient {
     return { deviceId, pairingCode, expiresAt };
   }
 
+  // QUERY DEVICE PAIRING STATUS & ASSIGNED MASJID ID
   async getDeviceStatus(deviceId: string): Promise<{ paired: boolean; masjidId: string | null }> {
     const device = this.store.devices[deviceId];
     if (!device) return { paired: false, masjidId: null };
     return { paired: device.status === 'paired', masjidId: device.masjidId };
   }
 
+  // PAIR DEVICE USING 6-DIGIT CODE ENTERED IN ADMIN PORTAL
   async pairDevice(pairingCode: string): Promise<{ device: Device; masjid: MasjidSummary }> {
     const entry = this.store.pairingCodes[pairingCode];
     if (!entry || entry.expiresAt < Date.now()) {
@@ -131,10 +153,12 @@ export class MockApiClient implements ApiClient {
     return { device, masjid };
   }
 
+  // LIST ALL DEVICES ASSIGNED TO A MASJID
   async listDevices(masjidId: string): Promise<Device[]> {
     return Object.values(this.store.devices).filter((d) => d.masjidId === masjidId);
   }
 
+  // UNPAIR DEVICE & BROADCAST UPDATE TO KIOSK SUBSCRIBERS
   async unpairDevice(deviceId: string): Promise<void> {
     const device = this.store.devices[deviceId];
     if (device) {
@@ -151,6 +175,7 @@ export class MockApiClient implements ApiClient {
     }
   }
 
+  // RENAME DISPLAY DEVICE
   async renameDevice(deviceId: string, name: string): Promise<Device> {
     const device = this.store.devices[deviceId];
     if (!device) throw new Error('Device not found');
@@ -159,12 +184,18 @@ export class MockApiClient implements ApiClient {
     return device;
   }
 
+  // ============================================================================
+  // CONTENT & CONFIG API
+  // ============================================================================
+
+  // GET FULL MOSQUE CONFIGURATION
   async getMasjidConfig(masjidId: string): Promise<MosqueConfig> {
     const masjid = this.store.masjids[masjidId];
     if (!masjid) throw new Error('Masjid not found');
     return masjid.config;
   }
 
+  // UPDATE MOSQUE CONFIGURATION & NOTIFY LISTENERS
   async updateMasjidConfig(masjidId: string, patch: Partial<MosqueConfig>): Promise<MosqueConfig> {
     const masjid = this.store.masjids[masjidId];
     if (!masjid) throw new Error('Masjid not found');
@@ -174,21 +205,29 @@ export class MockApiClient implements ApiClient {
     return masjid.config;
   }
 
+  // LIST ANNOUNCEMENTS FOR A MASJID
   async listAnnouncements(masjidId: string): Promise<Announcement[]> {
     const masjid = this.store.masjids[masjidId];
     return masjid?.announcements ?? [];
   }
 
+  // LIST COMMUNITY EVENTS FOR A MASJID
   async listEvents(masjidId: string): Promise<MasjidEvent[]> {
     const masjid = this.store.masjids[masjidId];
     return masjid?.events ?? [];
   }
 
+  // LIST DONATION CAMPAIGNS FOR A MASJID
   async listDonations(masjidId: string): Promise<DonationCampaign[]> {
     const masjid = this.store.masjids[masjidId];
     return masjid?.donations ?? [];
   }
 
+  // ============================================================================
+  // REALTIME SUBSCRIPTION
+  // ============================================================================
+
+  // SUBSCRIBE TO REAL-TIME CONFIG & CONTENT UPDATES
   subscribe(
     masjidId: string,
     handlers: {
