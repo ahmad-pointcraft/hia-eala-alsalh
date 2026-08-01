@@ -4,8 +4,10 @@ import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
 import {
   getDeviceToken,
   setDeviceToken,
+  clearDeviceToken,
   getCachedConfig,
   setCachedConfig,
+  type DeviceToken,
 } from '@/display/utils/deviceToken';
 import { PairingCodeScreen } from '@/display/components/PairingCodeScreen';
 import App from '@/display/App';
@@ -49,16 +51,47 @@ export function PairingGate() {
     mountedRef.current = true;
     const token = getDeviceToken();
     if (token) {
-      void loadContent(token.masjidId);
+      void validateAndLoad(token);
     } else {
       void startPairing();
     }
+
+    const handleStorageChange = () => {
+      const currentToken = getDeviceToken();
+      if (currentToken) {
+        void validateAndLoad(currentToken);
+      } else if (phaseRef.current === 'content' || phaseRef.current === 'offline') {
+        clearTimers();
+        void startPairing();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
     return () => {
       mountedRef.current = false;
+      window.removeEventListener('storage', handleStorageChange);
       clearTimers();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  async function validateAndLoad(token: DeviceToken) {
+    try {
+      const status = await api.getDeviceStatus(token.deviceId);
+      if (!status.paired) {
+        clearDeviceToken();
+        if (mountedRef.current) {
+          void startPairing();
+        }
+        return;
+      }
+      void loadContent(token.masjidId);
+    } catch {
+      // Network/offline error fallback
+      void loadContent(token.masjidId);
+    }
+  }
 
   async function startPairing() {
     try {
@@ -112,8 +145,22 @@ export function PairingGate() {
       updatePhase('content');
 
       unsubRef.current = api.subscribe(masjidId, {
-        onConfigChange: (cfg) => {
+        onConfigChange: async (cfg) => {
           if (mountedRef.current) {
+            const token = getDeviceToken();
+            if (token) {
+              try {
+                const status = await api.getDeviceStatus(token.deviceId);
+                if (!status.paired) {
+                  clearDeviceToken();
+                  clearTimers();
+                  void startPairing();
+                  return;
+                }
+              } catch {
+                /* retain content if status check fails */
+              }
+            }
             setConfig(cfg);
             setCachedConfig(cfg);
           }

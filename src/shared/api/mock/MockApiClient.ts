@@ -10,7 +10,7 @@ import type {
   MasjidEvent,
   DonationCampaign,
 } from '../types';
-import { DEMO_MASJID_ID, type MockStore, loadStore, saveStore } from './seed';
+import { DEMO_MASJID_ID, STORAGE_KEY, type MockStore, loadStore, saveStore } from './seed';
 
 const PAIRING_CODE_TTL_MS = 10 * 60 * 1000;
 
@@ -25,6 +25,23 @@ export class MockApiClient implements ApiClient {
 
   constructor() {
     this.store = loadStore();
+    if (typeof window !== 'undefined') {
+      window.addEventListener('storage', (e) => {
+        if (e.key === STORAGE_KEY) {
+          this.store = loadStore();
+          this.notifyAllSubscribers();
+        }
+      });
+    }
+  }
+
+  private notifyAllSubscribers(): void {
+    for (const sub of this.store.realtimeSubscribers) {
+      const masjid = this.store.masjids[sub.masjidId];
+      if (masjid) {
+        sub.handlers.onConfigChange(masjid.config);
+      }
+    }
   }
 
   private persist(): void {
@@ -121,9 +138,16 @@ export class MockApiClient implements ApiClient {
   async unpairDevice(deviceId: string): Promise<void> {
     const device = this.store.devices[deviceId];
     if (device) {
+      const oldMasjidId = device.masjidId;
       device.masjidId = null;
       device.status = 'unpaired';
       this.persist();
+      if (oldMasjidId) {
+        const masjid = this.store.masjids[oldMasjidId];
+        if (masjid) {
+          this.notifyConfigChange(oldMasjidId, masjid.config);
+        }
+      }
     }
   }
 

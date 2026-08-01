@@ -11,10 +11,12 @@ import { Preview } from '@/admin/routes/Preview';
 import { TimingsStub, ContentStub, ImagesStub, SetupsStub } from '@/admin/routes/Stubs';
 
 export function AdminApp() {
+  const adminBasename = `${import.meta.env.BASE_URL}admin`.replace(/\/+/g, '/');
+
   return (
     <ThemeProvider theme={adminTheme}>
       <CssBaseline />
-      <BrowserRouter basename="/admin">
+      <BrowserRouter basename={adminBasename}>
         <Routes>
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />

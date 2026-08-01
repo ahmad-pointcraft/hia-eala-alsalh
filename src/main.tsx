@@ -11,7 +11,12 @@ if (!rootElement) {
 async function bootstrap(root: HTMLElement) {
   if (import.meta.env.DEV && import.meta.env.VITE_MOCK === 'true') {
     const { worker } = await import('./shared/api/mock/browser');
-    await worker.start({ onUnhandledRequest: 'bypass' });
+    await worker.start({
+      onUnhandledRequest: 'bypass',
+      serviceWorker: {
+        url: `${import.meta.env.BASE_URL}mockServiceWorker.js`,
+      },
+    });
   }
 
   createRoot(root).render(

@@ -104,7 +104,7 @@ export function createInitialStore(): MockStore {
   };
 }
 
-const STORAGE_KEY = 'hia-mock-store';
+export const STORAGE_KEY = 'hia-mock-store';
 
 export function loadStore(): MockStore {
   try {
