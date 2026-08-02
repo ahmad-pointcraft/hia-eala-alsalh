@@ -25,6 +25,7 @@ import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
 import type { Language } from '@/display/types/i18n';
 import type { AdhanMethod, Madhab, HighLatitudeRule, IqamaPrayerConfig } from '@/shared/types/mosqueConfig';
 import { ADHAN_METHODS, HIGH_LATITUDE_RULES } from '@/shared/constants';
+import { api } from '@/shared/api';
 
 interface AdminSettingsDialogProps {
   open: boolean;
@@ -33,7 +34,7 @@ interface AdminSettingsDialogProps {
 }
 
 export function AdminSettingsDialog({ open, onClose, language }: AdminSettingsDialogProps) {
-  const { config, setConfig } = useMosqueConfigStore();
+  const { config, setConfig, masjidId } = useMosqueConfigStore();
   const [tabIndex, setTabIndex] = useState(0);
 
   // Form states initialized from store config
@@ -81,8 +82,8 @@ export function AdminSettingsDialog({ open, onClose, language }: AdminSettingsDi
     }
   };
 
-  const handleSave = () => {
-    setConfig({
+  const handleSave = async () => {
+    const patch = {
       masjidName_en: masjidNameEn,
       masjidName_ar: masjidNameAr,
       latitude,
@@ -99,7 +100,17 @@ export function AdminSettingsDialog({ open, onClose, language }: AdminSettingsDi
         Maghrib: iqamaMaghrib,
         Isha: iqamaIsha,
       },
-    });
+    };
+
+    if (masjidId) {
+      try {
+        await api.updateMasjidConfig(masjidId, patch);
+      } catch {
+        // API failed — still update locally so the display works
+      }
+    }
+
+    setConfig(patch);
     onClose();
   };
 

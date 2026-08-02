@@ -35,6 +35,8 @@ export function PairingCodeScreen({ code }: { code: string | null }) {
           {instruction}
         </Typography>
         <Typography
+          role="status"
+          aria-label={`Pairing code: ${displayCode}`}
           sx={{
             fontFamily: '"Roboto Mono", monospace',
             fontSize: { xs: '4rem', md: '6rem', lg: '8rem' },

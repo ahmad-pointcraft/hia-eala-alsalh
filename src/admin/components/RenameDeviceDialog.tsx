@@ -6,11 +6,10 @@ import {
   DialogActions,
   TextField,
   Button,
+  Alert,
 } from '@mui/material';
 import { api } from '@/shared/api';
 import type { Device } from '@/shared/api';
-
-/* ------------------ RENAME DEVICE DIALOG COMPONENT ------------------ */
 
 interface RenameDeviceDialogProps {
   device: Device | null;
@@ -21,21 +20,24 @@ interface RenameDeviceDialogProps {
 
 export function RenameDeviceDialog({ device, open, onClose, onSaved }: RenameDeviceDialogProps) {
   const [name, setName] = useState('');
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if (device) {
       setName(device.name);
+      setError('');
     }
   }, [device]);
 
   async function handleSave() {
     if (!device) return;
+    setError('');
     try {
       await api.renameDevice(device.id, name);
       onSaved();
       onClose();
     } catch {
-      /* Keep dialog open on error */
+      setError('Failed to rename device. Please try again.');
     }
   }
 
@@ -43,6 +45,7 @@ export function RenameDeviceDialog({ device, open, onClose, onSaved }: RenameDev
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
       <DialogTitle>Rename Device</DialogTitle>
       <DialogContent>
+        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
         <TextField
           autoFocus
           label="Device Name"

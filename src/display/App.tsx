@@ -85,7 +85,7 @@ export default function App() {
     return undefined;
   }, [hijriDate.day, hadith, verse]);
 
-  const eventSlides: EventSlide[] = dynamicEvents.map((e) => ({
+  const eventSlides: EventSlide[] = useMemo(() => dynamicEvents.map((e) => ({
     title: e.title,
     speakerName: e.speakerName,
     dateValue: e.dateValue,
@@ -94,7 +94,7 @@ export default function App() {
     badge: e.badge,
     cta: e.cta,
     imageUrl: e.imageUrl,
-  }));
+  })), [dynamicEvents]);
 
   return (
     <Box

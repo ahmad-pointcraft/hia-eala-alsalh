@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import { Coordinates, PrayerTimes } from 'adhan';
-import { DEFAULT_SUNSET_TIME } from '@/display/data/prayers';
 import type { PrayerTime, NextPrayer } from '@/shared/types/prayer';
 import { getCurrentPrayer, getNextPrayer } from '@/display/utils/prayerTimes';
 import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
@@ -12,6 +11,9 @@ import {
   PRAYER_WINDOW_SEC,
   SILENCE_DURATION_SEC,
 } from '@/display/constants/prayerPhases';
+
+
+const DEFAULT_SUNSET_TIME = '19:28';
 
 // ACTIVE PHASE STATE PAYLOAD
 interface ActivePhaseState {

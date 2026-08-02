@@ -5,11 +5,11 @@ import {
   DialogActions,
   Typography,
   Button,
+  Alert,
 } from '@mui/material';
+import { useState } from 'react';
 import { api } from '@/shared/api';
 import type { Device } from '@/shared/api';
-
-/* ------------------ UNPAIR DEVICE DIALOG COMPONENT ------------------ */
 
 interface UnpairDeviceDialogProps {
   device: Device | null;
@@ -19,14 +19,17 @@ interface UnpairDeviceDialogProps {
 }
 
 export function UnpairDeviceDialog({ device, open, onClose, onUnpaired }: UnpairDeviceDialogProps) {
+  const [error, setError] = useState('');
+
   async function handleUnpair() {
     if (!device) return;
+    setError('');
     try {
       await api.unpairDevice(device.id);
       onUnpaired();
       onClose();
     } catch {
-      /* Keep dialog open on error */
+      setError('Failed to unpair device. Please try again.');
     }
   }
 
@@ -34,6 +37,7 @@ export function UnpairDeviceDialog({ device, open, onClose, onUnpaired }: Unpair
     <Dialog open={open} onClose={onClose} maxWidth="xs">
       <DialogTitle>Unpair Device?</DialogTitle>
       <DialogContent>
+        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
         <Typography>
           This will remove "{device?.name}" from your masjid. The TV will return to its pairing code
           screen.

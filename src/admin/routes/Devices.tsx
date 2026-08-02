@@ -12,6 +12,7 @@ import {
   IconButton,
   TableContainer,
   CircularProgress,
+  Alert,
 } from '@mui/material';
 import { Edit as EditIcon, Delete as DeleteIcon, Add as AddIcon } from '@mui/icons-material';
 import { api } from '@/shared/api';
@@ -27,6 +28,7 @@ export function Devices() {
   const masjidId = session?.masjidId ?? '';
   const [devices, setDevices] = useState<Device[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState('');
   const [addOpen, setAddOpen] = useState(false);
   const [renameTarget, setRenameTarget] = useState<Device | null>(null);
   const [unpairTarget, setUnpairTarget] = useState<Device | null>(null);
@@ -34,11 +36,12 @@ export function Devices() {
   const refresh = useCallback(async () => {
     if (!masjidId) return;
     setLoading(true);
+    setFetchError('');
     try {
       const list = await api.listDevices(masjidId);
       setDevices(list);
     } catch {
-      /* Keep stale list */
+      setFetchError('Failed to load devices. Showing last known list.');
     } finally {
       setLoading(false);
     }
@@ -56,6 +59,8 @@ export function Devices() {
           Add Device
         </Button>
       </Box>
+
+      {fetchError && <Alert severity="warning" sx={{ mb: 2 }}>{fetchError}</Alert>}
 
       {loading ? (
         <CircularProgress />
@@ -81,10 +86,10 @@ export function Devices() {
                   <TableCell>{device.status}</TableCell>
                   <TableCell>{formatLastSeen(device.lastSeenAt)}</TableCell>
                   <TableCell>
-                    <IconButton onClick={() => setRenameTarget(device)} size="small">
+                    <IconButton aria-label="Rename device" onClick={() => setRenameTarget(device)} size="small">
                       <EditIcon fontSize="small" />
                     </IconButton>
-                    <IconButton onClick={() => setUnpairTarget(device)} size="small">
+                    <IconButton aria-label="Unpair device" onClick={() => setUnpairTarget(device)} size="small">
                       <DeleteIcon fontSize="small" />
                     </IconButton>
                   </TableCell>

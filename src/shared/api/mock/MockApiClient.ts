@@ -38,18 +38,23 @@ export class MockApiClient implements ApiClient {
       });
     }
   }
+// NOTIFY ALL SUBSCRIBERS ACROSS TABS WHEN STORAGE CHANGES
 
-  // NOTIFY ALL SUBSCRIBERS ACROSS TABS WHEN STORAGE CHANGES
   private notifyAllSubscribers(): void {
     for (const sub of this.store.realtimeSubscribers) {
       const masjid = this.store.masjids[sub.masjidId];
       if (masjid) {
         sub.handlers.onConfigChange(masjid.config);
+        sub.handlers.onContentChange({
+          announcements: masjid.announcements,
+          events: masjid.events,
+          donations: masjid.donations,
+        });
       }
     }
   }
+// PERSIST MOCK STORE TO LOCALSTORAGE
 
-  // PERSIST MOCK STORE TO LOCALSTORAGE
   private persist(): void {
     saveStore(this.store);
   }
