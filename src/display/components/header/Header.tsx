@@ -20,7 +20,6 @@ import type { Language, Translations } from '@/display/types/i18n';
 import type { HijriDateInfo } from '@/shared/types/mosqueConfig';
 import { getFontFamily, getDirection, toArabicNumerals } from '@/display/utils/helpers';
 import { useThemeMode } from '@/display/theme/ThemeContext';
-import { AdminSettingsDialog } from './AdminSettingsDialog';
 
 interface HeaderProps {
   language: Language;
@@ -43,7 +42,6 @@ export function Header({
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
   const { mode, toggleTheme } = useThemeMode();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [isAdminOpen, setIsAdminOpen] = useState(false);
 
   const isSettingsOpen = Boolean(anchorEl);
 
@@ -55,14 +53,7 @@ export function Header({
     setAnchorEl(null);
   };
 
-  const handleOpenAdmin = () => {
-    setIsAdminOpen(true);
-    handleCloseSettings();
-  };
 
-  const handleCloseAdmin = () => {
-    setIsAdminOpen(false);
-  };
 
   useEffect(() => {
     const goOffline = () => setIsOffline(true);
@@ -319,23 +310,9 @@ export function Header({
               />
             </MenuItem>
 
-            <Box sx={{ borderBottom: '1px solid rgba(255,255,255,0.08)', my: 1 }} />
-
-            <MenuItem onClick={handleOpenAdmin}>
-              <ListItemIcon sx={{ minWidth: '36px !important' }}>
-                <Settings size={16} />
-              </ListItemIcon>
-              <ListItemText>{language === 'ar' ? 'إعدادات المسجد' : 'Mosque Settings'}</ListItemText>
-            </MenuItem>
           </Menu>
         </Box>
       </Toolbar>
-
-      <AdminSettingsDialog
-        open={isAdminOpen}
-        onClose={handleCloseAdmin}
-        language={language}
-      />
     </AppBar>
   );
 }
