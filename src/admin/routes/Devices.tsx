@@ -18,7 +18,7 @@ import { Edit as EditIcon, Delete as DeleteIcon, Add as AddIcon } from '@mui/ico
 import { api } from '@/shared/api';
 import type { Device } from '@/shared/api';
 import { formatLastSeen } from '@/shared/utils';
-import { useSession } from '@/admin/hooks/useSession';
+import { useSession } from '@/admin/store/useSession';
 import { AddDeviceDialog } from '@/admin/components/AddDeviceDialog';
 import { RenameDeviceDialog } from '@/admin/components/RenameDeviceDialog';
 import { UnpairDeviceDialog } from '@/admin/components/UnpairDeviceDialog';

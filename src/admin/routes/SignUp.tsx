@@ -8,7 +8,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import Alert from '@mui/material/Alert';
-import { useSession } from '@/admin/hooks/useSession';
+import { useSession } from '@/admin/store/useSession';
 
 export function SignUp() {
   const [email, setEmail] = useState('');

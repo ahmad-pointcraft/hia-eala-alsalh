@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { useSession } from '@/admin/hooks/useSession';
+import { useSession } from '@/admin/store/useSession';
 
 export function Preview() {
   const session = useSession((s) => s.session);

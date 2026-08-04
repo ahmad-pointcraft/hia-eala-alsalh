@@ -4,7 +4,7 @@
 
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
-at `specs/013-admin-portal-pairing/plan.md`.
+at `specs/014-admin-timings/plan.md`.
 
 ## Project Context
 
@@ -13,20 +13,19 @@ at `specs/013-admin-portal-pairing/plan.md`.
 - **Source**: Figma export migrated to MUI v7 (Spec 001–004 complete)
 - **Current focus**: Admin Portal & Device Pairing Foundation — single repo, single `package.json`, Vite native two-entry MPA (`src/display/` + `src/admin/` + `src/shared/`); device pairing via a typed `ApiClient` contract backed by MSW mocks (Spec 013)
 
-## Spec 013 Implementation Artifacts
+## Spec 014 Implementation Artifacts
 
 Read these IN ORDER before implementing any task:
 
 | Priority | File | Purpose |
 |----------|------|---------|
-| REQUIRED | `specs/013-admin-portal-pairing/plan.md` | Architecture, monorepo structure, constitution check |
-| REQUIRED | `specs/013-admin-portal-pairing/spec.md` | Feature spec (FR-001→FR-020, SC-001→SC-007, two clarification sessions, tech-lead review notes) |
-| REQUIRED | `specs/013-admin-portal-pairing/research.md` | Design decisions + rationale (incl. cross-origin mock strategy) |
-| REQUIRED | `specs/013-admin-portal-pairing/contracts/api-client.md` | The `ApiClient` interface contract (AuthApi/DeviceApi/ContentApi/RealtimeApi) |
-| REQUIRED | `specs/013-admin-portal-pairing/data-model.md` | Entities, localStorage shapes, display state machine |
-| REQUIRED | `specs/013-admin-portal-pairing/quickstart.md` | Dev setup (single-origin dev server), pairing demo, mock→real swap |
-| REQUIRED | `.specify/memory/constitution.md` | Articles I–IX — non-negotiable constraints |
-| Reference | `specs/013-admin-portal-pairing/checklists/foundation.md` | 41-item requirements-quality checklist (all pass) |
+| REQUIRED | `specs/014-admin-timings/plan.md` | Architecture, file structure, constitution check |
+| REQUIRED | `specs/014-admin-timings/spec.md` | Feature spec (FR-001→FR-017, SC-001→SC-006, two clarification sessions) |
+| REQUIRED | `specs/014-admin-timings/research.md` | Design decisions + rationale (8 decisions) |
+| REQUIRED | `specs/014-admin-timings/data-model.md` | Form state shapes, validation rules, file inventory |
+| REQUIRED | `specs/014-admin-timings/quickstart.md` | Dev setup, manual E2E test guide |
+| REQUIRED | `.specify/memory/constitution.md` | Articles I–X — non-negotiable constraints |
+| Reference | `specs/014-admin-timings/checklists/timings.md` | 38-item requirements-quality checklist (all pass) |
 
 ## Key Design Decisions (post-analysis)
 
@@ -67,9 +66,17 @@ Key rules: MUI-only, TypeScript strict, Yarn, zero dead code, no `any` types.
 
 ```bash
 yarn install        # Install dependencies
-yarn dev            # Start dev server
-yarn build          # Production build
+yarn dev            # Start dev server (display at /, admin at /admin/)
+yarn build          # Production build (both entries)
 yarn typecheck      # TypeScript strict compilation check
 ```
+
+## Design Skills
+
+The following design skills are available. Invoke them during Step 2 (Specify) and Step 8 (Implement) of each spec:
+
+- **`design-taste-frontend`** (Taste Skill v2) — Anti-slop frontend discipline. Use FULLY for display-app specs (visual UI, overlays, kiosk modes). Use ANTI-DEFAULT RULES ONLY (§0.D + §14 pre-flight check) for admin-app specs (forms, CRUD tables — Taste Skill v2 explicitly excludes dashboards).
+- **Project Design Read**: "Reading this as: a 24/7 mosque kiosk display + admin portal, with a dark emerald + gold reverent aesthetic (display) and a light productivity theme (admin), leaning toward MUI v7 Material Design with custom Islamic geometric tokens."
+- See `docs/taste-skill-integration.md` for the full per-spec skill mapping.
 
 <!-- SPECKIT END -->

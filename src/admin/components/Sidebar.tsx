@@ -10,7 +10,7 @@ import {
   ListItemText,
   Typography,
 } from '@mui/material';
-import { useSession } from '@/admin/hooks/useSession';
+import { useSession } from '@/admin/store/useSession';
 import { api } from '@/shared/api';
 import type { MosqueConfig } from '@/shared/types/mosqueConfig';
 
