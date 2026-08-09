@@ -12,10 +12,6 @@ function StubPage({ title, spec }: { title: string; spec: string }) {
   );
 }
 
-export function TimingsStub() {
-  return <StubPage title="Timings Configuration" spec="Spec 014" />;
-}
-
 export function ContentStub() {
   return <StubPage title="Content Management" spec="Spec 015" />;
 }

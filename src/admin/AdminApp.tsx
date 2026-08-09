@@ -10,7 +10,8 @@ import { SignIn } from '@/admin/routes/SignIn';
 import { SignUp } from '@/admin/routes/SignUp';
 import { Devices } from '@/admin/routes/Devices';
 import { Preview } from '@/admin/routes/Preview';
-import { TimingsStub, ContentStub, ImagesStub, SetupsStub } from '@/admin/routes/Stubs';
+import { Timings } from '@/admin/routes/Timings';
+import { ContentStub, ImagesStub, SetupsStub } from '@/admin/routes/Stubs';
 
 export function AdminApp() {
   const adminBasename = `${import.meta.env.BASE_URL}admin`.replace(/\/+/g, '/');
@@ -27,7 +28,7 @@ export function AdminApp() {
             <Route element={<AdminLayout />}>
               <Route path="/" element={<Navigate to="/devices" replace />} />
               <Route path="/devices" element={<Devices />} />
-              <Route path="/timings" element={<TimingsStub />} />
+              <Route path="/timings" element={<Timings />} />
               <Route path="/content" element={<ContentStub />} />
               <Route path="/images" element={<ImagesStub />} />
               <Route path="/setups" element={<SetupsStub />} />
