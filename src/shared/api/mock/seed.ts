@@ -1,5 +1,4 @@
-import { DEFAULT_MOSQUE_CONFIG } from '@/shared/types/mosqueConfig';
-import type { MosqueConfig } from '@/shared/types/mosqueConfig';
+import { DEFAULT_MOSQUE_CONFIG, type MosqueConfig } from '@/shared/types';
 import type { Device, Announcement, MasjidEvent, DonationCampaign, Session, ContentChangePayload } from '../types';
 
 export const DEMO_MASJID_ID = 'masjid-demo-1';

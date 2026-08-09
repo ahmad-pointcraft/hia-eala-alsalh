@@ -1,5 +1,4 @@
-import type { Language } from '@/display/types/i18n';
-import type { WisdomContent } from '@/display/types/wisdom';
+import type { Language, WisdomContent } from '@/display/types';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { getFontFamily, getDirection, toArabicNumerals } from '@/display/utils/helpers';

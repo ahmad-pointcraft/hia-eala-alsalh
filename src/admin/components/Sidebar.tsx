@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { useSession } from '@/admin/store/useSession';
 import { api } from '@/shared/api';
-import type { MosqueConfig } from '@/shared/types/mosqueConfig';
+import type { MosqueConfig } from '@/shared/types';
 
 const DRAWER_WIDTH = 240;
 

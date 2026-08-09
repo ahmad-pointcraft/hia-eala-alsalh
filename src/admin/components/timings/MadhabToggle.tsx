@@ -1,6 +1,6 @@
 import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { useTimingsForm } from '@/admin/store/useTimingsForm';
-import type { Madhab } from '@/shared/types/mosqueConfig';
+import type { Madhab } from '@/shared/types';
 
 export function MadhabToggle() {
   const draft = useTimingsForm((s) => s.draft);

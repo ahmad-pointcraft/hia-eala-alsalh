@@ -1,6 +1,6 @@
 import { MenuItem, TextField } from '@mui/material';
 import { useTimingsForm } from '@/admin/store/useTimingsForm';
-import type { HighLatitudeRule } from '@/shared/types/mosqueConfig';
+import type { HighLatitudeRule } from '@/shared/types';
 
 export function HighLatRuleSelect() {
   const draft = useTimingsForm((s) => s.draft);

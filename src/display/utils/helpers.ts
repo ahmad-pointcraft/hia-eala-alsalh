@@ -1,4 +1,4 @@
-import type { Language } from '@/display/types/i18n';
+import type { Language } from '@/display/types';
 
 export const toArabicNumerals = (text: string | undefined | null): string => {
   if (!text) return '';

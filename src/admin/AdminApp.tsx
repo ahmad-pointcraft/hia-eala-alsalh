@@ -1,6 +1,8 @@
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { adminTheme } from '@/admin/theme/adminTheme';
 import { AuthGate } from '@/admin/components/AuthGate';
 import { AdminLayout } from '@/admin/components/AdminLayout';
@@ -15,8 +17,9 @@ export function AdminApp() {
 
   return (
     <ThemeProvider theme={adminTheme}>
-      <CssBaseline />
-      <BrowserRouter basename={adminBasename}>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <CssBaseline />
+        <BrowserRouter basename={adminBasename}>
         <Routes>
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
@@ -34,6 +37,7 @@ export function AdminApp() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
+      </LocalizationProvider>
     </ThemeProvider>
   );
 }

@@ -1,4 +1,4 @@
-import type { AdhanMethod } from '@/shared/types/mosqueConfig';
+import type { AdhanMethod } from '@/shared/types';
 
 interface MethodLabel {
   label: string;

@@ -1,5 +1,5 @@
-import type { HadithData } from '@/display/types/hadith';
-import type { QuranVerse } from '@/display/types/quran';
+import type { HadithData } from './hadith';
+import type { QuranVerse } from './quran';
 
 export type WisdomContent =
   | { kind: 'hadith'; data: HadithData }

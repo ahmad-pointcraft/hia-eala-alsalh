@@ -1,8 +1,8 @@
 import { useCachedData } from '@/display/hooks/useCachedData';
 import { hijriDayOfYear } from '@/display/utils/hijri';
 import { fetchDailyVerse } from '@/display/services/quran';
-import type { HijriDateInfo } from '@/shared/types/mosqueConfig';
-import type { QuranVerse } from '@/display/types/quran';
+import type { HijriDateInfo } from '@/shared/types';
+import type { QuranVerse } from '@/display/types';
 
 export interface UseDailyQuranVerseResult {
   verse: QuranVerse | undefined;

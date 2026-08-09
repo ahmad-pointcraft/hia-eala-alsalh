@@ -1,4 +1,4 @@
-import type { MosqueConfig } from '@/shared/types/mosqueConfig';
+import type { MosqueConfig } from '@/shared/types';
 
 const DEVICE_TOKEN_KEY = 'hia-device-token';
 const CACHED_CONFIG_KEY = 'hia-cached-config';

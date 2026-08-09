@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 import Close from '@mui/icons-material/Close';
-import type { Language, Translations } from '@/display/types/i18n';
+import type { Language, Translations } from '@/display/types';
 import type { FundraisingData } from '@/display/hooks/useFundraising';
 import { toArabicNumerals, getFontFamily, getDirection } from '@/display/utils/helpers';
 

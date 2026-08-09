@@ -1,4 +1,4 @@
-import type { MosqueConfig } from '@/shared/types/mosqueConfig';
+import type { MosqueConfig } from '@/shared/types';
 
 export type { MosqueConfig };
 

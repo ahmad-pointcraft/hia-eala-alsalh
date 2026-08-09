@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Language, Translations } from '@/display/types/i18n';
+import type { Language, Translations } from '@/display/types';
 import { translations } from '@/display/data/translations';
 
 interface LanguageState {

@@ -2,7 +2,7 @@ import { Volume2, Clock, Users, Star } from 'lucide-react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
-import type { Language, Translations } from '@/display/types/i18n';
+import type { Language, Translations } from '@/display/types';
 import type { PrayerWidgetState } from '@/display/hooks/usePrayerState';
 import { getFontFamily, getDirection, toArabicNumerals } from '@/display/utils/helpers';
 

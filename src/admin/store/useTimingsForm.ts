@@ -1,7 +1,5 @@
 import { create } from 'zustand';
-import { DEFAULT_MOSQUE_CONFIG } from '@/shared/types/mosqueConfig';
-import type { MosqueConfig, IqamaPrayerConfig } from '@/shared/types/mosqueConfig';
-import type { PrayerKey } from '@/shared/types/prayer';
+import { DEFAULT_MOSQUE_CONFIG, type MosqueConfig, type IqamaPrayerConfig, type PrayerKey } from '@/shared/types';
 import { api } from '@/shared/api';
 
 // ==================== TYPES ====================

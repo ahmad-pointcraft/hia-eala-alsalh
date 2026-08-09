@@ -1,4 +1,4 @@
-import type { PrayerKey, PrayerSchedule, PrayerTime, NextPrayer } from '@/shared/types/prayer';
+import type { PrayerKey, PrayerSchedule, PrayerTime, NextPrayer } from '@/shared/types';
 
 export type { PrayerKey, PrayerSchedule, PrayerTime, NextPrayer };
 

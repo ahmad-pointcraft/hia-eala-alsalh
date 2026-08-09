@@ -5,7 +5,7 @@ import type { MasjidEvent } from '@/shared/api';
 import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
 import { useLanguageStore } from '@/display/store/languageStore';
 import { getTranslations } from '@/display/store/languageStore';
-import type { Translations } from '@/display/types/i18n';
+import type { Translations } from '@/display/types';
 import { toArabicNumerals } from '@/display/utils/helpers';
 
 export interface UseEventsResult {

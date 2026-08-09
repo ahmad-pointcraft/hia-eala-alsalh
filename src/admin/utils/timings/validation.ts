@@ -1,4 +1,4 @@
-import type { MosqueConfig } from '@/shared/types/mosqueConfig';
+import type { MosqueConfig } from '@/shared/types';
 
 /**
  * Validate a MosqueConfig draft. Returns a map of field paths to error messages.

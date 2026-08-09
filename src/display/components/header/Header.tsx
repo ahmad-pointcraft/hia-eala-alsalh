@@ -16,8 +16,8 @@ import {
 import { Heart, WifiOff, Settings, Check } from 'lucide-react';
 import LightMode from '@mui/icons-material/LightMode';
 import DarkMode from '@mui/icons-material/DarkMode';
-import type { Language, Translations } from '@/display/types/i18n';
-import type { HijriDateInfo } from '@/shared/types/mosqueConfig';
+import type { Language, Translations } from '@/display/types';
+import type { HijriDateInfo } from '@/shared/types';
 import { getFontFamily, getDirection, toArabicNumerals } from '@/display/utils/helpers';
 import { useThemeMode } from '@/display/theme/ThemeContext';
 

@@ -1,4 +1,4 @@
-import type { QuranVerse } from '@/display/types/quran';
+import type { QuranVerse } from '@/display/types';
 import { ServiceError } from './ServiceError';
 
 const TOTAL_AYAHS = 6236;

@@ -1,5 +1,5 @@
 import { ServiceError } from './ServiceError';
-import type { HijriDateInfo } from '@/shared/types/mosqueConfig';
+import type { HijriDateInfo } from '@/shared/types';
 
 interface AladhanResponse {
   data: {

@@ -1,4 +1,4 @@
-import type { Language, Translations } from '@/display/types/i18n';
+import type { Language, Translations } from '@/display/types';
 
 export type { Language, Translations };
 

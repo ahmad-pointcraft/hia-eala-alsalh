@@ -4,7 +4,7 @@ import { fetchHijriDate } from '@/display/services/aladhan';
 import { computeHijriDate } from '@/display/utils/hijri';
 import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
 import { adhanMethodToAladhanId } from '@/display/utils/adhanMethodFactory';
-import type { HijriDateInfo } from '@/shared/types/mosqueConfig';
+import type { HijriDateInfo } from '@/shared/types';
 
 export interface UseHijriDateResult {
   hijriDate: HijriDateInfo;

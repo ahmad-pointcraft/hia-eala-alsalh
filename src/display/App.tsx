@@ -12,7 +12,7 @@ import { FundraisingOverlay, SilenceOverlay } from './components/overlays';
 
 import { EventSlide, EventSlideshow } from './components/events';
 import { DevTimeController } from './components/DevTimeController';
-import type { WisdomContent } from '@/display/types/wisdom';
+import type { WisdomContent } from '@/display/types';
 import { useLanguage } from '@/display/store';
 import { translations as allTranslations } from '@/display/data/translations';
 import {

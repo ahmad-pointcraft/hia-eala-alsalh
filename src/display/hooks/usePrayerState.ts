@@ -1,10 +1,9 @@
 import { useMemo } from 'react';
 import { Coordinates, PrayerTimes } from 'adhan';
-import type { PrayerTime, NextPrayer } from '@/shared/types/prayer';
+import type { PrayerTime, NextPrayer, IqamaPrayerConfig } from '@/shared/types';
 import { getCurrentPrayer, getNextPrayer } from '@/display/utils/prayerTimes';
 import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
 import { getCalculationParams, getMadhab, getHighLatitudeRule } from '@/display/utils/adhanMethodFactory';
-import type { IqamaPrayerConfig } from '@/shared/types/mosqueConfig';
 import {
   AZAN_MAX_DURATION_SEC,
   STANDING_DURATION_SEC,

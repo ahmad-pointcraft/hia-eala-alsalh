@@ -4,8 +4,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { ImageCarousel } from './ImageCarousel';
-import type { Language } from '@/display/types/i18n';
-import type { EventSlide } from '@/display/types/events';
+import type { Language, EventSlide } from '@/display/types';
 import { getFontFamily, getDirection } from '@/display/utils/helpers';
 
 export type { EventSlide };

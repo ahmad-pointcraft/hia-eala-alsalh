@@ -1,5 +1,4 @@
-import { BUKHARI_HADITH_COUNT } from '@/display/types/hadith';
-import type { HadithData } from '@/display/types/hadith';
+import { BUKHARI_HADITH_COUNT, type HadithData } from '@/display/types';
 import { ServiceError } from './ServiceError';
 
 const CDN_BASE = 'https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions';

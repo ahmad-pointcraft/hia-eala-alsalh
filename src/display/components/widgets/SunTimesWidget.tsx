@@ -1,5 +1,5 @@
 import { Sunrise, Sunset } from 'lucide-react';
-import type { Language, Translations } from '@/display/types/i18n';
+import type { Language, Translations } from '@/display/types';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { toArabicNumerals, getDirection } from '@/display/utils/helpers';
