@@ -4,44 +4,45 @@
 
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
-at `specs/014-admin-timings/plan.md`.
+at `specs/015-admin-content/plan.md`.
 
 ## Project Context
 
 - **App**: Masjid Prayer Time Display — a 24/7 kiosk display for a mosque
 - **Stack**: React 18 + TypeScript (strict) + MUI v7 + Vite + Yarn
 - **Source**: Figma export migrated to MUI v7 (Spec 001–004 complete)
-- **Current focus**: Admin Portal & Device Pairing Foundation — single repo, single `package.json`, Vite native two-entry MPA (`src/display/` + `src/admin/` + `src/shared/`); device pairing via a typed `ApiClient` contract backed by MSW mocks (Spec 013)
+- **Current focus**: Admin Content Management — CRUD UIs for announcements, events, donation campaigns, and carousel images (`/content` + `/images` routes); extends the typed `ContentApi` contract (create/update/delete + reorder + `setActiveDonationCampaign` + image ops) backed by MSW mocks. BREAKING type widening gated behind a Phase 0b display-consumer migration. Zero new deps (Spec 015).
 
-## Spec 014 Implementation Artifacts
+## Spec 015 Implementation Artifacts
 
 Read these IN ORDER before implementing any task:
 
 | Priority | File | Purpose |
 |----------|------|---------|
-| REQUIRED | `specs/014-admin-timings/plan.md` | Architecture, file structure, constitution check |
-| REQUIRED | `specs/014-admin-timings/spec.md` | Feature spec (FR-001→FR-017, SC-001→SC-006, two clarification sessions) |
-| REQUIRED | `specs/014-admin-timings/research.md` | Design decisions + rationale (8 decisions) |
-| REQUIRED | `specs/014-admin-timings/data-model.md` | Form state shapes, validation rules, file inventory |
-| REQUIRED | `specs/014-admin-timings/quickstart.md` | Dev setup, manual E2E test guide |
+| REQUIRED | `specs/015-admin-content/plan.md` | Architecture, file structure, constitution check |
+| REQUIRED | `specs/015-admin-content/spec.md` | Feature spec (FR-001→FR-025, SC-001→SC-008, two clarify decisions) |
+| REQUIRED | `specs/015-admin-content/research.md` | Design decisions + rationale (12 decisions) |
+| REQUIRED | `specs/015-admin-content/data-model.md` | Types, `Update<T>`, `useCrudList<T>`, validation rules, file inventory |
+| REQUIRED | `specs/015-admin-content/quickstart.md` | Dev setup, manual E2E test guide |
 | REQUIRED | `.specify/memory/constitution.md` | Articles I–X — non-negotiable constraints |
-| Reference | `specs/014-admin-timings/checklists/timings.md` | 38-item requirements-quality checklist (all pass) |
+| Reference | `specs/015-admin-content/checklists/content.md` | 51-item requirements-quality checklist (all PASS) |
 
-## Key Design Decisions (post-analysis)
+## Key Design Decisions (binding — re-confirmed at `/speckit.analyze`)
 
-These were resolved during `/speckit.analyze` remediation. Honor them during implementation:
+Honor these during implementation (from Step 1b Pre-Specify Corrections + clarify + research):
 
-1. **IqamaPrayerConfig** is a discriminated union: `{ mode: 'offset'; value: number } | { mode: 'fixed'; value: string }` — NOT a single interface with `value: number | string`
-2. **CacheStore** is a singleton class with `Map<string, CacheEntry<unknown>>` internally and typed `get<T>()/set<T>()` public methods — NOT per-type instances
-3. **useCachedData** accepts `currentTime: Date` in its options object (passed from caller who gets it from `useClock`) — NOT coupled to useClock internally
-4. **HijriDateInfo** type is defined in `src/app/types/mosqueConfig.ts` along with `formatHijriDate()` helper — NOT in a separate file
-5. **BUKHARI_HADITH_COUNT = 7563** is a named constant exported from `src/app/types/hadith.ts` — NOT a magic number
-6. **adhanMethodToAladhanId()** maps 12 AdhanMethod strings to Aladhan numeric IDs — defined in `src/app/utils/adhanMethodFactory.ts`
-7. **Service error handling**: Every service function (aladhan, hadith, quran, googleSheets) wraps fetch in try/catch, returns cached data on failure, throws typed `ServiceError` on total failure — never propagates raw network errors
-8. **Active filtering**: Google Sheets service returns ALL rows (including inactive) — hooks (`useAnnouncements`, `useEvents`) apply the `active === true` filter
-9. **hijriDayOfYear** formula: `(hijriDate.month - 1) * 30 - Math.floor((hijriDate.month - 1) / 2) + hijriDate.day` — same in both useDailyHadith and useDailyQuranVerse
-10. **Midnight rollover**: Date-scoped cache keys change when `currentTime`'s date portion changes → cache miss → re-fetch. No explicit date-boundary detection logic needed.
-11. **Hadith fallback chain**: CDN `.min.json` → `.json` retry → hadith #1 → `ServiceError` (caller falls back to Translations defaults)
+1. **`Update<T>` = `Partial<Omit<T,'id'|'masqidId'>>`** on every `update*` — identity fields un-patchable (P0-4). `Update<DonationCampaign>` additionally omits `active`.
+2. **Event image is an attribute** via `updateEvent({imageUrl})`, NOT a managed list — no `setEventImage` op (P0-5). QR is likewise an attribute (`uploadImage(file,'qr')` → `qrImageUrl`); `StoredImage.kind` is `'carousel'|'event'|'qr'`.
+3. **Donation at-most-one-active is type-enforced** (P1-7, Option A) — `active` excluded from `Update<DonationCampaign>`; activation only via `setActiveDonationCampaign`, which atomically deactivates the rest. Delete-active → zero-active → overlay falls back.
+4. **`useCrudList<T>`** generic hook with OPTIONAL `reorder` (P1-6) — bound for announcements + carousel; omitted for events + donations.
+5. **Reorder via up/down IconButtons only** — NO `@dnd-kit` (P2-12); boundary-disabled (first up / last down).
+6. **Realtime = full-collection snapshot** per mutation via `onContentChange` (P1-8) — display replaces the affected collection and re-renders.
+7. **Optimistic active toggle** — flip → await → revert + error toast on failure (P1-9).
+8. **BREAKING type widening → Phase 0b gate** (P0-2) — migrates every display consumer (`EventSlide`, App.tsx mapping, slideshow, fundraising overlay, Spec 012 fallback) + ticker sanitization (no `dangerouslySetInnerHTML`) + carousel-API-wiring with static fallback; MUST pass `yarn typecheck` before any UI phase.
+9. **Admin paths** are `src/admin/{routes,components,hooks,utils}/` — NOT `src/admin/src/` (P0-1).
+10. **Mock object URLs** — `URL.createObjectURL` on upload, `URL.revokeObjectURL` on delete/overwrite (P2-13); session-only.
+11. **Bilingual** — stacked `BilingualTextField` (rtl ar / ltr en); ≥1 language required to save; display renders the available language when one is empty (Article VIII).
+12. **Zero new production deps** — project is at the 12-cap from Spec 014; 015 adds nothing (Article III). `hadith.ts` DRY refactor is OUT of scope (P1-10).
 
 ## Spec Files
 
@@ -59,7 +60,7 @@ All implementation specs are in `docs/` (gitignored). Read them in order:
 
 ## Constitution
 
-Read `.specify/memory/constitution.md` for the 9 governing articles (Articles I–IX).
+Read `.specify/memory/constitution.md` for the 10 governing articles (Articles I–X).
 Key rules: MUI-only, TypeScript strict, Yarn, zero dead code, no `any` types.
 
 ## Key Commands
