@@ -34,15 +34,25 @@ export interface Announcement {
   text_en: string;
   text_ar: string;
   active: boolean;
+  order: number;
 }
 
 export interface MasjidEvent {
   id: string;
   masjidId: string;
+  badge_en: string;
+  badge_ar: string;
   title_en: string;
   title_ar: string;
+  speaker_en: string;
+  speaker_ar: string;
   date: string;
   time: string;
+  location_en: string;
+  location_ar: string;
+  cta_en: string;
+  cta_ar: string;
+  imageUrl: string | null;
   active: boolean;
 }
 
@@ -53,14 +63,20 @@ export interface DonationCampaign {
   title_ar: string;
   collected: number;
   goal: number;
+  donorCount: number;
+  qrImageUrl: string | null;
   active: boolean;
 }
+
+export type ImageKind = 'carousel' | 'event' | 'qr';
 
 export interface StoredImage {
   id: string;
   masjidId: string;
   url: string;
-  kind: 'carousel' | 'event';
+  name: string;
+  kind: ImageKind;
+  order: number;
 }
 
 export interface ContentChangePayload {

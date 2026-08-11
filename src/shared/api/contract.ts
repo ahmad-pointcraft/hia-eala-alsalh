@@ -1,4 +1,4 @@
-import type { Session, Device, MasjidSummary, MosqueConfig, ContentChangePayload, Announcement, MasjidEvent, DonationCampaign } from './types';
+import type { Session, Device, MasjidSummary, MosqueConfig, ContentChangePayload, Announcement, MasjidEvent, DonationCampaign, StoredImage, ImageKind } from './types';
 
 /**
  * Authentication operations for admin users.
@@ -41,23 +41,67 @@ export interface DeviceApi {
 }
 
 /**
+ * Patch shape accepted by every `update*` method. Excludes the immutable
+ * identity fields so they cannot be patched. (P0-4)
+ *
+ * Note: `Update<DonationCampaign>` additionally omits `active` — activation
+ * flows only through `setActiveDonationCampaign`.
+ */
+export type Update<T> = Partial<Omit<T, 'id' | 'masjidId'>>;
+
+/**
  * Operations for fetching and updating mosque configurations and content.
  */
 export interface ContentApi {
+  // CONFIG
   /** Retrieves the mosque configuration (coordinates, calculation method, names, offsets). */
   getMasjidConfig(masjidId: string): Promise<MosqueConfig>;
-
   /** Applies partial updates to a mosque configuration and broadcasts changes to clients. */
   updateMasjidConfig(masjidId: string, patch: Partial<MosqueConfig>): Promise<MosqueConfig>;
 
+  // ANNOUNCEMENTS
   /** Lists announcements for a masjid. */
   listAnnouncements(masjidId: string): Promise<Announcement[]>;
+  /** Creates an announcement (appended at the end — order = max existing + 1, or 0). */
+  createAnnouncement(masjidId: string, input: Omit<Announcement, 'id' | 'masjidId'>): Promise<Announcement>;
+  /** Partial-updates an announcement; identity fields are un-patchable via `Update<T>`. */
+  updateAnnouncement(id: string, patch: Update<Announcement>): Promise<Announcement>;
+  /** Deletes an announcement. */
+  deleteAnnouncement(id: string): Promise<void>;
+  /** Reorders announcements; `orderedIds` is the full new sequence (dense order persisted). */
+  reorderAnnouncements(masjidId: string, orderedIds: string[]): Promise<void>;
 
+  // EVENTS (ordered by date — no reorder)
   /** Lists community events for a masjid. */
   listEvents(masjidId: string): Promise<MasjidEvent[]>;
+  /** Creates an event. */
+  createEvent(masjidId: string, input: Omit<MasjidEvent, 'id' | 'masjidId'>): Promise<MasjidEvent>;
+  /** Partial-updates an event (event image assigned here via `{ imageUrl }` — P0-5). */
+  updateEvent(id: string, patch: Update<MasjidEvent>): Promise<MasjidEvent>;
+  /** Deletes an event. */
+  deleteEvent(id: string): Promise<void>;
 
-  /** Lists active donation campaigns for a masjid. */
+  // DONATIONS
+  /** Lists donation campaigns for a masjid. */
   listDonations(masjidId: string): Promise<DonationCampaign[]>;
+  /** Creates a donation campaign. */
+  createDonationCampaign(masjidId: string, input: Omit<DonationCampaign, 'id' | 'masjidId'>): Promise<DonationCampaign>;
+  /** Partial-updates a campaign. `active` is NOT patchable — it is excluded from the patch type so activation flows ONLY through `setActiveDonationCampaign` . */
+  updateDonationCampaign(id: string, patch: Partial<Omit<DonationCampaign, 'id' | 'masjidId' | 'active'>>): Promise<DonationCampaign>;
+  /** Deletes a donation campaign. */
+  deleteDonationCampaign(id: string): Promise<void>;
+  /** Activates one campaign and atomically deactivates the rest (the at-most-one-active invariant). */
+  setActiveDonationCampaign(masjidId: string, id: string): Promise<void>;
+
+  // IMAGES
+  /** Uploads an image of the given kind (`'carousel'` rotates; `'event'`/`'qr'` are attributes). Mock returns a blob URL. */
+  uploadImage(masjidId: string, file: File, kind: ImageKind): Promise<StoredImage>;
+  /** Lists stored images of a kind for a masjid. */
+  listImages(masjidId: string, kind: ImageKind): Promise<StoredImage[]>;
+  /** Deletes a stored image; the mock revokes its object URL (P2-13). */
+  deleteImage(id: string): Promise<void>;
+  /** Reorders carousel images; `orderedIds` is the full new sequence (P1-11). */
+  reorderCarouselImages(masjidId: string, orderedIds: string[]): Promise<void>;
 }
 
 /**

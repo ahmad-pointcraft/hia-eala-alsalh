@@ -2,6 +2,14 @@ import { http, HttpResponse } from 'msw';
 import { DEMO_MASJID_ID, createInitialStore } from './seed';
 import { generateId } from '@/shared/utils';
 
+// NOTE (Spec 015): This REST surface is STAGED for the Real adapter (Spec 017).
+// In dev the app talks to MockApiClient directly (it implements ApiClient on an
+// in-memory + localStorage store — no fetch), so these handlers are not on the
+// functional mock path. Content write ops (create/update/delete/reorder/images)
+// are therefore NOT mirrored here — duplicating them would be dead code (Article IV)
+// operating on a disconnected store. They will become live when RealApiClient
+// performs real fetches and MSW intercepts them in dev.
+
 const store = createInitialStore();
 
 export const handlers = [
