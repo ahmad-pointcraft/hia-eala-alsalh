@@ -76,12 +76,12 @@ export function useFundraising(currentTime: Date): UseFundraisingResult {
     const campaign = active[0]!;
     return {
       title: language === 'ar' ? campaign.title_ar : campaign.title_en,
-      description: '',
+      description: language === 'ar' ? campaign.description_ar : campaign.description_en,
       collected: campaign.collected,
       goal: campaign.goal,
-      donors: FALLBACK_DONORS,
-      donateUrl: '',
-      qrImageUrl: qrDonateImage as string,
+      donors: campaign.donorCount,
+      donateUrl: campaign.donateUrl ?? '',
+      qrImageUrl: campaign.qrImageUrl ?? (qrDonateImage as string),
     };
   }, [data, language, translations.fundraising]);
 

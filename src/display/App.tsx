@@ -25,13 +25,14 @@ import {
   useAnnouncements,
   useEvents,
   useFundraising,
+  useCarouselImages,
 } from '@/display/hooks';
 import { floatingCardSx } from '@/display/theme/sharedStyles';
 import mosque1 from '../assets/mosque-1.jpg';
 import mosque2 from '../assets/mosque-2.jpg';
 import mosque3 from '../assets/mosque-3.jpg';
 
-const carouselImages = [mosque1, mosque2, mosque3];
+const STATIC_CAROUSEL_FALLBACK = [mosque1, mosque2, mosque3];
 
 export default function App() {
   const { language, toggleLanguage, t, dir } = useLanguage();
@@ -61,6 +62,8 @@ export default function App() {
   const { announcements: dynamicAnnouncements } = useAnnouncements(currentTime);
   const { events: dynamicEvents } = useEvents(currentTime);
   const { fundraising: fundraisingData } = useFundraising(currentTime);
+  const { carouselImages: apiCarouselImages } = useCarouselImages(currentTime);
+  const carouselImages = apiCarouselImages.length > 0 ? apiCarouselImages : STATIC_CAROUSEL_FALLBACK;
 
   const fallbackHadith = useMemo(() => ({
     kind: 'hadith' as const,

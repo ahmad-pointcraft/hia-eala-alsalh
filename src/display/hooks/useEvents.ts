@@ -31,13 +31,14 @@ export function useEvents(currentTime: Date): UseEventsResult {
     if (active.length === 0) return translations.events;
 
     return active.map((e) => ({
-      badge: language === 'ar' ? 'حدث' : 'Event',
+      badge: language === 'ar' ? e.badge_ar : e.badge_en,
       title: language === 'ar' ? e.title_ar : e.title_en,
-      speakerName: '',
+      speakerName: language === 'ar' ? e.speaker_ar : e.speaker_en,
       dateValue: language === 'ar' ? toArabicNumerals(e.date) : e.date,
       timeValue: language === 'ar' ? toArabicNumerals(e.time) : e.time,
-      locationValue: '',
-      cta: '',
+      locationValue: language === 'ar' ? e.location_ar : e.location_en,
+      cta: language === 'ar' ? e.cta_ar : e.cta_en,
+      imageUrl: e.imageUrl ?? undefined,
     }));
   }, [data, language, translations.events]);
 

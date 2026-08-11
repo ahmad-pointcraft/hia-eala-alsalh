@@ -61,9 +61,12 @@ export interface DonationCampaign {
   masjidId: string;
   title_en: string;
   title_ar: string;
+  description_en: string;
+  description_ar: string;
   collected: number;
   goal: number;
   donorCount: number;
+  donateUrl: string | null;
   qrImageUrl: string | null;
   active: boolean;
 }

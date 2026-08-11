@@ -144,23 +144,25 @@ export function EventSlideshow({ events, images, interval = 5000, language }: Ev
             {event.title}
           </Typography>
 
-          <Typography
-            sx={{
-              color: 'primary.main',
-              fontSize: {
-                xs: '19px',
-                sm: '21px',
-                md: '24px',
-                lg: '28px',
-                xl: '32px',
-              },
-              fontWeight: 600,
-              fontFamily: getFontFamily(language),
-              mb: 0.75,
-            }}
-          >
-            {event.speakerName}
-          </Typography>
+          {event.speakerName && (
+            <Typography
+              sx={{
+                color: 'primary.main',
+                fontSize: {
+                  xs: '19px',
+                  sm: '21px',
+                  md: '24px',
+                  lg: '28px',
+                  xl: '32px',
+                },
+                fontWeight: 600,
+                fontFamily: getFontFamily(language),
+                mb: 0.75,
+              }}
+            >
+              {event.speakerName}
+            </Typography>
+          )}
 
           <Box
             sx={{
@@ -181,31 +183,33 @@ export function EventSlideshow({ events, images, interval = 5000, language }: Ev
               {event.dateValue} · {event.timeValue}
             </Typography>
 
-            <Box
-              sx={{
-                px: { xs: 1, sm: 1.5, md: 1.5, lg: 1.5 },
-                py: { xs: 0.25, sm: 0.5, md: 0.5, lg: 0.5 },
-                bgcolor: (theme) =>
-                  theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.06)',
-                border: (theme) =>
-                  theme.palette.mode === 'dark'
-                    ? '1px solid rgba(255,255,255,0.18)'
-                    : '1px solid rgba(0,0,0,0.10)',
-                borderRadius: '8px',
-              }}
-            >
-              <Typography
+            {event.locationValue && (
+              <Box
                 sx={{
-                  color: 'text.soft',
-                  fontSize: { xs: '14px', sm: '16px', md: '17px', lg: '18px' },
-                  fontWeight: 500,
-                  fontFamily: getFontFamily(language),
-                  lineHeight: 1,
+                  px: { xs: 1, sm: 1.5, md: 1.5, lg: 1.5 },
+                  py: { xs: 0.25, sm: 0.5, md: 0.5, lg: 0.5 },
+                  bgcolor: (theme) =>
+                    theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.06)',
+                  border: (theme) =>
+                    theme.palette.mode === 'dark'
+                      ? '1px solid rgba(255,255,255,0.18)'
+                      : '1px solid rgba(0,0,0,0.10)',
+                  borderRadius: '8px',
                 }}
               >
-                {event.locationValue}
-              </Typography>
-            </Box>
+                <Typography
+                  sx={{
+                    color: 'text.soft',
+                    fontSize: { xs: '14px', sm: '16px', md: '17px', lg: '18px' },
+                    fontWeight: 500,
+                    fontFamily: getFontFamily(language),
+                    lineHeight: 1,
+                  }}
+                >
+                  {event.locationValue}
+                </Typography>
+              </Box>
+            )}
           </Box>
 
           {event.cta && (
