@@ -1,18 +1,21 @@
-import type { MosqueConfig } from '@/shared/types';
+import { z } from 'zod';
+import { mosqueConfigSchema } from '@/shared/types/schema';
 
 const DEVICE_TOKEN_KEY = 'hia-device-token';
 const CACHED_CONFIG_KEY = 'hia-cached-config';
 
-export interface DeviceToken {
-  deviceId: string;
-  masjidId: string;
-  pairedAt: number;
-}
+const deviceTokenSchema = z.object({
+  deviceId: z.string(),
+  masjidId: z.string(),
+  pairedAt: z.number(),
+});
+
+export type DeviceToken = z.infer<typeof deviceTokenSchema>;
 
 export function getDeviceToken(): DeviceToken | null {
   try {
     const raw = localStorage.getItem(DEVICE_TOKEN_KEY);
-    return raw ? (JSON.parse(raw) as DeviceToken) : null;
+    return raw ? deviceTokenSchema.parse(JSON.parse(raw)) : null;
   } catch {
     return null;
   }
@@ -26,21 +29,23 @@ export function clearDeviceToken(): void {
   localStorage.removeItem(DEVICE_TOKEN_KEY);
 }
 
-interface CachedConfig {
-  config: MosqueConfig;
-  at: number;
-}
+const cachedConfigSchema = z.object({
+  config: mosqueConfigSchema,
+  at: z.number(),
+});
+
+type CachedConfig = z.infer<typeof cachedConfigSchema>;
 
 export function getCachedConfig(): CachedConfig | null {
   try {
     const raw = localStorage.getItem(CACHED_CONFIG_KEY);
-    return raw ? (JSON.parse(raw) as CachedConfig) : null;
+    return raw ? cachedConfigSchema.parse(JSON.parse(raw)) : null;
   } catch {
     return null;
   }
 }
 
-export function setCachedConfig(config: MosqueConfig): void {
+export function setCachedConfig(config: z.infer<typeof mosqueConfigSchema>): void {
   const cached: CachedConfig = { config, at: Date.now() };
   localStorage.setItem(CACHED_CONFIG_KEY, JSON.stringify(cached));
 }

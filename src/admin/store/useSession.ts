@@ -1,13 +1,14 @@
 import { create } from 'zustand';
 import { api } from '@/shared/api';
 import type { Session } from '@/shared/api';
+import { sessionSchema } from '@/shared/api/schema';
 
 const STORAGE_KEY = 'hia-admin-session';
 
 function loadSession(): Session | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as Session) : null;
+    return raw ? sessionSchema.parse(JSON.parse(raw)) : null;
   } catch {
     return null;
   }

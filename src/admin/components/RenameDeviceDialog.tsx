@@ -1,15 +1,14 @@
 import { useState, useEffect } from 'react';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Button,
-  Alert,
-} from '@mui/material';
+import { z } from 'zod';
+import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Alert } from '@mui/material';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { api } from '@/shared/api';
 import type { Device } from '@/shared/api';
+
+const renameDeviceSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+});
 
 interface RenameDeviceDialogProps {
   device: Device | null;
@@ -19,21 +18,24 @@ interface RenameDeviceDialogProps {
 }
 
 export function RenameDeviceDialog({ device, open, onClose, onSaved }: RenameDeviceDialogProps) {
-  const [name, setName] = useState('');
+  const { register, handleSubmit, reset, formState: { errors, isValid } } = useForm({
+    resolver: zodResolver(renameDeviceSchema),
+    mode: 'onChange',
+  });
   const [error, setError] = useState('');
 
   useEffect(() => {
     if (device) {
-      setName(device.name);
+      reset({ name: device.name });
       setError('');
     }
-  }, [device]);
+  }, [device, reset]);
 
-  async function handleSave() {
+  async function onSubmit(data: { name: string }) {
     if (!device) return;
     setError('');
     try {
-      await api.renameDevice(device.id, name);
+      await api.renameDevice(device.id, data.name);
       onSaved();
       onClose();
     } catch {
@@ -47,17 +49,18 @@ export function RenameDeviceDialog({ device, open, onClose, onSaved }: RenameDev
       <DialogContent>
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
         <TextField
+          {...register('name')}
           autoFocus
           label="Device Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          error={!!errors.name}
+          helperText={errors.name?.message ?? ''}
           fullWidth
           sx={{ mt: 1 }}
         />
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
-        <Button variant="contained" onClick={handleSave}>
+        <Button variant="contained" onClick={handleSubmit(onSubmit)} disabled={!isValid}>
           Save
         </Button>
       </DialogActions>

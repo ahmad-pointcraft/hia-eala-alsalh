@@ -1,90 +1,40 @@
-import type { MosqueConfig } from '@/shared/types';
+import type { z } from 'zod';
+import type { mosqueConfigSchema } from '@/shared/types/schema';
+import {
+  sessionSchema,
+  deviceSchema,
+  pairingCodeSchema,
+  masjidSummarySchema,
+  announcementSchema,
+  masjidEventSchema,
+  donationCampaignSchema,
+  imageKindSchema,
+  storedImageSchema,
+  contentChangePayloadSchema,
+  announcementCreateSchema,
+  announcementUpdateSchema,
+  masjidEventCreateSchema,
+  masjidEventUpdateSchema,
+  donationCreateSchema,
+  donationUpdateSchema,
+} from './schema';
 
-export type { MosqueConfig };
+export type MosqueConfig = z.infer<typeof mosqueConfigSchema>;
 
-export interface Session {
-  user: { id: string; email: string };
-  masjidId: string;
-  token: string;
-}
+export type Session = z.infer<typeof sessionSchema>;
+export type Device = z.infer<typeof deviceSchema>;
+export type PairingCode = z.infer<typeof pairingCodeSchema>;
+export type MasjidSummary = z.infer<typeof masjidSummarySchema>;
+export type Announcement = z.infer<typeof announcementSchema>;
+export type MasjidEvent = z.infer<typeof masjidEventSchema>;
+export type DonationCampaign = z.infer<typeof donationCampaignSchema>;
+export type ImageKind = z.infer<typeof imageKindSchema>;
+export type StoredImage = z.infer<typeof storedImageSchema>;
+export type ContentChangePayload = z.infer<typeof contentChangePayloadSchema>;
 
-export interface Device {
-  id: string;
-  masjidId: string | null;
-  name: string;
-  status: 'paired' | 'unpaired';
-  lastSeenAt: number | null;
-}
-
-export interface PairingCode {
-  code: string;
-  deviceId: string;
-  expiresAt: number;
-}
-
-export interface MasjidSummary {
-  id: string;
-  name_en: string;
-  name_ar: string;
-}
-
-export interface Announcement {
-  id: string;
-  masjidId: string;
-  text_en: string;
-  text_ar: string;
-  active: boolean;
-  order: number;
-}
-
-export interface MasjidEvent {
-  id: string;
-  masjidId: string;
-  badge_en: string;
-  badge_ar: string;
-  title_en: string;
-  title_ar: string;
-  speaker_en: string;
-  speaker_ar: string;
-  date: string;
-  time: string;
-  location_en: string;
-  location_ar: string;
-  cta_en: string;
-  cta_ar: string;
-  imageUrl: string | null;
-  active: boolean;
-}
-
-export interface DonationCampaign {
-  id: string;
-  masjidId: string;
-  title_en: string;
-  title_ar: string;
-  description_en: string;
-  description_ar: string;
-  collected: number;
-  goal: number;
-  donorCount: number;
-  donateUrl: string | null;
-  qrImageUrl: string | null;
-  active: boolean;
-}
-
-export type ImageKind = 'carousel' | 'event' | 'qr';
-
-export interface StoredImage {
-  id: string;
-  masjidId: string;
-  url: string;
-  name: string;
-  kind: ImageKind;
-  order: number;
-}
-
-export interface ContentChangePayload {
-  announcements?: Announcement[];
-  events?: MasjidEvent[];
-  donations?: DonationCampaign[];
-  carouselImages?: StoredImage[];
-}
+export type AnnouncementCreate = z.infer<typeof announcementCreateSchema>;
+export type AnnouncementUpdate = z.infer<typeof announcementUpdateSchema>;
+export type MasjidEventCreate = z.infer<typeof masjidEventCreateSchema>;
+export type MasjidEventUpdate = z.infer<typeof masjidEventUpdateSchema>;
+export type DonationCreate = z.infer<typeof donationCreateSchema>;
+export type DonationUpdate = z.infer<typeof donationUpdateSchema>;

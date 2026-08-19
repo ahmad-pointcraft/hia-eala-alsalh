@@ -95,7 +95,7 @@ export function Timings() {
         {/* MASJID IDENTITY */}
         <Box>
           <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1.5 }}>Masjid Name</Typography>
-          <MasjidNameFields />
+          <MasjidNameFields errors={errors} />
         </Box>
 
         {/* LOCATION */}

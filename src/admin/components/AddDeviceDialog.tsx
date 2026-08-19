@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Alert from '@mui/material/Alert';
+import { z } from 'zod';
+import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Typography, Alert } from '@mui/material';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { api } from '@/shared/api';
+
+const addDeviceSchema = z.object({
+  code: z.string().regex(/^\d{6}$/, 'Enter the 6-digit code'),
+});
 
 interface AddDeviceDialogProps {
   open: boolean;
@@ -16,21 +16,25 @@ interface AddDeviceDialogProps {
 }
 
 export function AddDeviceDialog({ open, onClose, onPaired }: AddDeviceDialogProps) {
-  const [code, setCode] = useState('');
+  const { control, handleSubmit, reset, formState: { isValid } } = useForm({
+    resolver: zodResolver(addDeviceSchema),
+    mode: 'onChange',
+    defaultValues: { code: '' },
+  });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   function handleClose() {
-    setCode('');
+    reset({ code: '' });
     setError('');
     onClose();
   }
 
-  async function handlePair() {
+  async function onSubmit(data: { code: string }) {
     setLoading(true);
     setError('');
     try {
-      await api.pairDevice(code);
+      await api.pairDevice(data.code);
       onPaired();
       handleClose();
     } catch (e) {
@@ -48,20 +52,28 @@ export function AddDeviceDialog({ open, onClose, onPaired }: AddDeviceDialogProp
           Enter the 6-digit code shown on the TV
         </Typography>
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-        <TextField
-          autoFocus
-          label="Pairing Code"
-          value={code}
-          onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-          inputProps={{ inputMode: 'numeric', maxLength: 6 }}
-          placeholder="000000"
-          fullWidth
-          sx={{ '& .MuiInputBase-input': { textAlign: 'center', fontSize: '1.5rem', letterSpacing: '0.3em' } }}
+        <Controller
+          name="code"
+          control={control}
+          render={({ field, fieldState: { error: fieldError } }) => (
+            <TextField
+              {...field}
+              autoFocus
+              label="Pairing Code"
+              onChange={(e) => field.onChange(e.target.value.replace(/\D/g, '').slice(0, 6))}
+              inputProps={{ inputMode: 'numeric', maxLength: 6 }}
+              placeholder="000000"
+              error={!!fieldError}
+              helperText={fieldError?.message ?? ''}
+              fullWidth
+              sx={{ '& .MuiInputBase-input': { textAlign: 'center', fontSize: '1.5rem', letterSpacing: '0.3em' } }}
+            />
+          )}
         />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={handlePair} variant="contained" disabled={code.length !== 6 || loading}>
+        <Button onClick={handleSubmit(onSubmit)} variant="contained" disabled={!isValid || loading}>
           {loading ? 'Pairing…' : 'Pair Device'}
         </Button>
       </DialogActions>

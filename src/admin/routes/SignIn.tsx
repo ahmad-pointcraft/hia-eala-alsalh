@@ -1,29 +1,26 @@
 import { useState } from 'react';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Link from '@mui/material/Link';
-import Alert from '@mui/material/Alert';
+import { Box, Card, CardContent, TextField, Button, Typography, Link, Alert } from '@mui/material';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useSession } from '@/admin/store/useSession';
+import { authFormSchema } from '@/admin/utils/auth';
 
 export function SignIn() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { register, handleSubmit, formState: { errors, isValid } } = useForm({
+    resolver: zodResolver(authFormSchema),
+    mode: 'onBlur',
+  });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const signIn = useSession((s) => s.signIn);
   const navigate = useNavigate();
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  async function onSubmit(data: { email: string; password: string }) {
     setError('');
     setLoading(true);
     try {
-      await signIn(email, password);
+      await signIn(data.email, data.password);
       navigate('/');
     } catch {
       setError('Sign-in failed. Check your credentials.');
@@ -40,24 +37,24 @@ export function SignIn() {
             Admin Sign In
           </Typography>
           {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-          <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField
+              {...register('email')}
               label="Email"
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
+              error={!!errors.email}
+              helperText={errors.email?.message ?? ''}
               fullWidth
             />
             <TextField
+              {...register('password')}
               label="Password"
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
+              error={!!errors.password}
+              helperText={errors.password?.message ?? ''}
               fullWidth
             />
-            <Button type="submit" variant="contained" fullWidth disabled={loading}>
+            <Button type="submit" variant="contained" fullWidth disabled={loading || !isValid}>
               {loading ? 'Signing in…' : 'Sign In'}
             </Button>
           </Box>

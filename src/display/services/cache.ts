@@ -1,3 +1,11 @@
+import { z } from 'zod';
+
+const cacheEnvelopeSchema = z.object({
+  data: z.unknown(),
+  expiresAt: z.number(),
+  cachedAt: z.number(),
+});
+
 interface CacheEntry<T> {
   data: T;
   expiresAt: number;
@@ -18,9 +26,9 @@ class CacheStore {
     try {
       const stored = localStorage.getItem(this.STORAGE_PREFIX + key);
       if (stored) {
-        const entry: CacheEntry<T> = JSON.parse(stored);
+        const entry = cacheEnvelopeSchema.parse(JSON.parse(stored));
         this.memory.set(key, entry as CacheEntry<unknown>);
-        return entry.data;
+        return entry.data as T;
       }
     } catch {
       // localStorage unavailable or corrupted
@@ -54,7 +62,7 @@ class CacheStore {
     try {
       const stored = localStorage.getItem(this.STORAGE_PREFIX + key);
       if (stored) {
-        const entry: CacheEntry<unknown> = JSON.parse(stored);
+        const entry = cacheEnvelopeSchema.parse(JSON.parse(stored));
         return Date.now() > entry.expiresAt;
       }
     } catch {

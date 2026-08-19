@@ -1,55 +1,19 @@
-import type { PrayerKey } from './prayer';
+import type { z } from 'zod';
+import {
+  adhanMethodSchema,
+  madhabSchema,
+  highLatitudeRuleSchema,
+  iqamaPrayerConfigSchema,
+  mosqueConfigSchema,
+  hijriDateInfoSchema,
+} from './schema';
 
-export type AdhanMethod =
-  | 'MuslimWorldLeague'
-  | 'Egyptian'
-  | 'Karachi'
-  | 'UmmAlQura'
-  | 'Dubai'
-  | 'Qatar'
-  | 'Kuwait'
-  | 'MoonsightingCommittee'
-  | 'Singapore'
-  | 'Turkey'
-  | 'Tehran'
-  | 'NorthAmerica';
-
-export type Madhab = 'Shafi' | 'Hanafi';
-
-export type HighLatitudeRule =
-  | 'MiddleOfTheNight'
-  | 'SeventhOfTheNight'
-  | 'TwilightAngle';
-
-export type IqamaPrayerConfig =
-  | { mode: 'offset'; value: number }
-  | { mode: 'fixed'; value: string };
-
-export interface MosqueConfig {
-  latitude: number;
-  longitude: number;
-  calculationMethod: AdhanMethod;
-  madhab: Madhab;
-  highLatitudeRule: HighLatitudeRule;
-  timeZone: string;
-  hijriOffset: -2 | -1 | 0 | 1 | 2;
-  iqamaConfigs: Record<Exclude<PrayerKey, 'Sunrise'>, IqamaPrayerConfig>;
-  masjidName_en: string;
-  masjidName_ar: string;
-  clockOffsetMs: number;
-}
-
-export interface HijriDateInfo {
-  day: number;
-  month: number;
-  monthName_en: string;
-  monthName_ar: string;
-  year: number;
-  weekday_en: string;
-  weekday_ar: string;
-  formatted_en: string;
-  formatted_ar: string;
-}
+export type AdhanMethod = z.infer<typeof adhanMethodSchema>;
+export type Madhab = z.infer<typeof madhabSchema>;
+export type HighLatitudeRule = z.infer<typeof highLatitudeRuleSchema>;
+export type IqamaPrayerConfig = z.infer<typeof iqamaPrayerConfigSchema>;
+export type MosqueConfig = z.infer<typeof mosqueConfigSchema>;
+export type HijriDateInfo = z.infer<typeof hijriDateInfoSchema>;
 
 export function formatHijriDate(
   info: HijriDateInfo,
