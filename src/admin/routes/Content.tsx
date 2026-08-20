@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Box, Tab, Tabs, Typography } from '@mui/material';
 import { AnnouncementsTab } from '@/admin/components/content/AnnouncementsTab';
 import { EventsTab } from '@/admin/components/content/EventsTab';
+import { DonationsTab } from '@/admin/components/content/DonationsTab';
 
 export function Content() {
   const [tab, setTab] = useState(0);
@@ -16,9 +17,11 @@ export function Content() {
       >
         <Tab label="Announcements" />
         <Tab label="Events" />
+        <Tab label="Donations" />
       </Tabs>
       {tab === 0 && <AnnouncementsTab />}
       {tab === 1 && <EventsTab />}
+      {tab === 2 && <DonationsTab />}
     </Box>
   );
 }
