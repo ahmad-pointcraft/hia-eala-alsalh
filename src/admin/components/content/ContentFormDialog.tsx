@@ -20,6 +20,7 @@ export interface ContentFormDialogProps<T extends FieldValues> {
   defaultValues?: T;
   onSave: (values: T) => void;
   onClose: () => void;
+  children?: React.ReactNode;
 }
 
 export function ContentFormDialog<T extends FieldValues>({
@@ -30,6 +31,7 @@ export function ContentFormDialog<T extends FieldValues>({
   defaultValues,
   onSave,
   onClose,
+  children,
 }: ContentFormDialogProps<T>) {
   const { register, handleSubmit, reset, formState: { errors, isDirty } } = useForm<T>({
     resolver,
@@ -107,6 +109,7 @@ export function ContentFormDialog<T extends FieldValues>({
                 );
               })}
             </Stack>
+            {children}
           </DialogContent>
           <DialogActions>
             <Button color="inherit" onClick={requestClose}>Cancel</Button>

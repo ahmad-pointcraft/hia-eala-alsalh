@@ -30,6 +30,7 @@ export interface ContentListProps<T extends { id: string }> {
   onDelete?: (item: T) => void;
   getItemName: (item: T) => string;
   onReorder?: (index: number, direction: 'up' | 'down') => void;
+  isRowFaded?: (item: T) => boolean;
 }
 
 export function ContentList<T extends { id: string }>({
@@ -44,6 +45,7 @@ export function ContentList<T extends { id: string }>({
   onDelete,
   getItemName,
   onReorder,
+  isRowFaded,
 }: ContentListProps<T>) {
   const actionCount = (onEdit ? 1 : 0) + (onDelete ? 1 : 0) + (onReorder ? 1 : 0);
   const hasActions = actionCount > 0;
@@ -109,7 +111,11 @@ export function ContentList<T extends { id: string }>({
         </TableHead>
         <TableBody>
           {items.map((item, index) => (
-            <TableRow key={item.id} hover>
+            <TableRow
+              key={item.id}
+              hover
+              sx={isRowFaded?.(item) ? { '& td': { opacity: 0.5 } } : undefined}
+            >
               {columns.map((col) => (
                 <TableCell key={col.header} sx={{ width: col.width }}>
                   {col.render(item)}
