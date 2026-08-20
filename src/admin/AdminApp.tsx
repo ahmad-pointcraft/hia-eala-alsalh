@@ -19,7 +19,8 @@ import { Devices } from '@/admin/routes/Devices';
 import { Preview } from '@/admin/routes/Preview';
 import { Timings } from '@/admin/routes/Timings';
 import { Content } from '@/admin/routes/Content';
-import { ImagesStub, SetupsStub } from '@/admin/routes/Stubs';
+import { Images } from '@/admin/routes/Images';
+import { SetupsStub } from '@/admin/routes/Stubs';
 import { ToastProvider } from '@/admin/components/ToastProvider';
 
 export function AdminApp() {
@@ -38,7 +39,7 @@ export function AdminApp() {
                 <Route path="/devices" element={<Devices />} />
                 <Route path="/timings" element={<Timings />} />
                 <Route path="/content" element={<Content />} />
-                <Route path="/images" element={<ImagesStub />} />
+                <Route path="/images" element={<Images />} />
                 <Route path="/setups" element={<SetupsStub />} />
                 <Route path="/preview" element={<Preview />} />
               </Route>

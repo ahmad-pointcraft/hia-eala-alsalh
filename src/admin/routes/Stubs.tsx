@@ -12,10 +12,6 @@ function StubPage({ title, spec }: { title: string; spec: string }) {
   );
 }
 
-export function ImagesStub() {
-  return <StubPage title="Image Management" spec="Spec 015" />;
-}
-
 export function SetupsStub() {
   return <StubPage title="Settings" spec="Spec 016" />;
 }
