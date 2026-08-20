@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import type { z } from 'zod';
 import { Box, Button, Chip, Stack, Typography } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
@@ -7,7 +7,7 @@ import { api } from '@/shared/api';
 import type { MasjidEvent, Update } from '@/shared/api';
 import { useSession } from '@/admin/store/useSession';
 import { useCrudList } from '@/admin/hooks/useCrudList';
-import { useBoolean } from '@/shared/hooks/useBoolean';
+import { useCrudDialogs } from '@/admin/hooks/useCrudDialogs';
 import { useToast } from '@/admin/components/ToastProvider';
 import { eventFormSchema } from '@/admin/utils/content/validation';
 import { ContentList } from './ContentList';
@@ -33,10 +33,7 @@ export function EventsTab() {
       remove: api.deleteEvent,
     });
 
-  const form = useBoolean();
-  const [editing, setEditing] = useState<MasjidEvent | null>(null);
-  const [deleteTarget, setDeleteTarget] = useState<MasjidEvent | null>(null);
-  const [draftImage, setDraftImage] = useState<string | null>(null);
+  const dialogs = useCrudDialogs<MasjidEvent>((e) => e.imageUrl);
   const toast = useToast();
 
   const sorted = useMemo(
@@ -76,13 +73,13 @@ export function EventsTab() {
 
   async function handleSave(values: EventFormValues) {
     try {
-      if (editing) {
-        await updateOptimistic(editing.id, { ...values, imageUrl: draftImage });
+      if (dialogs.editing) {
+        await updateOptimistic(dialogs.editing.id, { ...values, imageUrl: dialogs.draftImage });
         toast.success('Event updated');
       } else {
         await create({
           ...values,
-          imageUrl: draftImage,
+          imageUrl: dialogs.draftImage,
           active: true,
         });
         toast.success('Event created');
@@ -93,33 +90,21 @@ export function EventsTab() {
   }
 
   async function handleDelete() {
-    if (!deleteTarget) return;
+    if (!dialogs.deleteTarget) return;
     try {
-      await remove(deleteTarget.id);
+      await remove(dialogs.deleteTarget.id);
       toast.success('Event deleted');
     } catch {
       toast.error('Failed to delete event');
     } finally {
-      setDeleteTarget(null);
+      dialogs.clearDelete();
     }
-  }
-
-  function openCreate() {
-    setEditing(null);
-    setDraftImage(null);
-    form.onTrue();
-  }
-
-  function openEdit(item: MasjidEvent) {
-    setEditing(item);
-    setDraftImage(item.imageUrl);
-    form.onTrue();
   }
 
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={openCreate}>
+        <Button variant="contained" startIcon={<AddIcon />} onClick={dialogs.openCreate}>
           Add Event
         </Button>
       </Box>
@@ -137,15 +122,15 @@ export function EventsTab() {
           onToggle: handleToggle,
           ariaLabel: (item) => `Toggle event ${item.title_en || item.title_ar}`,
         }}
-        onEdit={openEdit}
-        onDelete={(item) => setDeleteTarget(item)}
+        onEdit={dialogs.openEdit}
+        onDelete={dialogs.requestDelete}
         getItemName={(item) => item.title_en || item.title_ar || 'event'}
         isRowFaded={(item) => isPast(item.date)}
       />
 
       <ContentFormDialog<EventFormValues>
-        open={form.value}
-        title={editing ? 'Edit Event' : 'Add Event'}
+        open={dialogs.formOpen}
+        title={dialogs.editing ? 'Edit Event' : 'Add Event'}
         fields={[
           { kind: 'bilingual', key: 'title', label: 'Title', required: true },
           { kind: 'bilingual', key: 'badge', label: 'Badge' },
@@ -156,22 +141,22 @@ export function EventsTab() {
           { kind: 'bilingual', key: 'cta', label: 'Call to action' },
         ]}
         resolver={zodResolver(eventFormSchema)}
-        defaultValues={editing ?? undefined}
+        defaultValues={dialogs.editing ?? undefined}
         onSave={handleSave}
-        onClose={() => { form.onFalse(); setEditing(null); }}
+        onClose={dialogs.closeForm}
       >
         <EventImagePicker
-          eventId={editing?.id ?? null}
-          imageUrl={draftImage}
-          onImageSelected={setDraftImage}
+          eventId={dialogs.editing?.id ?? null}
+          imageUrl={dialogs.draftImage}
+          onImageSelected={dialogs.setDraftImage}
         />
       </ContentFormDialog>
 
       <ConfirmDeleteDialog
-        open={deleteTarget !== null}
-        itemName={deleteTarget ? (deleteTarget.title_en || deleteTarget.title_ar || 'this event') : ''}
+        open={dialogs.deleteTarget !== null}
+        itemName={dialogs.deleteTarget ? (dialogs.deleteTarget.title_en || dialogs.deleteTarget.title_ar || 'this event') : ''}
         onConfirm={handleDelete}
-        onCancel={() => setDeleteTarget(null)}
+        onCancel={dialogs.clearDelete}
       />
     </Box>
   );

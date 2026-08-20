@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import type { z } from 'zod';
 import { Box, Button, Typography } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
@@ -7,7 +6,7 @@ import { api } from '@/shared/api';
 import type { DonationCampaign } from '@/shared/api';
 import { useSession } from '@/admin/store/useSession';
 import { useCrudList } from '@/admin/hooks/useCrudList';
-import { useBoolean } from '@/shared/hooks/useBoolean';
+import { useCrudDialogs } from '@/admin/hooks/useCrudDialogs';
 import { useToast } from '@/admin/components/ToastProvider';
 import { donationFormSchema } from '@/admin/utils/content/validation';
 import { ContentList } from './ContentList';
@@ -32,10 +31,7 @@ export function DonationsTab() {
       remove: api.deleteDonationCampaign,
     });
 
-  const form = useBoolean();
-  const [editing, setEditing] = useState<DonationCampaign | null>(null);
-  const [deleteTarget, setDeleteTarget] = useState<DonationCampaign | null>(null);
-  const [draftQr, setDraftQr] = useState<string | null>(null);
+  const dialogs = useCrudDialogs<DonationCampaign>((c) => c.qrImageUrl);
   const toast = useToast();
 
   const columns: Column<DonationCampaign>[] = [
@@ -66,10 +62,10 @@ export function DonationsTab() {
   }
 
   async function handleSave(values: DonationFormValues) {
-    const payload = { ...values, donateUrl: values.donateUrl || null, qrImageUrl: draftQr };
+    const payload = { ...values, donateUrl: values.donateUrl || null, qrImageUrl: dialogs.draftImage };
     try {
-      if (editing) {
-        await update(editing.id, payload);
+      if (dialogs.editing) {
+        await update(dialogs.editing.id, payload);
         toast.success('Campaign updated');
       } else {
         await create({ ...payload, active: false });
@@ -81,10 +77,10 @@ export function DonationsTab() {
   }
 
   async function handleDelete() {
-    if (!deleteTarget) return;
-    const wasActive = deleteTarget.active;
+    if (!dialogs.deleteTarget) return;
+    const wasActive = dialogs.deleteTarget.active;
     try {
-      await remove(deleteTarget.id);
+      await remove(dialogs.deleteTarget.id);
       toast.success(
         wasActive
           ? 'Active campaign deleted — overlay falls back until another is activated'
@@ -93,26 +89,14 @@ export function DonationsTab() {
     } catch {
       toast.error('Failed to delete campaign');
     } finally {
-      setDeleteTarget(null);
+      dialogs.clearDelete();
     }
-  }
-
-  function openCreate() {
-    setEditing(null);
-    setDraftQr(null);
-    form.onTrue();
-  }
-
-  function openEdit(item: DonationCampaign) {
-    setEditing(item);
-    setDraftQr(item.qrImageUrl);
-    form.onTrue();
   }
 
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={openCreate}>
+        <Button variant="contained" startIcon={<AddIcon />} onClick={dialogs.openCreate}>
           Add Campaign
         </Button>
       </Box>
@@ -130,14 +114,14 @@ export function DonationsTab() {
           onToggle: handleActivate,
           ariaLabel: (item) => `Activate campaign ${item.title_en || item.title_ar}`,
         }}
-        onEdit={openEdit}
-        onDelete={(item) => setDeleteTarget(item)}
+        onEdit={dialogs.openEdit}
+        onDelete={dialogs.requestDelete}
         getItemName={(item) => item.title_en || item.title_ar || 'campaign'}
       />
 
       <ContentFormDialog<DonationFormValues>
-        open={form.value}
-        title={editing ? 'Edit Campaign' : 'Add Campaign'}
+        open={dialogs.formOpen}
+        title={dialogs.editing ? 'Edit Campaign' : 'Add Campaign'}
         fields={[
           { kind: 'bilingual', key: 'title', label: 'Title', required: true },
           { kind: 'bilingual', key: 'description', label: 'Description', required: true, multiline: true },
@@ -147,22 +131,22 @@ export function DonationsTab() {
           { kind: 'text', key: 'donateUrl', label: 'Donate URL (optional)', placeholder: 'https://…' },
         ]}
         resolver={zodResolver(donationFormSchema)}
-        defaultValues={editing ?? undefined}
+        defaultValues={dialogs.editing ?? undefined}
         onSave={handleSave}
-        onClose={() => { form.onFalse(); setEditing(null); }}
+        onClose={dialogs.closeForm}
       >
         <QrImagePicker
-          campaignId={editing?.id ?? null}
-          qrImageUrl={draftQr}
-          onQrSelected={setDraftQr}
+          campaignId={dialogs.editing?.id ?? null}
+          qrImageUrl={dialogs.draftImage}
+          onQrSelected={dialogs.setDraftImage}
         />
       </ContentFormDialog>
 
       <ConfirmDeleteDialog
-        open={deleteTarget !== null}
-        itemName={deleteTarget ? (deleteTarget.title_en || deleteTarget.title_ar || 'this campaign') : ''}
+        open={dialogs.deleteTarget !== null}
+        itemName={dialogs.deleteTarget ? (dialogs.deleteTarget.title_en || dialogs.deleteTarget.title_ar || 'this campaign') : ''}
         onConfirm={handleDelete}
-        onCancel={() => setDeleteTarget(null)}
+        onCancel={dialogs.clearDelete}
       />
     </Box>
   );

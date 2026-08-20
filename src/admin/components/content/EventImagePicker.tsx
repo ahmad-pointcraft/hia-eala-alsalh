@@ -5,7 +5,7 @@ import { api } from '@/shared/api';
 import { validateImageFile } from '@/admin/utils/content/imageGuard';
 import { useToast } from '@/admin/components/ToastProvider';
 
-/** Event image picker — the image is an ATTRIBUTE of the event, assigned via `updateEvent({ imageUrl })` on save (P0-5). */
+// EVENT IMAGE IS AN ATTRIBUTE — ASSIGNED VIA updateEvent({ imageUrl }) ON SAVE
 export interface EventImagePickerProps {
   eventId: string | null;
   imageUrl: string | null;

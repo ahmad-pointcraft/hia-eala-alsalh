@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import type { z } from 'zod';
 import { Box, Button, Typography } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
@@ -7,7 +7,7 @@ import { api } from '@/shared/api';
 import type { Announcement, Update } from '@/shared/api';
 import { useSession } from '@/admin/store/useSession';
 import { useCrudList } from '@/admin/hooks/useCrudList';
-import { useBoolean } from '@/shared/hooks/useBoolean';
+import { useCrudDialogs } from '@/admin/hooks/useCrudDialogs';
 import { useToast } from '@/admin/components/ToastProvider';
 import { announcementFormSchema } from '@/admin/utils/content/validation';
 import { ContentList } from './ContentList';
@@ -29,9 +29,7 @@ export function AnnouncementsTab() {
       reorder: api.reorderAnnouncements,
     });
 
-  const form = useBoolean();
-  const [editing, setEditing] = useState<Announcement | null>(null);
-  const [deleteTarget, setDeleteTarget] = useState<Announcement | null>(null);
+  const dialogs = useCrudDialogs<Announcement>();
   const toast = useToast();
 
   const sorted = useMemo(() => [...items].sort((a, b) => a.order - b.order), [items]);
@@ -69,8 +67,8 @@ export function AnnouncementsTab() {
 
   async function handleSave(values: AnnouncementFormValues) {
     try {
-      if (editing) {
-        await updateOptimistic(editing.id, values);
+      if (dialogs.editing) {
+        await updateOptimistic(dialogs.editing.id, values);
         toast.success('Announcement updated');
       } else {
         await create({ ...values, active: true, order: 0 });
@@ -82,25 +80,21 @@ export function AnnouncementsTab() {
   }
 
   async function handleDelete() {
-    if (!deleteTarget) return;
+    if (!dialogs.deleteTarget) return;
     try {
-      await remove(deleteTarget.id);
+      await remove(dialogs.deleteTarget.id);
       toast.success('Announcement deleted');
     } catch {
       toast.error('Failed to delete announcement');
     } finally {
-      setDeleteTarget(null);
+      dialogs.clearDelete();
     }
   }
 
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => { setEditing(null); form.onTrue(); }}
-        >
+        <Button variant="contained" startIcon={<AddIcon />} onClick={dialogs.openCreate}>
           Add Announcement
         </Button>
       </Box>
@@ -118,27 +112,27 @@ export function AnnouncementsTab() {
           onToggle: handleToggle,
           ariaLabel: (item) => `Toggle announcement ${item.text_en || item.text_ar}`,
         }}
-        onEdit={(item) => { setEditing(item); form.onTrue(); }}
-        onDelete={(item) => setDeleteTarget(item)}
+        onEdit={dialogs.openEdit}
+        onDelete={dialogs.requestDelete}
         getItemName={(item) => item.text_en || item.text_ar || 'announcement'}
         onReorder={handleReorder}
       />
 
       <ContentFormDialog<AnnouncementFormValues>
-        open={form.value}
-        title={editing ? 'Edit Announcement' : 'Add Announcement'}
+        open={dialogs.formOpen}
+        title={dialogs.editing ? 'Edit Announcement' : 'Add Announcement'}
         fields={[{ kind: 'bilingual', key: 'text', label: 'Text', required: true, multiline: true }]}
         resolver={zodResolver(announcementFormSchema)}
-        defaultValues={editing ? { text_en: editing.text_en, text_ar: editing.text_ar } : undefined}
+        defaultValues={dialogs.editing ? { text_en: dialogs.editing.text_en, text_ar: dialogs.editing.text_ar } : undefined}
         onSave={handleSave}
-        onClose={() => { form.onFalse(); setEditing(null); }}
+        onClose={dialogs.closeForm}
       />
 
       <ConfirmDeleteDialog
-        open={deleteTarget !== null}
-        itemName={deleteTarget ? (deleteTarget.text_en || deleteTarget.text_ar || 'this announcement') : ''}
+        open={dialogs.deleteTarget !== null}
+        itemName={dialogs.deleteTarget ? (dialogs.deleteTarget.text_en || dialogs.deleteTarget.text_ar || 'this announcement') : ''}
         onConfirm={handleDelete}
-        onCancel={() => setDeleteTarget(null)}
+        onCancel={dialogs.clearDelete}
       />
     </Box>
   );
