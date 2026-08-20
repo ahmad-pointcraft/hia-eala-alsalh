@@ -1,11 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import {
   Box,
   Stack,
   Typography,
   Button,
   Alert,
-  Snackbar,
   Skeleton,
   Dialog,
   DialogTitle,
@@ -16,6 +15,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
 import { useTimingsForm } from '@/admin/store/useTimingsForm';
 import { useDirtyGuard } from '@/admin/hooks/useDirtyGuard';
+import { useToast } from '@/admin/components/ToastProvider';
 import { validateConfig, isValid } from '@/admin/utils/timings/validation';
 
 import { MasjidNameFields } from '@/admin/components/timings/MasjidNameFields';
@@ -49,13 +49,7 @@ export function Timings() {
 
   // DIRTY GUARD
   const blocker = useDirtyGuard(dirty);
-
-  // SNACKBAR STATE
-  const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({
-    open: false,
-    message: '',
-    severity: 'success',
-  });
+  const toast = useToast();
 
   // VALIDATION
   const errors = useMemo(() => validateConfig(draft), [draft]);
@@ -67,9 +61,9 @@ export function Timings() {
     if (!masjidId) return;
     const success = await save(masjidId, draft);
     if (success) {
-      setSnackbar({ open: true, message: 'Saved — paired displays updated', severity: 'success' });
+      toast.success('Saved — paired displays updated');
     } else {
-      setSnackbar({ open: true, message: error ?? 'Failed to save timings', severity: 'error' });
+      toast.error(error ?? 'Failed to save timings');
     }
   }
 
@@ -150,21 +144,6 @@ export function Timings() {
           </Button>
         </Stack>
       </Stack>
-
-      {/* SNACKBAR */}
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={4000}
-        onClose={() => setSnackbar((s) => ({ ...s, open: false }))}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert
-          severity={snackbar.severity}
-          onClose={() => setSnackbar((s) => ({ ...s, open: false }))}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
 
       {/* DIRTY GUARD DIALOG */}
       {blocker.state === 'blocked' && (

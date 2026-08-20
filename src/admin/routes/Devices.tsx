@@ -19,6 +19,7 @@ import { api } from '@/shared/api';
 import type { Device } from '@/shared/api';
 import { formatLastSeen } from '@/shared/utils';
 import { useSession } from '@/admin/store/useSession';
+import { useBoolean } from '@/shared/hooks/useBoolean';
 import { AddDeviceDialog } from '@/admin/components/AddDeviceDialog';
 import { RenameDeviceDialog } from '@/admin/components/RenameDeviceDialog';
 import { UnpairDeviceDialog } from '@/admin/components/UnpairDeviceDialog';
@@ -29,7 +30,7 @@ export function Devices() {
   const [devices, setDevices] = useState<Device[]>([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState('');
-  const [addOpen, setAddOpen] = useState(false);
+  const addDialog = useBoolean();
   const [renameTarget, setRenameTarget] = useState<Device | null>(null);
   const [unpairTarget, setUnpairTarget] = useState<Device | null>(null);
 
@@ -55,7 +56,7 @@ export function Devices() {
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h5">Devices</Typography>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={() => setAddOpen(true)}>
+        <Button variant="contained" startIcon={<AddIcon />} onClick={addDialog.onTrue}>
           Add Device
         </Button>
       </Box>
@@ -100,7 +101,7 @@ export function Devices() {
         </TableContainer>
       )}
 
-      <AddDeviceDialog open={addOpen} onClose={() => setAddOpen(false)} onPaired={refresh} />
+      <AddDeviceDialog open={addDialog.value} onClose={addDialog.onFalse} onPaired={refresh} />
 
       <RenameDeviceDialog
         device={renameTarget}

@@ -20,6 +20,7 @@ export function useCrudList<
   error: string | null;
   create: (input: Omit<T, 'id' | 'masjidId'>) => Promise<void>;
   update: (id: string, patch: P) => Promise<void>;
+  updateOptimistic: (id: string, patch: P) => Promise<void>;
   remove: (id: string) => Promise<void>;
   reorder?: (orderedIds: string[]) => Promise<void>;
   refresh: () => void;
@@ -78,6 +79,20 @@ export function useCrudList<
     [fns],
   );
 
+  const updateOptimistic = useCallback(
+    async (id: string, patch: P) => {
+      const prev = items;
+      setItems(prev.map((item) => (item.id === id ? { ...item, ...patch } : item)));
+      try {
+        await fns.update(id, patch);
+      } catch (err) {
+        if (mounted.current) setItems(prev);
+        throw err;
+      }
+    },
+    [fns, items],
+  );
+
   const remove = useCallback(
     async (id: string) => {
       await fns.remove(id);
@@ -107,6 +122,6 @@ export function useCrudList<
   );
 
   return fns.reorder
-    ? { items, loading, error, create, update, remove, reorder, refresh }
-    : { items, loading, error, create, update, remove, refresh };
+    ? { items, loading, error, create, update, updateOptimistic, remove, reorder, refresh }
+    : { items, loading, error, create, update, updateOptimistic, remove, refresh };
 }

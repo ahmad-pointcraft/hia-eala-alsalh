@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import type { FieldValues, Resolver, Path } from 'react-hook-form';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Stack, InputLabel } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { useDirtyGuard } from '@/admin/hooks/useDirtyGuard';
+import { useBoolean } from '@/shared/hooks/useBoolean';
 
 export type FieldSchema =
   | { kind: 'bilingual'; key: string; label: string; required?: boolean; multiline?: boolean }
@@ -41,10 +42,10 @@ export function ContentFormDialog<T extends FieldValues>({
 
   useDirtyGuard(open && isDirty);
 
-  const [confirmClose, setConfirmClose] = useState(false);
+  const confirmClose = useBoolean();
 
   const requestClose = () => {
-    if (isDirty) setConfirmClose(true);
+    if (isDirty) confirmClose.onTrue();
     else onClose();
   };
 
@@ -114,12 +115,12 @@ export function ContentFormDialog<T extends FieldValues>({
         </form>
       </Dialog>
 
-      <Dialog open={confirmClose} maxWidth="xs" fullWidth>
+      <Dialog open={confirmClose.value} maxWidth="xs" fullWidth>
         <DialogTitle>Unsaved changes</DialogTitle>
         <DialogContent>You have unsaved changes. Leave without saving?</DialogContent>
         <DialogActions>
-          <Button onClick={() => setConfirmClose(false)}>Stay</Button>
-          <Button color="error" onClick={() => { setConfirmClose(false); onClose(); }}>Leave</Button>
+          <Button onClick={confirmClose.onFalse}>Stay</Button>
+          <Button color="error" onClick={() => { confirmClose.onFalse(); onClose(); }}>Leave</Button>
         </DialogActions>
       </Dialog>
     </>

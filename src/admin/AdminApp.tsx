@@ -18,7 +18,9 @@ import { SignUp } from '@/admin/routes/SignUp';
 import { Devices } from '@/admin/routes/Devices';
 import { Preview } from '@/admin/routes/Preview';
 import { Timings } from '@/admin/routes/Timings';
-import { ContentStub, ImagesStub, SetupsStub } from '@/admin/routes/Stubs';
+import { Content } from '@/admin/routes/Content';
+import { ImagesStub, SetupsStub } from '@/admin/routes/Stubs';
+import { ToastProvider } from '@/admin/components/ToastProvider';
 
 export function AdminApp() {
   const adminBasename = `${import.meta.env.BASE_URL}admin`.replace(/\/+/g, '/');
@@ -35,7 +37,7 @@ export function AdminApp() {
                 <Route path="/" element={<Navigate to="/devices" replace />} />
                 <Route path="/devices" element={<Devices />} />
                 <Route path="/timings" element={<Timings />} />
-                <Route path="/content" element={<ContentStub />} />
+                <Route path="/content" element={<Content />} />
                 <Route path="/images" element={<ImagesStub />} />
                 <Route path="/setups" element={<SetupsStub />} />
                 <Route path="/preview" element={<Preview />} />
@@ -53,7 +55,9 @@ export function AdminApp() {
     <ThemeProvider theme={adminTheme}>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <CssBaseline />
-        <RouterProvider router={router} />
+        <ToastProvider>
+          <RouterProvider router={router} />
+        </ToastProvider>
       </LocalizationProvider>
     </ThemeProvider>
   );
