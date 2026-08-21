@@ -1,10 +1,9 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Stack,
   Typography,
   Button,
-  Alert,
   Skeleton,
   Dialog,
   DialogTitle,
@@ -12,7 +11,9 @@ import {
   DialogActions,
 } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
-import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
+import { api } from '@/shared/api';
+import type { MosqueConfig } from '@/shared/types';
+import { useSession } from '@/admin/store/useSession';
 import { useTimingsForm } from '@/admin/store/useTimingsForm';
 import { useDirtyGuard } from '@/admin/hooks/useDirtyGuard';
 import { useToast } from '@/admin/components/ToastProvider';
@@ -28,24 +29,33 @@ import { HijriOffsetControl } from '@/admin/components/timings/HijriOffsetContro
 import { IqamaEditor } from '@/admin/components/timings/IqamaEditor';
 
 export function Timings() {
-  const config = useMosqueConfigStore((s) => s.config);
-  const masjidId = useMosqueConfigStore((s) => s.masjidId);
+  const masjidId = useSession((s) => s.session?.masjidId ?? '');
+  const [loadedConfig, setLoadedConfig] = useState<MosqueConfig | null>(null);
 
   const draft = useTimingsForm((s) => s.draft);
   const dirty = useTimingsForm((s) => s.dirty);
   const saving = useTimingsForm((s) => s.saving);
-  const error = useTimingsForm((s) => s.error);
   const loading = useTimingsForm((s) => s.loading);
   const init = useTimingsForm((s) => s.init);
   const reset = useTimingsForm((s) => s.reset);
   const revert = useTimingsForm((s) => s.revert);
   const save = useTimingsForm((s) => s.save);
 
-  // INIT ON MOUNT, RESET ON UNMOUNT
+  // LOAD CONFIG FROM THE API (admin session scoping — not the display kiosk store)
   useEffect(() => {
-    init(config);
-    return () => reset();
-  }, [config, init, reset]);
+    let cancelled = false;
+    if (!masjidId) return;
+    void api.getMasjidConfig(masjidId).then((config) => {
+      if (!cancelled) {
+        setLoadedConfig(config);
+        init(config);
+      }
+    });
+    return () => {
+      cancelled = true;
+      reset();
+    };
+  }, [masjidId, init, reset]);
 
   // DIRTY GUARD
   const blocker = useDirtyGuard(dirty);
@@ -63,12 +73,12 @@ export function Timings() {
     if (success) {
       toast.success('Saved — paired displays updated');
     } else {
-      toast.error(error ?? 'Failed to save timings');
+      toast.error(useTimingsForm.getState().error ?? 'Failed to save timings');
     }
   }
 
-  // LOADING STATE
-  if (loading) {
+  // LOADING STATE — until the API config arrives
+  if (loading || !loadedConfig) {
     return (
       <Box sx={{ p: 3 }}>
         <Skeleton variant="text" width={200} height={40} />
@@ -82,8 +92,6 @@ export function Timings() {
   return (
     <Box>
       <Typography variant="h5" gutterBottom>Timings Configuration</Typography>
-
-      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
       <Stack spacing={3} sx={{ maxWidth: 700 }}>
         {/* MASJID IDENTITY */}
@@ -138,7 +146,7 @@ export function Timings() {
           <Button
             variant="outlined"
             disabled={!dirty || saving}
-            onClick={() => revert(config)}
+            onClick={() => revert(loadedConfig)}
           >
             Cancel
           </Button>
