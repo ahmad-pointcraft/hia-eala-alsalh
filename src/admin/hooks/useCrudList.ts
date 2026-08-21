@@ -30,6 +30,10 @@ export function useCrudList<
   const [error, setError] = useState<string | null>(null);
   const mounted = useRef(true);
 
+
+  const fnsRef = useRef(fns);
+  fnsRef.current = fns;
+
   useEffect(() => {
     mounted.current = true;
     return () => {
@@ -38,10 +42,14 @@ export function useCrudList<
   }, []);
 
   const refresh = useCallback(() => {
-    if (!masjidId) return;
+    if (!masjidId) {
+      setLoading(false);
+      setError(null);
+      return;
+    };
     setLoading(true);
     setError(null);
-    fns
+    fnsRef.current
       .list(masjidId)
       .then((result) => {
         if (mounted.current) {
@@ -55,7 +63,7 @@ export function useCrudList<
           setLoading(false);
         }
       });
-  }, [masjidId, fns]);
+  }, [masjidId]);
 
   useEffect(() => {
     refresh();

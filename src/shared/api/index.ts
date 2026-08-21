@@ -11,6 +11,4 @@ export function createApiClient(): ApiClient {
   return adapter === 'real' ? createRealApiClient() : createMockApiClient();
 }
 
-// SINGLETON — factory closures yield stable bound references; detached
-// usage (`list: api.listAnnouncements`) is safe by construction.
 export const api: ApiClient = createApiClient();

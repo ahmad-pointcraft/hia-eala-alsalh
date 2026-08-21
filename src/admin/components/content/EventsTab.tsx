@@ -101,6 +101,8 @@ export function EventsTab() {
     }
   }
 
+  const isImageDirty = dialogs.draftImage !== (dialogs.editing?.imageUrl ?? null);
+
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
@@ -142,11 +144,11 @@ export function EventsTab() {
         ]}
         resolver={zodResolver(eventFormSchema)}
         defaultValues={dialogs.editing ?? undefined}
+        extraDirty={isImageDirty}
         onSave={handleSave}
         onClose={dialogs.closeForm}
       >
         <EventImagePicker
-          eventId={dialogs.editing?.id ?? null}
           imageUrl={dialogs.draftImage}
           onImageSelected={dialogs.setDraftImage}
         />

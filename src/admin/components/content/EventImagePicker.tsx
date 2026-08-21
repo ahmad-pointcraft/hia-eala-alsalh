@@ -4,15 +4,16 @@ import { CloudUpload as UploadIcon, Delete as DeleteIcon } from '@mui/icons-mate
 import { api } from '@/shared/api';
 import { validateImageFile } from '@/admin/utils/content/imageGuard';
 import { useToast } from '@/admin/components/ToastProvider';
+import { useSession } from '@/admin/store/useSession';
 
 // EVENT IMAGE IS AN ATTRIBUTE — ASSIGNED VIA updateEvent({ imageUrl }) ON SAVE
 export interface EventImagePickerProps {
-  eventId: string | null;
   imageUrl: string | null;
   onImageSelected: (url: string | null) => void;
 }
 
-export function EventImagePicker({ eventId, imageUrl, onImageSelected }: EventImagePickerProps) {
+export function EventImagePicker({ imageUrl, onImageSelected }: EventImagePickerProps) {
+  const masjidId = useSession((state) => state.session?.masjidId ?? "");
   const inputRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
   const toast = useToast();
@@ -26,7 +27,7 @@ export function EventImagePicker({ eventId, imageUrl, onImageSelected }: EventIm
     }
     setBusy(true);
     try {
-      const stored = await api.uploadImage(eventId ?? 'draft', file, 'event');
+      const stored = await api.uploadImage(masjidId, file, 'event');
       onImageSelected(stored.url);
       toast.success('Image uploaded — click Save to attach it to the event');
     } catch {
@@ -66,20 +67,22 @@ export function EventImagePicker({ eventId, imageUrl, onImageSelected }: EventIm
           </IconButton>
         </Card>
       ) : (
-        <Button
-          fullWidth
-          variant="outlined"
-          startIcon={<UploadIcon />}
-          disabled={busy}
-          onClick={() => inputRef.current?.click()}
-          sx={{ mt: 1, py: 2, borderStyle: 'dashed' }}
-        >
-          {busy ? 'Uploading…' : 'Upload image (optional)'}
-        </Button>
+        <>
+          <Button
+            fullWidth
+            variant="outlined"
+            startIcon={<UploadIcon />}
+            disabled={busy}
+            onClick={() => inputRef.current?.click()}
+            sx={{ mt: 1, py: 2, borderStyle: 'dashed' }}
+          >
+            {busy ? 'Uploading…' : 'Upload image (optional)'}
+          </Button>
+          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
+            Max file size: 2MB
+          </Typography>
+        </>
       )}
-      <Typography variant="caption" color="text.secondary">
-        Image ≤ 2MB. Attached on save via updateEvent({'{ imageUrl }'}).
-      </Typography>
     </Box>
   );
 }

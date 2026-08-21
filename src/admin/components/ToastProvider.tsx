@@ -38,13 +38,16 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  const value = useMemo<ToastContextValue>(() => ({
-    show,
-    success: (message: string) => show(message, 'success'),
-    error: (message: string) => show(message, 'error'),
-    info: (message: string) => show(message, 'info'),
-    warning: (message: string) => show(message, 'warning'),
-  }), [show]);
+  const value = useMemo<ToastContextValue>(
+    () => ({
+      show,
+      success: (message: string) => show(message, 'success'),
+      error: (message: string) => show(message, 'error'),
+      info: (message: string) => show(message, 'info'),
+      warning: (message: string) => show(message, 'warning'),
+    }),
+    [show],
+  );
 
   return (
     <ToastContext.Provider value={value}>
@@ -57,6 +60,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           left: '50%',
           transform: 'translateX(-50%)',
           zIndex: (theme) => theme.zIndex.snackbar,
+          alignItems: 'center',
         }}
       >
         {toasts.map((toast) => (
@@ -64,6 +68,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             key={toast.id}
             open
             autoHideDuration={AUTO_HIDE_MS}
+            sx={{ position: 'static', transform: 'none' }}
             onClose={(_, reason) => {
               if (reason === 'timeout') dismiss(toast.id);
             }}
@@ -72,6 +77,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               severity={toast.severity}
               variant="filled"
               onClose={() => dismiss(toast.id)}
+              sx={{ minWidth: 280, whiteSpace: 'nowrap', alignItems: 'center', boxShadow: 3 }}
             >
               {toast.message}
             </Alert>
@@ -81,7 +87,6 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     </ToastContext.Provider>
   );
 }
-
 
 export function useToast(): ToastContextValue {
   const ctx = useContext(ToastContext);

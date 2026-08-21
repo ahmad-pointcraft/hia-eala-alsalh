@@ -18,6 +18,7 @@ export interface ContentFormDialogProps<T extends FieldValues> {
   fields: FieldSchema[];
   resolver: Resolver<T>;
   defaultValues?: T;
+  extraDirty?: boolean;
   onSave: (values: T) => void;
   onClose: () => void;
   children?: React.ReactNode;
@@ -29,6 +30,7 @@ export function ContentFormDialog<T extends FieldValues>({
   fields,
   resolver,
   defaultValues,
+  extraDirty = false,
   onSave,
   onClose,
   children,
@@ -38,11 +40,13 @@ export function ContentFormDialog<T extends FieldValues>({
     mode: 'onBlur',
   });
 
+  const canSave = isDirty || extraDirty;
+
   useEffect(() => {
     if (open) reset((defaultValues ?? {}) as T);
   }, [open, defaultValues, reset]);
 
-  useDirtyGuard(open && isDirty);
+  useDirtyGuard(open && canSave);
 
   const confirmClose = useBoolean();
 
@@ -113,7 +117,7 @@ export function ContentFormDialog<T extends FieldValues>({
           </DialogContent>
           <DialogActions>
             <Button color="inherit" onClick={requestClose}>Cancel</Button>
-            <Button type="submit" variant="contained" disabled={!isDirty}>Save</Button>
+            <Button type="submit" variant="contained" disabled={!canSave}>Save</Button>
           </DialogActions>
         </form>
       </Dialog>

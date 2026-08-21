@@ -93,6 +93,8 @@ export function DonationsTab() {
     }
   }
 
+  const isQrDirty = dialogs.draftImage !== (dialogs.editing?.qrImageUrl ?? null);
+
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
@@ -132,11 +134,11 @@ export function DonationsTab() {
         ]}
         resolver={zodResolver(donationFormSchema)}
         defaultValues={dialogs.editing ?? undefined}
+        extraDirty={isQrDirty}
         onSave={handleSave}
         onClose={dialogs.closeForm}
       >
         <QrImagePicker
-          campaignId={dialogs.editing?.id ?? null}
           qrImageUrl={dialogs.draftImage}
           onQrSelected={dialogs.setDraftImage}
         />
