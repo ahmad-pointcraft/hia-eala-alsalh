@@ -35,6 +35,14 @@ export const masjidSummarySchema = z.object({
   name_ar: z.string(),
 });
 
+// ==================== BILINGUAL RULE ====================
+
+export const BILINGUAL_MSG = 'At least one language (AR or EN) is required';
+
+export function hasOneLanguage(en: string, ar: string): boolean {
+  return Boolean(en.trim() || ar.trim());
+}
+
 // ==================== ANNOUNCEMENT ====================
 
 const announcementShape = z.object({
@@ -46,13 +54,10 @@ const announcementShape = z.object({
   order: z.number().int().min(0),
 });
 
-const bilingualText = (d: { text_en: string; text_ar: string }) =>
-  d.text_en.trim() || d.text_ar.trim();
-
-export const announcementSchema = announcementShape.refine(bilingualText, {
-  message: 'At least one language (AR or EN) is required',
-  path: ['text'],
-});
+export const announcementSchema = announcementShape.refine(
+  (d) => hasOneLanguage(d.text_en, d.text_ar),
+  { message: BILINGUAL_MSG, path: ['text'] },
+);
 
 export const announcementCreateSchema = announcementShape.omit({ id: true, masjidId: true });
 export const announcementUpdateSchema = announcementCreateSchema.partial();
@@ -79,8 +84,8 @@ const masjidEventShape = z.object({
 });
 
 export const masjidEventSchema = masjidEventShape.refine(
-  (d) => d.title_en.trim() || d.title_ar.trim(),
-  { message: 'At least one language (AR or EN) is required', path: ['title'] },
+  (d) => hasOneLanguage(d.title_en, d.title_ar),
+  { message: BILINGUAL_MSG, path: ['title'] },
 );
 
 export const masjidEventCreateSchema = masjidEventShape.omit({ id: true, masjidId: true });
@@ -103,17 +108,9 @@ const donationCampaignShape = z.object({
   active: z.boolean(),
 });
 
-const bilingualTitle = (d: { title_en: string; title_ar: string }) =>
-  d.title_en.trim() || d.title_ar.trim();
-
-const bilingualDescription = (d: { description_en: string; description_ar: string }) =>
-  d.description_en.trim() || d.description_ar.trim();
-
-const BILINGUAL_MSG = 'At least one language (AR or EN) is required';
-
 export const donationCampaignSchema = donationCampaignShape
-  .refine(bilingualTitle, { message: BILINGUAL_MSG, path: ['title'] })
-  .refine(bilingualDescription, { message: BILINGUAL_MSG, path: ['description'] });
+  .refine((d) => hasOneLanguage(d.title_en, d.title_ar), { message: BILINGUAL_MSG, path: ['title'] })
+  .refine((d) => hasOneLanguage(d.description_en, d.description_ar), { message: BILINGUAL_MSG, path: ['description'] });
 
 export const donationCreateSchema = donationCampaignShape.omit({ id: true, masjidId: true });
 export const donationUpdateSchema = donationCampaignShape

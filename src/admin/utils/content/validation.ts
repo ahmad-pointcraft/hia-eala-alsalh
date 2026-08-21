@@ -1,11 +1,10 @@
 import { z } from 'zod';
-
-const BILINGUAL_MSG = 'At least one language (AR or EN) is required';
+import { BILINGUAL_MSG, hasOneLanguage } from '@/shared/api/schema';
 
 export const announcementFormSchema = z.object({
   text_en: z.string(),
   text_ar: z.string(),
-}).refine(d => d.text_en.trim() || d.text_ar.trim(), { message: BILINGUAL_MSG, path: ['text'] });
+}).refine(d => hasOneLanguage(d.text_en, d.text_ar), { message: BILINGUAL_MSG, path: ['text'] });
 
 export const donationFormSchema = z.object({
   title_en: z.string(),
@@ -17,8 +16,8 @@ export const donationFormSchema = z.object({
   donorCount: z.number().int().min(0, 'Donor count must be \u2265 0'),
   donateUrl: z.union([z.string(), z.null()]),
 })
-  .refine(d => d.title_en.trim() || d.title_ar.trim(), { message: BILINGUAL_MSG, path: ['title'] })
-  .refine(d => d.description_en.trim() || d.description_ar.trim(), { message: BILINGUAL_MSG, path: ['description'] });
+  .refine(d => hasOneLanguage(d.title_en, d.title_ar), { message: BILINGUAL_MSG, path: ['title'] })
+  .refine(d => hasOneLanguage(d.description_en, d.description_ar), { message: BILINGUAL_MSG, path: ['description'] });
 
 export const eventFormSchema = z.object({
   title_en: z.string(),
@@ -33,4 +32,4 @@ export const eventFormSchema = z.object({
   location_ar: z.string(),
   cta_en: z.string(),
   cta_ar: z.string(),
-}).refine(d => d.title_en.trim() || d.title_ar.trim(), { message: BILINGUAL_MSG, path: ['title'] });
+}).refine(d => hasOneLanguage(d.title_en, d.title_ar), { message: BILINGUAL_MSG, path: ['title'] });
