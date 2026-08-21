@@ -115,8 +115,13 @@ export function useCrudList<
     async (orderedIds: string[]) => {
       if (!fns.reorder) return;
       const prev = items;
+      // OPTIMISTIC — rebuild in the given order AND stamp dense order = index,
+      // mirroring what the adapter persists (sort-by-order consumers depend on it)
       const reordered = orderedIds
-        .map((id) => prev.find((item) => item.id === id))
+        .map((id, index) => {
+          const item = prev.find((it) => it.id === id);
+          return item ? ({ ...item, order: index } as T) : undefined;
+        })
         .filter((item): item is T => item !== undefined);
       if (mounted.current) setItems(reordered);
       try {
