@@ -37,24 +37,29 @@ export const masjidSummarySchema = z.object({
 
 // ==================== ANNOUNCEMENT ====================
 
-export const announcementSchema = z.object({
+const announcementShape = z.object({
   id: z.string(),
   masjidId: z.string(),
   text_en: z.string(),
   text_ar: z.string(),
   active: z.boolean(),
   order: z.number().int().min(0),
-}).refine(
-  (d) => d.text_en.trim() || d.text_ar.trim(),
-  { message: 'At least one language (AR or EN) is required', path: ['text'] },
-);
+});
 
-export const announcementCreateSchema = announcementSchema.omit({ id: true, masjidId: true });
+const bilingualText = (d: { text_en: string; text_ar: string }) =>
+  d.text_en.trim() || d.text_ar.trim();
+
+export const announcementSchema = announcementShape.refine(bilingualText, {
+  message: 'At least one language (AR or EN) is required',
+  path: ['text'],
+});
+
+export const announcementCreateSchema = announcementShape.omit({ id: true, masjidId: true });
 export const announcementUpdateSchema = announcementCreateSchema.partial();
 
 // ==================== EVENT ====================
 
-export const masjidEventSchema = z.object({
+const masjidEventShape = z.object({
   id: z.string(),
   masjidId: z.string(),
   badge_en: z.string(),
@@ -71,17 +76,19 @@ export const masjidEventSchema = z.object({
   cta_ar: z.string(),
   imageUrl: z.string().nullable(),
   active: z.boolean(),
-}).refine(
+});
+
+export const masjidEventSchema = masjidEventShape.refine(
   (d) => d.title_en.trim() || d.title_ar.trim(),
   { message: 'At least one language (AR or EN) is required', path: ['title'] },
 );
 
-export const masjidEventCreateSchema = masjidEventSchema.omit({ id: true, masjidId: true });
+export const masjidEventCreateSchema = masjidEventShape.omit({ id: true, masjidId: true });
 export const masjidEventUpdateSchema = masjidEventCreateSchema.partial();
 
 // ==================== DONATION CAMPAIGN ====================
 
-export const donationCampaignSchema = z.object({
+const donationCampaignShape = z.object({
   id: z.string(),
   masjidId: z.string(),
   title_en: z.string(),
@@ -94,16 +101,22 @@ export const donationCampaignSchema = z.object({
   donateUrl: z.string().nullable(),
   qrImageUrl: z.string().nullable(),
   active: z.boolean(),
-}).refine(
-  (d) => d.title_en.trim() || d.title_ar.trim(),
-  { message: 'At least one language (AR or EN) is required', path: ['title'] },
-).refine(
-  (d) => d.description_en.trim() || d.description_ar.trim(),
-  { message: 'At least one language (AR or EN) is required', path: ['description'] },
-);
+});
 
-export const donationCreateSchema = donationCampaignSchema.omit({ id: true, masjidId: true });
-export const donationUpdateSchema = donationCampaignSchema
+const bilingualTitle = (d: { title_en: string; title_ar: string }) =>
+  d.title_en.trim() || d.title_ar.trim();
+
+const bilingualDescription = (d: { description_en: string; description_ar: string }) =>
+  d.description_en.trim() || d.description_ar.trim();
+
+const BILINGUAL_MSG = 'At least one language (AR or EN) is required';
+
+export const donationCampaignSchema = donationCampaignShape
+  .refine(bilingualTitle, { message: BILINGUAL_MSG, path: ['title'] })
+  .refine(bilingualDescription, { message: BILINGUAL_MSG, path: ['description'] });
+
+export const donationCreateSchema = donationCampaignShape.omit({ id: true, masjidId: true });
+export const donationUpdateSchema = donationCampaignShape
   .omit({ id: true, masjidId: true, active: true })
   .partial();
 

@@ -74,8 +74,8 @@ export function AnnouncementsTab() {
         await create({ ...values, active: true, order: 0 });
         toast.success('Announcement created');
       }
-    } catch {
-      toast.error('Failed to save announcement');
+    } catch (e) {
+      toast.error(`Failed to save announcement: ${e instanceof Error ? e.message : String(e)}`);
     }
   }
 

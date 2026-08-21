@@ -84,8 +84,8 @@ export function EventsTab() {
         });
         toast.success('Event created');
       }
-    } catch {
-      toast.error('Failed to save event');
+    } catch (e) {
+      toast.error(`Failed to save event: ${e instanceof Error ? e.message : String(e)}`);
     }
   }
 

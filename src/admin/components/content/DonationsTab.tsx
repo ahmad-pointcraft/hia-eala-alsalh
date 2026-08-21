@@ -71,8 +71,8 @@ export function DonationsTab() {
         await create({ ...payload, active: false });
         toast.success('Campaign created — activate it with the radio');
       }
-    } catch {
-      toast.error('Failed to save campaign');
+    } catch (e) {
+      toast.error(`Failed to save campaign: ${e instanceof Error ? e.message : String(e)}`);
     }
   }
 

@@ -65,8 +65,8 @@ export function Images() {
       await api.uploadImage(masjidId, file, 'carousel');
       await load();
       toast.success('Image uploaded — display carousel rotates it in');
-    } catch {
-      toast.error('Failed to upload image');
+    } catch (e) {
+      toast.error(`Failed to upload image: ${e instanceof Error ? e.message : String(e)}`);
     } finally {
       setUploading(false);
     }
