@@ -1,4 +1,14 @@
+import { z } from 'zod';
 import { DEFAULT_MOSQUE_CONFIG, type MosqueConfig } from '@/shared/types';
+import { mosqueConfigSchema } from '@/shared/types/schema';
+import {
+  announcementSchema,
+  masjidEventSchema,
+  donationCampaignSchema,
+  storedImageSchema,
+  deviceSchema,
+  sessionSchema,
+} from '../schema';
 import type { Device, Announcement, MasjidEvent, DonationCampaign, StoredImage, Session, ContentChangePayload } from '../types';
 
 export const DEMO_MASJID_ID = 'masjid-demo-1';
@@ -123,21 +133,62 @@ export function createInitialStore(): MockStore {
 
 export const STORAGE_KEY = 'hia-mock-store';
 
+// ==================== PERSISTED-STORE SCHEMA (TRUST BOUNDARY — localStorage) ====================
+
+const masjidDataSchema = z.object({
+  config: mosqueConfigSchema,
+  announcements: z.array(announcementSchema),
+  events: z.array(masjidEventSchema),
+  donations: z.array(donationCampaignSchema),
+  images: z.array(storedImageSchema),
+});
+
+const persistedStoreSchema = z.object({
+  masjids: z.record(z.string(), masjidDataSchema),
+  devices: z.record(z.string(), deviceSchema),
+  pairingCodes: z.record(z.string(), z.object({ deviceId: z.string(), expiresAt: z.number() })),
+  sessions: z.record(z.string(), z.object({ session: sessionSchema, masjidId: z.string() })),
+});
+
+type PersistedStore = z.infer<typeof persistedStoreSchema>;
+
+/** Back-fills each persisted masjid's missing fields from the seed (per-key merge — stale data can never evict the demo masjid). */
+function mergeMasjids(
+  seed: Record<string, MasjidData>,
+  persisted: Record<string, MasjidData>,
+): Record<string, MasjidData> {
+  const merged: Record<string, MasjidData> = { ...seed };
+  for (const [id, data] of Object.entries(persisted)) {
+    if (!id) continue; // zod v4 records reject '' keys — skip any that slipped through older stores
+    const base = merged[id];
+    merged[id] = base
+      ? { ...base, ...data }
+      : data;
+  }
+  return merged;
+}
+
 export function loadStore(): MockStore {
+  const seed = createInitialStore();
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
-      const parsed = JSON.parse(raw) as Partial<MockStore>;
-      return {
-        ...createInitialStore(),
-        ...parsed,
-        realtimeSubscribers: new Set(),
-      };
+      const result = persistedStoreSchema.safeParse(JSON.parse(raw));
+      if (result.success) {
+        const parsed: PersistedStore = result.data;
+        return {
+          masjids: mergeMasjids(seed.masjids, parsed.masjids),
+          devices: { ...seed.devices, ...parsed.devices },
+          pairingCodes: { ...seed.pairingCodes, ...parsed.pairingCodes },
+          sessions: { ...seed.sessions, ...parsed.sessions },
+          realtimeSubscribers: new Set(),
+        };
+      }
     }
   } catch {
-    // fall through to fresh store
+    // corrupted JSON — fall through to fresh seed
   }
-  return createInitialStore();
+  return seed;
 }
 
 export function saveStore(store: MockStore): void {

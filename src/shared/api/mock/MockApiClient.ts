@@ -14,6 +14,18 @@ import type {
 } from '../types';
 import { DEMO_MASJID_ID, STORAGE_KEY, type MockStore, type MasjidData, loadStore, saveStore } from './seed';
 
+// NORMALIZE STORE — guarantees top-level records exist so a schema drift degrades to an empty mock, never a crash
+function normalizeStore(store: MockStore): MockStore {
+  return {
+    ...store,
+    masjids: store.masjids ?? {},
+    devices: store.devices ?? {},
+    pairingCodes: store.pairingCodes ?? {},
+    sessions: store.sessions ?? {},
+    realtimeSubscribers: store.realtimeSubscribers ?? new Set(),
+  };
+}
+
 const PAIRING_CODE_TTL_MS = 10 * 60 * 1000;
 
 function generatePairingCode(): string {
@@ -30,11 +42,11 @@ export class MockApiClient implements ApiClient {
   private currentSession: Session | null = null;
 
   constructor() {
-    this.store = loadStore();
+    this.store = normalizeStore(loadStore());
     if (typeof window !== 'undefined') {
       window.addEventListener('storage', (e) => {
         if (e.key === STORAGE_KEY) {
-          this.store = loadStore();
+          this.store = normalizeStore(loadStore());
           this.notifyAllSubscribers();
         }
       });
