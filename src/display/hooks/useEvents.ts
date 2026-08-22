@@ -4,19 +4,17 @@ import { api } from '@/shared/api';
 import type { MasjidEvent } from '@/shared/api';
 import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
 import { useLanguageStore } from '@/display/store/languageStore';
-import { getTranslations } from '@/display/store/languageStore';
-import type { Translations } from '@/display/types';
+import type { EventSlide } from '@/display/types';
 import { toArabicNumerals } from '@/display/utils/helpers';
 
 export interface UseEventsResult {
-  events: Translations['events'];
+  events: EventSlide[];
   isLoading: boolean;
 }
 
 export function useEvents(currentTime: Date): UseEventsResult {
   const masjidId = useMosqueConfigStore((s) => s.masjidId);
   const language = useLanguageStore((s) => s.language);
-  const translations = getTranslations(language);
 
   const { data, isLoading } = useCachedData<MasjidEvent[]>(
     `events-${masjidId ?? 'none'}`,
@@ -25,22 +23,21 @@ export function useEvents(currentTime: Date): UseEventsResult {
     { currentTime, fallback: undefined },
   );
 
-  const events = useMemo(() => {
-    if (!data) return translations.events;
-    const active = data.filter((e) => e.active);
-    if (active.length === 0) return translations.events;
-
+  // NO STATIC FALLBACK — zero active events means zero slides; the display
+  // then shows the photo carousel (uploaded images → static mosque set).
+  const events = useMemo<EventSlide[]>(() => {
+    const active = (data ?? []).filter((e) => e.active);
     return active.map((e) => ({
-      badge: language === 'ar' ? e.badge_ar : e.badge_en,
+      badge: (language === 'ar' ? e.badge_ar : e.badge_en) || undefined,
       title: language === 'ar' ? e.title_ar : e.title_en,
       speakerName: language === 'ar' ? e.speaker_ar : e.speaker_en,
       dateValue: language === 'ar' ? toArabicNumerals(e.date) : e.date,
       timeValue: language === 'ar' ? toArabicNumerals(e.time) : e.time,
       locationValue: language === 'ar' ? e.location_ar : e.location_en,
-      cta: language === 'ar' ? e.cta_ar : e.cta_en,
+      cta: (language === 'ar' ? e.cta_ar : e.cta_en) || undefined,
       imageUrl: e.imageUrl ?? undefined,
     }));
-  }, [data, language, translations.events]);
+  }, [data, language]);
 
   return { events, isLoading };
 }

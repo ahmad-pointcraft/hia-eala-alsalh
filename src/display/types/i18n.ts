@@ -58,16 +58,6 @@ export interface Translations {
     december: string;
   };
   announcementsList: string[];
-  events: {
-    badge: string;
-    title: string;
-    speakerName: string;
-    dateValue: string;
-    timeValue: string;
-    locationValue: string;
-    cta: string;
-    imageUrl?: string;
-  }[];
   // PRAYER WIDGET TRANSLATION STRUCT
   prayerWidget: {
     adhanLabel: string;

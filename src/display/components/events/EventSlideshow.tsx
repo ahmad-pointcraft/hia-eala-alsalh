@@ -36,7 +36,8 @@ export function EventSlideshow({ events, images, interval = 5000, language }: Ev
   const event = events[currentIndex];
   if (!event) return null;
 
-  const bgImage = event.imageUrl || images[currentIndex % images.length];
+
+  const bgImage = event.imageUrl;
 
   return (
     <Box
@@ -64,15 +65,17 @@ export function EventSlideshow({ events, images, interval = 5000, language }: Ev
           }
           style={{ width: '100%', height: '100%' }}
         >
-          <img
-            src={bgImage}
-            alt=""
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-            }}
-          />
+          {bgImage && (
+            <img
+              src={bgImage}
+              alt=""
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+              }}
+            />
+          )}
         </motion.div>
       </AnimatePresence>
 
