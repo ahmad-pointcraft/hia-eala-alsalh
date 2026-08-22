@@ -43,7 +43,11 @@ export function createMockApiClient(): ApiClient {
   if (typeof window !== 'undefined') {
     window.addEventListener('storage', (e) => {
       if (e.key === STORAGE_KEY) {
+        // PRESERVE LIVE SUBSCRIBERS — loadStore() returns a fresh empty set;
+        // overwriting it would silence every notification below.
+        const subscribers = store.realtimeSubscribers;
         Object.assign(store, normalizeStore(loadStore()));
+        store.realtimeSubscribers = subscribers;
         notifyAllSubscribers();
       }
     });
@@ -160,8 +164,8 @@ export function createMockApiClient(): ApiClient {
     return { paired: device.status === 'paired', masjidId: device.masjidId };
   }
 
-  // PAIR DEVICE USING 6-DIGIT CODE ENTERED IN ADMIN PORTAL
-  async function pairDevice(pairingCode: string): Promise<{ device: Device; masjid: MasjidSummary }> {
+  // PAIR DEVICE USING 6-DIGIT CODE ENTERED IN ADMIN PORTAL (optional name labels it)
+  async function pairDevice(pairingCode: string, name?: string): Promise<{ device: Device; masjid: MasjidSummary }> {
     const entry = store.pairingCodes[pairingCode];
     if (!entry || entry.expiresAt < Date.now()) {
       throw new Error('Invalid or expired pairing code');
@@ -180,6 +184,7 @@ export function createMockApiClient(): ApiClient {
     device.masjidId = masjidId;
     device.status = 'paired';
     device.lastSeenAt = Date.now();
+    if (name && name.trim()) device.name = name.trim();
     delete store.pairingCodes[pairingCode];
     persist();
 

@@ -27,8 +27,8 @@ export interface DeviceApi {
   /** Checks whether a display device is currently paired to a masjid. */
   getDeviceStatus(deviceId: string): Promise<{ paired: boolean; masjidId: string | null }>;
 
-  /** Pairs an unpaired display device using a 6-digit numeric pairing code. */
-  pairDevice(pairingCode: string): Promise<{ device: Device; masjid: MasjidSummary }>;
+  /** Pairs an unpaired display device using a 6-digit numeric pairing code. Optional `name` labels the device at pair time. */
+  pairDevice(pairingCode: string, name?: string): Promise<{ device: Device; masjid: MasjidSummary }>;
 
   /** Lists all display devices registered under a specific masjid ID. */
   listDevices(masjidId: string): Promise<Device[]>;

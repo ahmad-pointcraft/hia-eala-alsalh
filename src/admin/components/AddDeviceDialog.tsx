@@ -7,6 +7,7 @@ import { api } from '@/shared/api';
 
 const addDeviceSchema = z.object({
   code: z.string().regex(/^\d{6}$/, 'Enter the 6-digit code'),
+  name: z.string(),
 });
 
 interface AddDeviceDialogProps {
@@ -16,25 +17,31 @@ interface AddDeviceDialogProps {
 }
 
 export function AddDeviceDialog({ open, onClose, onPaired }: AddDeviceDialogProps) {
-  const { control, handleSubmit, reset, formState: { isValid } } = useForm({
+  const {
+    control,
+    register,
+    handleSubmit,
+    reset,
+    formState: { isValid },
+  } = useForm({
     resolver: zodResolver(addDeviceSchema),
     mode: 'onChange',
-    defaultValues: { code: '' },
+    defaultValues: { code: '', name: '' },
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   function handleClose() {
-    reset({ code: '' });
+    reset({ code: '', name: '' });
     setError('');
     onClose();
   }
 
-  async function onSubmit(data: { code: string }) {
+  async function onSubmit(data: { code: string; name: string }) {
     setLoading(true);
     setError('');
     try {
-      await api.pairDevice(data.code);
+      await api.pairDevice(data.code, data.name.trim() || undefined);
       onPaired();
       handleClose();
     } catch (e) {
@@ -69,6 +76,14 @@ export function AddDeviceDialog({ open, onClose, onPaired }: AddDeviceDialogProp
               sx={{ '& .MuiInputBase-input': { textAlign: 'center', fontSize: '1.5rem', letterSpacing: '0.3em' } }}
             />
           )}
+        />
+        <TextField
+          {...register('name')}
+          label="Device Name (optional)"
+          placeholder="e.g. Main Hall TV"
+          helperText="You can rename it later from the device list"
+          fullWidth
+          sx={{ mt: 2 }}
         />
       </DialogContent>
       <DialogActions>
