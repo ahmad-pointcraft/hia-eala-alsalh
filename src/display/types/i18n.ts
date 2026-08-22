@@ -1,18 +1,13 @@
 export type Language = 'ar' | 'en';
 
 export interface Translations {
-  masjidName: string;
   donate: string;
-  comingEvent: string;
-  exitEvent: string;
   nextPrayer: string;
   hadithOfTheDay: string;
   hadithText: string;
   hadithSource: string;
-  announcements: string;
   sunset: string;
   iqama: string;
-  prayerInProgress: string;
   pleaseObserveSilence: string;
   prayers: {
     fajr: string;
@@ -34,37 +29,12 @@ export interface Translations {
     autoClosing: string;
     seconds: string;
   };
-  days: {
-    sunday: string;
-    monday: string;
-    tuesday: string;
-    wednesday: string;
-    thursday: string;
-    friday: string;
-    saturday: string;
-  };
-  months: {
-    january: string;
-    february: string;
-    march: string;
-    april: string;
-    may: string;
-    june: string;
-    july: string;
-    august: string;
-    september: string;
-    october: string;
-    november: string;
-    december: string;
-  };
-  announcementsList: string[];
   // PRAYER WIDGET TRANSLATION STRUCT
   prayerWidget: {
     adhanLabel: string;
     pleasePrepare: string;
     iqamaIn: string;
     iqamaPrayerLabel: string;
-    nextPrayerLabel: string;
     standStraighten: string;
     congregationStarting: string;
   };
