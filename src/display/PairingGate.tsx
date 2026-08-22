@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { api } from '@/shared/api';
 import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
+import { cacheStore } from '@/display/services/cache';
 import {
   getDeviceToken,
   setDeviceToken,
@@ -165,8 +166,12 @@ export function PairingGate() {
             setCachedConfig(cfg);
           }
         },
-        onContentChange: () => {
-          /* content hooks re-fetch via their own TTL */
+        onContentChange: (payload) => {
+          
+          if (payload.announcements) cacheStore.invalidate(`announcements-${masjidId}`);
+          if (payload.events) cacheStore.invalidate(`events-${masjidId}`);
+          if (payload.donations) cacheStore.invalidate(`donations-${masjidId}`);
+          if (payload.carouselImages) cacheStore.invalidate(`images-carousel-${masjidId}`);
         },
       });
     } catch {

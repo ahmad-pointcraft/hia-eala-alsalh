@@ -7,6 +7,8 @@ import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { getFontFamily, isRTL, getDirection } from '@/display/utils/helpers';
 
+const SEPARATOR_GLYPH = '\u2726';
+
 interface AnnouncementsTickerProps {
   language: Language;
   announcements: string[];
@@ -20,35 +22,83 @@ export function AnnouncementsTicker({ language, announcements }: AnnouncementsTi
     const element = scrollRef.current;
     if (!element) return;
 
-    if (prefersReducedMotion) return;
+    if (prefersReducedMotion) {
+      element.style.transform = 'none';
+      return;
+    }
 
-    let animationId: number;
-    let position = 0;
-    const speed = isRTL(language) ? 0.4 : -0.4;
+    let animationId = 0;
+    let cancelled = false;
 
-    const animate = () => {
-      position += speed;
+    const rtl = isRTL(language);
+    const speed = rtl ? 0.4 : -0.4;
 
-      if (isRTL(language)) {
-        if (position >= element.scrollWidth / 2) {
-          position = 0;
+    const runPass = () => {
+      if (cancelled) return;
+      const containerWidth = element.parentElement?.clientWidth ?? 0;
+
+      const start = rtl ? -element.scrollWidth : containerWidth;
+      const end = rtl ? containerWidth : -element.scrollWidth;
+
+      let position = start;
+
+      const animate = () => {
+        if (cancelled) return;
+        position += speed;
+        const done = rtl ? position >= end : position <= end;
+
+        if (done) {
+          runPass();
+          return;
         }
-      } else {
-        if (position <= -element.scrollWidth / 2) {
-          position = 0;
-        }
-      }
 
-      element.style.transform = `translateX(${position}px)`;
+        element.style.transform = `translateX(${position}px)`;
+        animationId = requestAnimationFrame(animate);
+      };
+
       animationId = requestAnimationFrame(animate);
     };
 
-    animationId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationId);
-  }, [language, prefersReducedMotion]);
+    runPass();
 
-  const separator = ' • ';
-  const fullText = announcements.join(separator) + separator + announcements.join(separator);
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(animationId);
+    };
+  }, [language, prefersReducedMotion, announcements]);
+
+  const segments: React.ReactNode[] = [];
+  announcements.forEach((text, i) => {
+    segments.push(
+      <Typography
+        key={i}
+        component="span"
+        sx={{
+          color: 'text.muted',
+          fontSize: { xs: '0.75rem', sm: '0.875rem', md: '0.875rem', lg: '0.875rem' },
+          fontFamily: getFontFamily(language),
+        }}
+      >
+        {text}
+      </Typography>,
+    );
+    if (i < announcements.length - 1) {
+      segments.push(
+        <Typography
+          key={`sep-${i}`}
+          component="span"
+          aria-hidden
+          sx={{
+            color: (theme) => theme.palette.gold.main,
+            fontSize: { xs: '0.7rem', sm: '0.8rem', md: '0.8rem', lg: '0.8rem' },
+            px: { xs: 1.5, sm: 2 },
+          }}
+        >
+          {SEPARATOR_GLYPH}
+        </Typography>,
+      );
+    }
+  });
 
   return (
     <Box
@@ -101,16 +151,7 @@ export function AnnouncementsTicker({ language, announcements }: AnnouncementsTi
               willChange: 'transform',
             }}
           >
-            <Typography
-              component="span"
-              sx={{
-                color: 'text.muted',
-                fontSize: { xs: '0.75rem', sm: '0.875rem', md: '0.875rem', lg: '0.875rem' },
-                fontFamily: getFontFamily(language),
-              }}
-            >
-              {fullText}
-            </Typography>
+            {segments}
           </Box>
         </Box>
 

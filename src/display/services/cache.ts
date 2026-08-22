@@ -15,6 +15,7 @@ interface CacheEntry<T> {
 class CacheStore {
   private memory = new Map<string, CacheEntry<unknown>>();
   private pendingRequests = new Map<string, Promise<unknown>>();
+  private listeners = new Set<(key: string) => void>();
   private readonly STORAGE_PREFIX = 'hia-cache:';
 
   get<T>(key: string): T | undefined {
@@ -80,6 +81,16 @@ class CacheStore {
     } catch {
       // localStorage unavailable
     }
+    for (const listener of this.listeners) {
+      listener(key);
+    }
+  }
+
+  subscribe(listener: (key: string) => void): () => void {
+    this.listeners.add(listener);
+    return () => {
+      this.listeners.delete(listener);
+    };
   }
 
   getPending<T>(key: string): Promise<T> | undefined {

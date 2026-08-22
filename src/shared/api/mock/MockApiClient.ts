@@ -43,8 +43,7 @@ export function createMockApiClient(): ApiClient {
   if (typeof window !== 'undefined') {
     window.addEventListener('storage', (e) => {
       if (e.key === STORAGE_KEY) {
-        // PRESERVE LIVE SUBSCRIBERS — loadStore() returns a fresh empty set;
-        // overwriting it would silence every notification below.
+        // PRESERVE LIVE SUBSCRIBERS
         const subscribers = store.realtimeSubscribers;
         Object.assign(store, normalizeStore(loadStore()));
         store.realtimeSubscribers = subscribers;

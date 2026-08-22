@@ -87,6 +87,8 @@ export function useCachedData<T>(
   const currentMinute = currentTime.getMinutes();
   const currentHour = currentTime.getHours();
 
+  const didMountRef = useRef(false);
+
   useEffect(() => {
     if (prevKeyRef.current !== cacheKey) {
       prevKeyRef.current = cacheKey;
@@ -103,6 +105,16 @@ export function useCachedData<T>(
       return;
     }
 
+    // STALE-WHILE-REVALIDATE ON MOUNT — serve the persisted cache instantly,
+    // then always refetch once so a page refresh never shows expired data.
+    if (!didMountRef.current) {
+      didMountRef.current = true;
+      if (cacheStore.get<T>(cacheKey) !== undefined) {
+        triggerFetch(cacheKey);
+      }
+      return;
+    }
+
     if (cacheStore.isExpired(cacheKey)) {
       const cached = cacheStore.get<T>(cacheKey);
       if (cached !== undefined) {
@@ -111,6 +123,16 @@ export function useCachedData<T>(
       triggerFetch(cacheKey);
     }
   }, [cacheKey, fallback, triggerFetch, currentMinute, currentHour]);
+
+  // PUSH INVALIDATION — when a realtime content change invalidates our key,
+  // refetch immediately (don't wait for the TTL or the next minute tick).
+  useEffect(() => {
+    return cacheStore.subscribe((invalidatedKey) => {
+      if (invalidatedKey === cacheKey) {
+        triggerFetch(cacheKey);
+      }
+    });
+  }, [cacheKey, triggerFetch]);
 
   return { data, isLoading, error };
 }
