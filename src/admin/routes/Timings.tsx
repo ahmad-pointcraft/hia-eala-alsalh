@@ -1,11 +1,18 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Box,
+  Card,
+  CardContent,
   Stack,
   Typography,
   Button,
 } from '@mui/material';
-import SaveIcon from '@mui/icons-material/Save';
+import {
+  Save as SaveIcon,
+  LocationOn as LocationIcon,
+  Tune as CalculationIcon,
+  AccessTime as IqamaIcon,
+} from '@mui/icons-material';
 import { api } from '@/shared/api';
 import type { MosqueConfig } from '@/shared/types';
 import { useSession } from '@/admin/store/useSession';
@@ -44,14 +51,17 @@ export function Timings() {
   const load = useCallback(() => {
     let cancelled = false;
     setLoadError(null);
-    void api.getMasjidConfig(masjidId).then((config) => {
-      if (!cancelled) {
-        setLoadedConfig(config);
-        init(config);
-      }
-    }).catch(() => {
-      if (!cancelled) setLoadError('Failed to load timings. Please try again.');
-    });
+    void api
+      .getMasjidConfig(masjidId)
+      .then((config) => {
+        if (!cancelled) {
+          setLoadedConfig(config);
+          init(config);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setLoadError('Failed to load timings. Please try again.');
+      });
     return () => {
       cancelled = true;
     };
@@ -80,19 +90,31 @@ export function Timings() {
     if (!masjidId) return;
     const success = await save(masjidId, draft);
     if (success) {
-      toast.success('Saved — paired displays updated');
+      toast.success('Timings saved — paired displays updated');
     } else {
       toast.error(useTimingsForm.getState().error ?? 'Failed to save timings');
     }
   }
 
   return (
-    <Box>
-      <Typography variant="h5" component="h1" tabIndex={-1} ref={headingRef} gutterBottom>
-        Timings Configuration
-      </Typography>
+    <Box sx={{ pb: 2 }}>
+      <Box sx={{ mb: { xs: 3, md: 4 } }}>
+        <Typography
+          variant="h5"
+          component="h1"
+          tabIndex={-1}
+          ref={headingRef}
+          fontWeight={600}
+          gutterBottom
+        >
+          Timings Configuration
+        </Typography>
+        <Typography color="text.secondary" sx={{ mb: 3 }}>
+          Configure geographic location coordinates, prayer calculation rules, and congregational Iqama schedules.
+        </Typography>
+      </Box>
 
-      {/* SINGLE STATE PIPELINE — FORM SKELETON + RETRY (SINGLETON CONFIG — NO EMPTY STATE) */}
+      {/* SINGLE STATE PIPELINE — FORM SKELETON + RETRY */}
       <AsyncState
         loading={(loading || !loadedConfig) && loadError === null}
         error={loadError}
@@ -100,62 +122,165 @@ export function Timings() {
         skeleton="form"
         skeletonRows={6}
       >
-      {/* SINGLE-COLUMN BELOW SM — FULL WIDTH, COMPRESSED SPACING, REACHABLE SAVE */}
-      <Stack spacing={{ xs: 2, sm: 3 }} sx={{ maxWidth: { sm: 700 } }}>
-        {/* LOCATION */}
-        <Box>
-          <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1.5 }}>Location</Typography>
-          <LocationFields errors={errors} />
-        </Box>
-
-        {/* CALCULATION */}
-        <Box>
-          <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1.5 }}>Prayer Calculation</Typography>
-          <Stack spacing={2}>
-            <MethodSelect />
-            <MadhabToggle />
-            <HighLatRuleSelect />
-          </Stack>
-        </Box>
-
-        {/* TIMEZONE */}
-        <Box>
-          <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1.5 }}>Timezone</Typography>
-          <TimezoneField />
-        </Box>
-
-        {/* HIJRI OFFSET */}
-        <Box>
-          <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1.5 }}>Hijri Date Offset</Typography>
-          <HijriOffsetControl />
-        </Box>
-
-        {/* IQAMA */}
-        <Box>
-          <IqamaEditor errors={errors} />
-        </Box>
-
-        {/* SAVE BAR */}
-        <Stack direction="row" spacing={2} sx={{ pt: 2 }}>
-          <Button
-            variant="contained"
-            startIcon={<SaveIcon />}
-            disabled={!canSave}
-            onClick={handleSave}
-          >
-            {saving ? 'Saving…' : 'Save'}
-          </Button>
-          <Button
-            variant="outlined"
-            disabled={!dirty || saving}
-            onClick={() => {
-              if (loadedConfig) revert(loadedConfig);
+        <Stack spacing={3}>
+          {/* TOP ROW: LOCATION & CALCULATION IN 2-COLUMN GRID */}
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: {
+                xs: '1fr',
+                lg: 'repeat(2, 1fr)',
+              },
+              gap: 2.5,
             }}
           >
-            Cancel
-          </Button>
+            {/* CARD 1: LOCATION & TIMEZONE */}
+            <Card
+              sx={{
+                height: '100%',
+                borderRadius: 3,
+                border: '1px solid rgba(0, 0, 0, 0.08)',
+                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.02)',
+              }}
+            >
+              <CardContent sx={{ p: 2.5, display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, mb: 2.5 }}>
+                  <Box
+                    sx={{
+                      width: 36,
+                      height: 36,
+                      borderRadius: 2,
+                      bgcolor: 'rgba(46, 125, 50, 0.1)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'primary.main',
+                    }}
+                  >
+                    <LocationIcon fontSize="small" />
+                  </Box>
+                  <Typography variant="h6" fontWeight={700} fontSize="1.05rem">
+                    Location & Timezone
+                  </Typography>
+                </Box>
+
+                <Stack spacing={2.5} sx={{ flexGrow: 1, justifyContent: 'space-between' }}>
+                  <LocationFields errors={errors} />
+                  <TimezoneField />
+                </Stack>
+              </CardContent>
+            </Card>
+
+            {/* CARD 2: PRAYER CALCULATION & CONVENTIONS */}
+            <Card
+              sx={{
+                height: '100%',
+                borderRadius: 3,
+                border: '1px solid rgba(0, 0, 0, 0.08)',
+                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.02)',
+              }}
+            >
+              <CardContent sx={{ p: 2.5, display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, mb: 2.5 }}>
+                  <Box
+                    sx={{
+                      width: 36,
+                      height: 36,
+                      borderRadius: 2,
+                      bgcolor: 'rgba(46, 125, 50, 0.1)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'primary.main',
+                    }}
+                  >
+                    <CalculationIcon fontSize="small" />
+                  </Box>
+                  <Typography variant="h6" fontWeight={700} fontSize="1.05rem">
+                    Calculation Rules
+                  </Typography>
+                </Box>
+
+                <Stack spacing={2}>
+                  <MethodSelect />
+                  <MadhabToggle />
+                  <HighLatRuleSelect />
+                  <HijriOffsetControl />
+                </Stack>
+              </CardContent>
+            </Card>
+          </Box>
+
+          {/* CARD 3: IQAMA TIMES & SCHEDULES (PROMINENT FULL-WIDTH CARD) */}
+          <Card
+            sx={{
+              borderRadius: 3,
+              border: '1px solid rgba(0, 0, 0, 0.08)',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.02)',
+            }}
+          >
+            <CardContent sx={{ p: 2.5 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, mb: 1 }}>
+                <Box
+                  sx={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 2,
+                    bgcolor: 'rgba(46, 125, 50, 0.1)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'primary.main',
+                  }}
+                >
+                  <IqamaIcon fontSize="small" />
+                </Box>
+                <Typography variant="h6" fontWeight={700} fontSize="1.05rem">
+                  Iqama Times & Schedules
+                </Typography>
+              </Box>
+              <Typography color="text.secondary" sx={{ mb: 2.5, fontSize: '0.88rem' }}>
+                Set whether Iqama starts as a fixed clock time or an offset in minutes after the Adhan call.
+              </Typography>
+
+              <IqamaEditor errors={errors} />
+            </CardContent>
+          </Card>
+
+          {/* STICKY SAVE / CANCEL ACTION BAR */}
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: { xs: 'center', md: 'flex-start' },
+              gap: 2,
+              pt: 2,
+            }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              startIcon={<SaveIcon />}
+              disabled={!canSave}
+              onClick={handleSave}
+              sx={{ px: 3, fontWeight: 600 }}
+            >
+              {saving ? 'Saving…' : 'Save Changes'}
+            </Button>
+            <Button
+              variant="outlined"
+              size="large"
+              disabled={!dirty || saving}
+              onClick={() => {
+                if (loadedConfig) revert(loadedConfig);
+              }}
+              sx={{ px: 3 }}
+            >
+              Cancel
+            </Button>
+          </Box>
         </Stack>
-      </Stack>
       </AsyncState>
 
       {/* REUSABLE DIRTY GUARD DIALOG */}
@@ -166,4 +291,5 @@ export function Timings() {
     </Box>
   );
 }
+
 
