@@ -66,7 +66,7 @@ export function ContentFormDialog<T extends FieldValues>({
         <DialogTitle>
           {title}
           {fullScreen && (
-            <IconButton aria-label="Close dialog" onClick={requestClose} sx={{ position: 'absolute', right: 8, top: 8 }}>
+            <IconButton aria-label="Close dialog" onClick={requestClose} sx={{ position: 'absolute', insetInlineEnd: 8, top: 8 }}>
               <CloseIcon />
             </IconButton>
           )}
