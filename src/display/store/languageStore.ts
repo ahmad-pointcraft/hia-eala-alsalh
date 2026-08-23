@@ -6,7 +6,6 @@ import { translations } from '@/display/data/translations';
 interface LanguageState {
   language: Language;
   setLanguage: (lang: Language) => void;
-  toggleLanguage: () => void;
 }
 
 export const useLanguageStore = create<LanguageState>()(
@@ -14,9 +13,8 @@ export const useLanguageStore = create<LanguageState>()(
     (set) => ({
       language: 'ar',
       setLanguage: (lang: Language) => set({ language: lang }),
-      toggleLanguage: () =>
-        set((state) => ({ language: state.language === 'ar' ? 'en' : 'ar' })),
     }),
+
     {
       name: 'hia-language',
       merge: (persisted, current) => {

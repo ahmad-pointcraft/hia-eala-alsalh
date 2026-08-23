@@ -15,13 +15,13 @@ import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
 
 interface HeaderProps {
   language: Language;
-  onToggleLanguage?: () => void;
   onShowFundraising: () => void;
   translations: Translations;
   currentTime: Date;
   hijriDate: HijriDateInfo;
   holidays?: string[];
 }
+
 
 
 export function Header({

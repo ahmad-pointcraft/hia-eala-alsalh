@@ -36,7 +36,7 @@ import mosque3 from '../assets/mosque-3.jpg';
 const STATIC_CAROUSEL_FALLBACK = [mosque1, mosque2, mosque3];
 
 export default function App() {
-  const { language, toggleLanguage, t, dir } = useLanguage();
+  const { language, t, dir } = useLanguage();
   const slideDurationSec = useMosqueConfigStore((s) => s.config.slideDurationSec ?? 10);
   const languageOrder = useMosqueConfigStore((s) => s.config.languageOrder);
 
@@ -54,7 +54,6 @@ export default function App() {
     () => (prefersReducedMotion ? { duration: 0 } : undefined),
     [prefersReducedMotion],
   );
-
 
   useEffect(() => {
     document.documentElement.dir = dir;
@@ -148,13 +147,13 @@ export default function App() {
         {/* -------- THE HEADER -------- */}
         <Header
           language={language}
-          onToggleLanguage={toggleLanguage}
           onShowFundraising={onShowFundraising}
           translations={t}
           currentTime={currentTime}
           hijriDate={hijriDate}
           holidays={holidays}
         />
+
 
         {/* -------- THE SILENCE OVERLAY -------- */}
         <AnimatePresence>
