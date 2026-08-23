@@ -12,7 +12,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { adminTheme } from '@/admin/theme/adminTheme';
 import { AuthGate } from '@/admin/components/AuthGate';
-import { AdminLayout } from '@/admin/components/AdminLayout';
+import { AdminLayout } from '@/admin/components/layout';
 import { SignIn } from '@/admin/routes/SignIn';
 import { SignUp } from '@/admin/routes/SignUp';
 import { Devices } from '@/admin/routes/Devices';
