@@ -1,31 +1,21 @@
 import { useState, useEffect } from 'react';
 import {
   Box,
-  Menu,
-  Switch,
   AppBar,
   Toolbar,
-  MenuItem,
   ButtonBase,
   Typography,
-  IconButton,
-  ListItemIcon,
-  ListItemText,
 } from '@mui/material';
 
-import { Heart, WifiOff, Settings, Check } from 'lucide-react';
-import LightMode from '@mui/icons-material/LightMode';
-import DarkMode from '@mui/icons-material/DarkMode';
+import { Heart, WifiOff } from 'lucide-react';
 import type { Language, Translations } from '@/display/types';
 import type { HijriDateInfo } from '@/shared/types';
 import { getFontFamily, getDirection, toArabicNumerals } from '@/display/utils/helpers';
-import { useThemeMode } from '@/display/theme/ThemeContext';
-
 import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
 
 interface HeaderProps {
   language: Language;
-  onToggleLanguage: () => void;
+  onToggleLanguage?: () => void;
   onShowFundraising: () => void;
   translations: Translations;
   currentTime: Date;
@@ -33,29 +23,18 @@ interface HeaderProps {
   holidays?: string[];
 }
 
+
 export function Header({
   language,
-  onToggleLanguage,
   onShowFundraising,
   translations,
   currentTime,
   hijriDate,
 }: HeaderProps) {
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
-  const { mode, toggleTheme } = useThemeMode();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const timeFormat = useMosqueConfigStore((s) => s.config.timeFormat ?? '12h');
   const showSeconds = useMosqueConfigStore((s) => s.config.showSeconds ?? true);
 
-  const isSettingsOpen = Boolean(anchorEl);
-
-  const handleOpenSettings = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleCloseSettings = () => {
-    setAnchorEl(null);
-  };
 
   useEffect(() => {
     const goOffline = () => setIsOffline(true);
@@ -243,95 +222,10 @@ export function Header({
             display: 'flex',
             justifyContent: 'flex-end',
             alignItems: 'center',
-            gap: 1,
           }}
-        >
-          <IconButton
-            onClick={handleOpenSettings}
-            aria-label="Settings"
-            id="settings-button"
-            aria-controls={isSettingsOpen ? 'settings-menu' : undefined}
-            aria-expanded={isSettingsOpen ? 'true' : undefined}
-            aria-haspopup="true"
-            sx={{
-              width: 44,
-              height: 44,
-              border: '1px solid',
-              borderColor: 'border.thin',
-              bgcolor: 'surface.raised',
-              color: 'text.secondary',
-              transition: 'transform 0.3s ease, color 0.3s ease',
-              '&:hover': {
-                color: 'primary.main',
-                transform: 'rotate(45deg)',
-              },
-              '@media (prefers-reduced-motion: reduce)': {
-                transition: 'none',
-                '&:hover': { transform: 'none' },
-              },
-            }}
-          >
-            <Settings size={20} />
-          </IconButton>
-
-          <Menu
-            id="settings-menu"
-            anchorEl={anchorEl}
-            open={isSettingsOpen}
-            onClose={handleCloseSettings}
-            MenuListProps={{
-              'aria-labelledby': 'settings-button',
-            }}
-            transformOrigin={{ vertical: 'top', horizontal: language === 'ar' ? 'left' : 'right' }}
-            anchorOrigin={{ vertical: 'bottom', horizontal: language === 'ar' ? 'left' : 'right' }}
-            slotProps={{
-              paper: {
-                sx: {
-                  bgcolor: 'background.default',
-                  backgroundImage: 'none',
-                  borderRadius: '12px',
-                  border: '1px solid',
-                  borderColor: 'border.thin',
-                  minWidth: 200,
-                },
-              },
-            }}
-          >
-            <MenuItem onClick={() => { if (language !== 'en') onToggleLanguage(); handleCloseSettings(); }}>
-              <ListItemIcon sx={{ minWidth: '36px !important' }}>
-                {language === 'en' ? <Check size={16} /> : <Box sx={{ width: 16 }} />}
-              </ListItemIcon>
-              <ListItemText>English</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={() => { if (language !== 'ar') onToggleLanguage(); handleCloseSettings(); }}>
-              <ListItemIcon sx={{ minWidth: '36px !important' }}>
-                {language === 'ar' ? <Check size={16} /> : <Box sx={{ width: 16 }} />}
-              </ListItemIcon>
-              <ListItemText>العربية</ListItemText>
-            </MenuItem>
-            
-            <Box sx={{ borderBottom: '1px solid rgba(255,255,255,0.08)', my: 1 }} />
-
-            <MenuItem onClick={toggleTheme}>
-              <ListItemIcon sx={{ minWidth: '36px !important' }}>
-                {mode === 'dark' ? <DarkMode fontSize="small" /> : <LightMode fontSize="small" />}
-              </ListItemIcon>
-              <ListItemText>
-                {mode === 'dark'
-                  ? (language === 'ar' ? 'الوضع الداكن' : 'Dark Mode')
-                  : (language === 'ar' ? 'الوضع الفاتح' : 'Light Mode')}
-              </ListItemText>
-              <Switch
-                edge="end"
-                checked={mode === 'dark'}
-                size="small"
-                sx={{ ml: 'auto' }}
-              />
-            </MenuItem>
-
-          </Menu>
-        </Box>
+        />
       </Toolbar>
     </AppBar>
   );
 }
+

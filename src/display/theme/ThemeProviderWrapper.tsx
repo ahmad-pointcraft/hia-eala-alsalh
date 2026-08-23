@@ -4,6 +4,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { createAppTheme } from './muiTheme';
 import { ThemeContext, type ThemeContextValue } from './ThemeContext';
 import type { ThemeMode } from './tokens';
+import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
 
 const STORAGE_KEY = 'masjid-theme';
 
@@ -30,7 +31,16 @@ interface ThemeProviderWrapperProps {
 }
 
 export default function ThemeProviderWrapper({ children }: ThemeProviderWrapperProps) {
-  const [mode, setModeState] = useState<ThemeMode>(readStoredMode);
+  const configThemeMode = useMosqueConfigStore((s) => s.config.themeMode);
+  const [mode, setModeState] = useState<ThemeMode>(() => configThemeMode || readStoredMode());
+
+  // SYNCHRONIZE DISPLAY THEME WHEN ADMIN CONFIG CHANGES
+  useEffect(() => {
+    if (configThemeMode === 'light' || configThemeMode === 'dark') {
+      setModeState(configThemeMode);
+      writeStoredMode(configThemeMode);
+    }
+  }, [configThemeMode]);
 
   const setMode = (next: ThemeMode) => {
     setModeState(next);
@@ -40,6 +50,7 @@ export default function ThemeProviderWrapper({ children }: ThemeProviderWrapperP
   const toggleTheme = () => {
     setMode(mode === 'dark' ? 'light' : 'dark');
   };
+
 
   const theme = useMemo(() => createAppTheme(mode), [mode]);
 

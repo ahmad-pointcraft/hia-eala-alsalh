@@ -2,18 +2,16 @@ import {
   Box,
   Card,
   CardContent,
-  FormControlLabel,
   Stack,
-  Switch,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
 } from '@mui/material';
-import { AccessTime as TimeIcon } from '@mui/icons-material';
+import { PaletteOutlined as ThemeIcon } from '@mui/icons-material';
 import { useDisplaySettingsForm } from '@/admin/store/useDisplaySettingsForm';
-import type { TimeFormat } from '@/shared/types';
+import type { LanguageOrder, ThemeMode } from '@/shared/types';
 
-export function ClockPresentationCard() {
+export function LanguageThemeCard() {
   const draft = useDisplaySettingsForm((s) => s.draft);
   const setField = useDisplaySettingsForm((s) => s.setField);
 
@@ -40,27 +38,28 @@ export function ClockPresentationCard() {
               color: 'primary.main',
             }}
           >
-            <TimeIcon fontSize="small" />
+            <ThemeIcon fontSize="small" />
           </Box>
           <Typography variant="h6" fontWeight={700} fontSize="1.05rem">
-            Clock & Time
+            Language & Theme
           </Typography>
         </Box>
 
         <Stack spacing={2.5} sx={{ flexGrow: 1, justifyContent: 'space-between' }}>
+          {/* DEFAULT DISPLAY LANGUAGE */}
           <Box>
             <Typography variant="caption" color="text.secondary" fontWeight={600} component="div" sx={{ mb: 1, textTransform: 'uppercase', letterSpacing: 0.4 }}>
-              Time Format
+              Default Display Language
             </Typography>
             <ToggleButtonGroup
-              value={draft.timeFormat ?? '12h'}
+              value={draft.languageOrder ?? 'en-first'}
               exclusive
               fullWidth
               size="small"
-              onChange={(_, val: TimeFormat | null) => {
-                if (val) setField({ timeFormat: val });
+              onChange={(_, val: LanguageOrder | null) => {
+                if (val) setField({ languageOrder: val });
               }}
-              aria-label="Time format selection"
+              aria-label="Default display language selection"
               sx={{
                 bgcolor: '#f1f3f5',
                 p: 0.5,
@@ -83,49 +82,53 @@ export function ClockPresentationCard() {
                 },
               }}
             >
-              <ToggleButton value="12h">12-Hour (AM/PM)</ToggleButton>
-              <ToggleButton value="24h">24-Hour</ToggleButton>
+              <ToggleButton value="en-first">English</ToggleButton>
+              <ToggleButton value="ar-first">العربية</ToggleButton>
             </ToggleButtonGroup>
           </Box>
 
-          <Box
-            sx={{
-              p: 1.5,
-              borderRadius: 2,
-              bgcolor: '#fafafa',
-              border: '1px solid rgba(0, 0, 0, 0.05)',
-            }}
-          >
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={draft.showSeconds ?? true}
-                  onChange={(e) => setField({ showSeconds: e.target.checked })}
-                  slotProps={{ input: { 'aria-label': 'Show seconds on display clocks' } }}
-                  color="primary"
-                />
-              }
-              label={
-                <Box>
-                  <Typography variant="body2" fontWeight={600}>
-                    Show Seconds
-                  </Typography>
-                  <Typography variant="caption" color="text.secondary">
-                    Display ticking seconds on digital clocks
-                  </Typography>
-                </Box>
-              }
-              sx={{ m: 0, width: '100%', justifyContent: 'space-between' }}
-            />
+          {/* DISPLAY THEME */}
+          <Box>
+            <Typography variant="caption" color="text.secondary" fontWeight={600} component="div" sx={{ mb: 1, textTransform: 'uppercase', letterSpacing: 0.4 }}>
+              Display Theme
+            </Typography>
+            <ToggleButtonGroup
+              value={draft.themeMode ?? 'dark'}
+              exclusive
+              fullWidth
+              size="small"
+              onChange={(_, val: ThemeMode | null) => {
+                if (val) setField({ themeMode: val });
+              }}
+              aria-label="Display theme selection"
+              sx={{
+                bgcolor: '#f1f3f5',
+                p: 0.5,
+                borderRadius: 2,
+                border: 'none',
+                '& .MuiToggleButton-root': {
+                  border: 'none',
+                  borderRadius: 1.5,
+                  py: 0.75,
+                  fontWeight: 600,
+                  fontSize: '0.85rem',
+                  color: 'text.secondary',
+                  textTransform: 'none',
+                  '&.Mui-selected': {
+                    bgcolor: 'primary.main',
+                    color: '#ffffff',
+                    boxShadow: '0 2px 6px rgba(46, 125, 50, 0.25)',
+                    '&:hover': { bgcolor: 'primary.dark' },
+                  },
+                },
+              }}
+            >
+              <ToggleButton value="dark">🌙 Dark Theme</ToggleButton>
+              <ToggleButton value="light">☀️ Light Theme</ToggleButton>
+            </ToggleButtonGroup>
           </Box>
         </Stack>
       </CardContent>
     </Card>
   );
 }
-
-export const ClockTimeCard = ClockPresentationCard;
-
-
-
-

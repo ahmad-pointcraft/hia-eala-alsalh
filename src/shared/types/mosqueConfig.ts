@@ -9,6 +9,7 @@ import {
   timeFormatSchema,
   languageOrderSchema,
   tickerSpeedSchema,
+  themeModeSchema,
 } from './schema';
 
 export type AdhanMethod = z.infer<typeof adhanMethodSchema>;
@@ -20,6 +21,7 @@ export type HijriDateInfo = z.infer<typeof hijriDateInfoSchema>;
 export type TimeFormat = z.infer<typeof timeFormatSchema>;
 export type LanguageOrder = z.infer<typeof languageOrderSchema>;
 export type TickerSpeed = z.infer<typeof tickerSpeedSchema>;
+export type ThemeMode = z.infer<typeof themeModeSchema>;
 
 export function formatHijriDate(
   info: HijriDateInfo,
@@ -53,6 +55,7 @@ export const DEFAULT_MOSQUE_CONFIG: MosqueConfig = {
   timeFormat: '12h',
   showSeconds: true,
   languageOrder: 'en-first',
+  themeMode: 'dark',
   slideDurationSec: 10,
   tickerSpeed: 'normal',
   silenceAfterIqama: true,
@@ -60,3 +63,4 @@ export const DEFAULT_MOSQUE_CONFIG: MosqueConfig = {
   ramadanMode: false,
   jumuahSilence: false,
 };
+

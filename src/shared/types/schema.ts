@@ -35,6 +35,7 @@ export const iqamaPrayerConfigSchema = z.discriminatedUnion('mode', [
 export const timeFormatSchema = z.enum(['12h', '24h']);
 export const languageOrderSchema = z.enum(['ar-first', 'en-first']);
 export const tickerSpeedSchema = z.enum(['slow', 'normal', 'fast']);
+export const themeModeSchema = z.enum(['dark', 'light']);
 
 // ==================== MOSQUE CONFIG ====================
 
@@ -60,6 +61,7 @@ export const mosqueConfigSchema = z.object({
   timeFormat: timeFormatSchema.default('12h'),
   showSeconds: z.boolean().default(true),
   languageOrder: languageOrderSchema.default('en-first'),
+  themeMode: themeModeSchema.default('dark'),
   slideDurationSec: z.number().min(5).max(60).default(10),
   tickerSpeed: tickerSpeedSchema.default('normal'),
   silenceAfterIqama: z.boolean().default(true),
@@ -67,6 +69,7 @@ export const mosqueConfigSchema = z.object({
   ramadanMode: z.boolean().default(false),
   jumuahSilence: z.boolean().default(false),
 });
+
 
 // ==================== HIJRI DATE INFO ====================
 

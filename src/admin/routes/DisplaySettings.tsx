@@ -17,9 +17,12 @@ import { useToast } from '@/admin/components/ToastProvider';
 import { UnsavedChangesDialog } from '@/admin/components/UnsavedChangesDialog';
 import { validateDisplaySettings, isValid } from '@/admin/utils/settings/validation';
 
-import { MosqueIdentityCard } from '@/admin/components/settings/MosqueIdentityCard';
-import { ClockPresentationCard } from '@/admin/components/settings/ClockPresentationCard';
-import { SlideshowTickerCard } from '@/admin/components/settings/SlideshowTickerCard';
+import {
+  MosqueIdentityCard,
+  ClockTimeCard,
+  LanguageThemeCard,
+  SlideshowTickerCard,
+} from '@/admin/components/settings';
 
 export function DisplaySettings() {
   const masjidId = useSession((s) => s.session?.masjidId ?? '');
@@ -83,7 +86,7 @@ export function DisplaySettings() {
 
   return (
     <Box sx={{ pb: 2 }}>
-      <Box sx={{ mb: { xs: 3, md: 6 } }}>
+      <Box sx={{ mb: { xs: 3, md: 4 } }}>
         <Typography
           variant="h5"
           component="h1"
@@ -94,8 +97,8 @@ export function DisplaySettings() {
         >
           Display Settings
         </Typography>
-        <Typography color="text.secondary" sx={{ mb: 3 }}>
-          Configure mosque branding, clock presentation, slideshow speed.
+        <Typography color="text.secondary" fontSize="0.95rem">
+          Configure mosque branding, language, theme appearance, clock presentation, and slideshow speed.
         </Typography>
       </Box>
 
@@ -113,15 +116,16 @@ export function DisplaySettings() {
               gridTemplateColumns: {
                 xs: '1fr',
                 md: 'repeat(2, 1fr)',
-                lg: 'repeat(3, 1fr)',
               },
               gap: 2.5,
             }}
           >
             <MosqueIdentityCard errors={errors} />
-            <ClockPresentationCard />
+            <LanguageThemeCard />
+            <ClockTimeCard />
             <SlideshowTickerCard />
           </Box>
+
 
           {/* STICKY SAVE / CANCEL ACTION BAR */}
           <Box
