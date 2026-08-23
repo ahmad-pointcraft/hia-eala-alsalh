@@ -19,7 +19,7 @@ import { Devices } from '@/admin/routes/Devices';
 import { Timings } from '@/admin/routes/Timings';
 import { Content } from '@/admin/routes/Content';
 import { Images } from '@/admin/routes/Images';
-import { SetupsStub } from '@/admin/routes/Stubs';
+import { DisplaySettings } from '@/admin/routes/DisplaySettings';
 import { ToastProvider } from '@/admin/components/ToastProvider';
 
 export function AdminApp() {
@@ -39,7 +39,8 @@ export function AdminApp() {
                 <Route path="/timings" element={<Timings />} />
                 <Route path="/content" element={<Content />} />
                 <Route path="/images" element={<Images />} />
-                <Route path="/setups" element={<SetupsStub />} />
+                <Route path="/settings" element={<DisplaySettings />} />
+                <Route path="/setups" element={<Navigate to="/settings" replace />} />
               </Route>
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />

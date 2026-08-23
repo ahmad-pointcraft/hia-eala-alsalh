@@ -17,11 +17,11 @@ export function AdminLayout() {
   }, [location.pathname]);
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#f8f9fa' }}>
       <Sidebar open={drawerOpen} onClose={() => setDrawerOpen(false)} />
       <Box component="main" sx={{ flexGrow: 1, p: { xs: 2, sm: 3 }, minWidth: 0 }}>
-        <AppBar position="sticky" color="default" elevation={0}>
-          <Toolbar sx={{ gap: 1, '&.MuiToolbar-root': { px: 0 } }}>
+        <AppBar position="sticky" color="transparent" elevation={0} sx={{ bgcolor: '#f8f9fa', mb: 2 }}>
+          <Toolbar sx={{ gap: 1, px: { xs: 0, sm: 0 }, '&.MuiToolbar-root': { px: 0 } }}>
             {isTabletDown && (
               <IconButton
                 edge="start"
@@ -33,17 +33,18 @@ export function AdminLayout() {
               </IconButton>
             )}
             <Box sx={{ flexGrow: 1, minWidth: 0 }}>
-              <Typography variant="h6" component="h2" noWrap>
+              <Typography variant="h6" component="h2" noWrap fontWeight={600} color="text.primary">
                 Masjid Admin
               </Typography>
             </Box>
             <PreviewButton />
           </Toolbar>
         </AppBar>
-        <Box sx={{ mt: 4 }}>
+        <Box sx={{ mt: 1 }}>
           <Outlet />
         </Box>
       </Box>
     </Box>
   );
 }
+

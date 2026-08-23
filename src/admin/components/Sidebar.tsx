@@ -7,22 +7,32 @@ import {
   List,
   ListItem,
   ListItemButton,
+  ListItemIcon,
   ListItemText,
   Typography,
 } from '@mui/material';
+import {
+  Devices as DevicesIcon,
+  AccessTime as TimingsIcon,
+  FolderOutlined as ContentIcon,
+  ImageOutlined as ImagesIcon,
+  DisplaySettings as SettingsIcon,
+  Mosque as MosqueIcon,
+  Logout as LogoutIcon,
+} from '@mui/icons-material';
 import { useSession } from '@/admin/store/useSession';
 import { api } from '@/shared/api';
 import type { MosqueConfig } from '@/shared/types';
 import { useIsMobile } from '@/admin/hooks/useIsMobile';
 
-const DRAWER_WIDTH = 240;
+const DRAWER_WIDTH = 250;
 
 const NAV_ITEMS = [
-  { label: 'Devices', path: '/devices' },
-  { label: 'Timings', path: '/timings' },
-  { label: 'Content', path: '/content' },
-  { label: 'Images', path: '/images' },
-  { label: 'Setups', path: '/setups' },
+  { label: 'Devices', path: '/devices', icon: DevicesIcon },
+  { label: 'Timings', path: '/timings', icon: TimingsIcon },
+  { label: 'Content', path: '/content', icon: ContentIcon },
+  { label: 'Images', path: '/images', icon: ImagesIcon },
+  { label: 'Display Settings', path: '/settings', icon: SettingsIcon },
 ];
 
 export interface SidebarProps {
@@ -84,42 +94,77 @@ export function Sidebar({ open = false, onClose }: SidebarProps) {
           boxSizing: 'border-box',
           display: 'flex',
           flexDirection: 'column',
+          borderRight: '1px solid rgba(0, 0, 0, 0.08)',
         },
       }}
     >
-      <Box sx={{ p: 2 }}>
-        <Typography variant="h6" color="primary" fontWeight={700} noWrap title={title}>
+      <Box sx={{ p: 2.5, display: 'flex', alignItems: 'center', gap: 1.5 }}>
+        <MosqueIcon sx={{ color: 'primary.main', fontSize: 28 }} />
+        <Typography variant="h6" color="primary" fontWeight={700} noWrap title={title} sx={{ fontSize: '1.1rem' }}>
           {title}
         </Typography>
       </Box>
-      <List sx={{ flexGrow: 1 }}>
+      <List sx={{ flexGrow: 1, px: 1 }}>
         {NAV_ITEMS.map((item) => {
           const selected = location.pathname === item.path;
+          const Icon = item.icon;
           return (
-            <ListItem key={item.path} disablePadding>
+            <ListItem key={item.path} disablePadding sx={{ mb: 0.5 }}>
               <ListItemButton
                 component={Link}
                 to={item.path}
                 selected={selected}
                 aria-current={selected ? 'page' : undefined}
                 onClick={isTabletDown ? onClose : undefined}
+                sx={{
+                  borderRadius: 2,
+                  py: 1,
+                  px: 1.5,
+                  transition: 'all 0.15s ease-in-out',
+                  '&.Mui-selected': {
+                    backgroundColor: 'rgba(46, 125, 50, 0.12)',
+                    color: 'primary.main',
+                    '& .MuiListItemIcon-root': {
+                      color: 'primary.main',
+                    },
+                    '&:hover': {
+                      backgroundColor: 'rgba(46, 125, 50, 0.18)',
+                    },
+                  },
+                  '&:hover': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                  },
+                }}
               >
-                <ListItemText primary={item.label} />
+                <ListItemIcon sx={{ minWidth: 36, color: selected ? 'primary.main' : 'text.secondary' }}>
+                  <Icon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText
+                  primary={item.label}
+                  primaryTypographyProps={{
+                    fontSize: '0.92rem',
+                    fontWeight: selected ? 600 : 500,
+                  }}
+                />
               </ListItemButton>
             </ListItem>
           );
         })}
       </List>
       <Box sx={{ p: 2 }}>
-        <Button fullWidth variant="outlined" onClick={handleSignOut} sx={{
-          transition: 'all 0.3s ease',
-          // HOVER USES PRIMARY.MAIN — WHITE ON primary.light FAILS AA (≈3:1)
-          "&:hover": {
-            backgroundColor: 'primary.main',
-            color: 'white',
-            transform: 'scale(1.05)'
-          },
-        }}>
+        <Button
+          fullWidth
+          variant="outlined"
+          startIcon={<LogoutIcon />}
+          onClick={handleSignOut}
+          sx={{
+            transition: 'all 0.2s ease',
+            '&:hover': {
+              backgroundColor: 'primary.main',
+              color: 'white',
+            },
+          }}
+        >
           <Typography variant="button" fontWeight={700} noWrap title="Sign Out">
             Sign Out
           </Typography>
