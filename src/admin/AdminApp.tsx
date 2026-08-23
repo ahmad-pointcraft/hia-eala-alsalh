@@ -16,7 +16,6 @@ import { AdminLayout } from '@/admin/components/AdminLayout';
 import { SignIn } from '@/admin/routes/SignIn';
 import { SignUp } from '@/admin/routes/SignUp';
 import { Devices } from '@/admin/routes/Devices';
-import { Preview } from '@/admin/routes/Preview';
 import { Timings } from '@/admin/routes/Timings';
 import { Content } from '@/admin/routes/Content';
 import { Images } from '@/admin/routes/Images';
@@ -41,7 +40,6 @@ export function AdminApp() {
                 <Route path="/content" element={<Content />} />
                 <Route path="/images" element={<Images />} />
                 <Route path="/setups" element={<SetupsStub />} />
-                <Route path="/preview" element={<Preview />} />
               </Route>
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />

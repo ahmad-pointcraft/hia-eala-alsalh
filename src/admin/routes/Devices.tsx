@@ -54,7 +54,7 @@ export function Devices() {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
         <Typography variant="h5">Devices</Typography>
         <Button variant="contained" startIcon={<AddIcon />} onClick={addDialog.onTrue}>
           Add Device

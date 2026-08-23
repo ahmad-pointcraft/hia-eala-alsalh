@@ -22,7 +22,6 @@ const NAV_ITEMS = [
   { label: 'Content', path: '/content' },
   { label: 'Images', path: '/images' },
   { label: 'Setups', path: '/setups' },
-  { label: 'Preview', path: '/preview' },
 ];
 
 export function Sidebar() {
