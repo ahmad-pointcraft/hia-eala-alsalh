@@ -21,7 +21,6 @@ import { AsyncState } from '@/admin/components/states/AsyncState';
 import { useToast } from '@/admin/components/ToastProvider';
 import { validateConfig, isValid } from '@/admin/utils/timings/validation';
 
-import { MasjidNameFields } from '@/admin/components/timings/MasjidNameFields';
 import { LocationFields } from '@/admin/components/timings/LocationFields';
 import { MethodSelect } from '@/admin/components/timings/MethodSelect';
 import { MadhabToggle } from '@/admin/components/timings/MadhabToggle';
@@ -108,12 +107,6 @@ export function Timings() {
       >
       {/* SINGLE-COLUMN BELOW SM — FULL WIDTH, COMPRESSED SPACING, REACHABLE SAVE */}
       <Stack spacing={{ xs: 2, sm: 3 }} sx={{ maxWidth: { sm: 700 } }}>
-        {/* MASJID IDENTITY */}
-        <Box>
-          <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1.5 }}>Masjid Name</Typography>
-          <MasjidNameFields errors={errors} />
-        </Box>
-
         {/* LOCATION */}
         <Box>
           <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1.5 }}>Location</Typography>
