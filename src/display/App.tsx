@@ -13,7 +13,8 @@ import { FundraisingOverlay, SilenceOverlay } from './components/overlays';
 import { EventSlide, EventSlideshow } from './components/events';
 import { DevTimeController } from './components/DevTimeController';
 import type { WisdomContent } from '@/display/types';
-import { useLanguage } from '@/display/store';
+import { useLanguage, useLanguageStore } from '@/display/store';
+import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
 import { translations as allTranslations } from '@/display/data/translations';
 import {
   useClock,
@@ -36,6 +37,16 @@ const STATIC_CAROUSEL_FALLBACK = [mosque1, mosque2, mosque3];
 
 export default function App() {
   const { language, toggleLanguage, t, dir } = useLanguage();
+  const slideDurationSec = useMosqueConfigStore((s) => s.config.slideDurationSec ?? 10);
+  const languageOrder = useMosqueConfigStore((s) => s.config.languageOrder);
+
+  // SYNCHRONIZE DEFAULT DISPLAY LANGUAGE WHEN CONFIG CHANGES
+  useEffect(() => {
+    if (languageOrder) {
+      const targetLang = languageOrder === 'ar-first' ? 'ar' : 'en';
+      useLanguageStore.getState().setLanguage(targetLang);
+    }
+  }, [languageOrder]);
 
   const { currentTime } = useClock();
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
@@ -43,6 +54,7 @@ export default function App() {
     () => (prefersReducedMotion ? { duration: 0 } : undefined),
     [prefersReducedMotion],
   );
+
 
   useEffect(() => {
     document.documentElement.dir = dir;
@@ -236,9 +248,10 @@ export default function App() {
                         <EventSlideshow
                           events={eventSlides}
                           images={carouselImages}
-                          interval={5000}
+                          interval={(slideDurationSec || 10) * 1000}
                           language={language}
                         />
+
                       </motion.div>
                     )}
                   </AnimatePresence>

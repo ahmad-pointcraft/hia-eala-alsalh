@@ -121,7 +121,7 @@ export function ClockPresentationCard() {
 
           <Box>
             <Typography variant="caption" color="text.secondary" fontWeight={600} component="div" sx={{ mb: 1, textTransform: 'uppercase', letterSpacing: 0.4 }}>
-              Bilingual Display Order
+              Default Display Language
             </Typography>
             <ToggleButtonGroup
               value={draft.languageOrder ?? 'en-first'}
@@ -131,7 +131,7 @@ export function ClockPresentationCard() {
               onChange={(_, val: LanguageOrder | null) => {
                 if (val) setField({ languageOrder: val });
               }}
-              aria-label="Language priority selection"
+              aria-label="Default display language selection"
               sx={{
                 bgcolor: '#f1f3f5',
                 p: 0.5,
@@ -154,8 +154,8 @@ export function ClockPresentationCard() {
                 },
               }}
             >
-              <ToggleButton value="en-first">English First</ToggleButton>
-              <ToggleButton value="ar-first">العربية أولاً</ToggleButton>
+              <ToggleButton value="en-first">English</ToggleButton>
+              <ToggleButton value="ar-first">العربية</ToggleButton>
             </ToggleButtonGroup>
           </Box>
         </Stack>
@@ -163,5 +163,6 @@ export function ClockPresentationCard() {
     </Card>
   );
 }
+
 
 

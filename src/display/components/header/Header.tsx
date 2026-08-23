@@ -21,6 +21,8 @@ import type { HijriDateInfo } from '@/shared/types';
 import { getFontFamily, getDirection, toArabicNumerals } from '@/display/utils/helpers';
 import { useThemeMode } from '@/display/theme/ThemeContext';
 
+import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
+
 interface HeaderProps {
   language: Language;
   onToggleLanguage: () => void;
@@ -42,6 +44,8 @@ export function Header({
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
   const { mode, toggleTheme } = useThemeMode();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const timeFormat = useMosqueConfigStore((s) => s.config.timeFormat ?? '12h');
+  const showSeconds = useMosqueConfigStore((s) => s.config.showSeconds ?? true);
 
   const isSettingsOpen = Boolean(anchorEl);
 
@@ -52,8 +56,6 @@ export function Header({
   const handleCloseSettings = () => {
     setAnchorEl(null);
   };
-
-
 
   useEffect(() => {
     const goOffline = () => setIsOffline(true);
@@ -67,14 +69,31 @@ export function Header({
   }, []);
 
   const formatTime = (date: Date) => {
-    const timeStr = date.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false,
-    });
-    return language === 'ar' ? toArabicNumerals(timeStr) : timeStr;
+    const is12h = timeFormat === '12h';
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const seconds = date.getSeconds();
+    const pad = (n: number) => n.toString().padStart(2, '0');
+
+    let displayHours: string;
+    let periodSuffix = '';
+
+    if (is12h) {
+      const h12 = hours % 12 || 12;
+      displayHours = h12.toString();
+      const period = hours >= 12 ? (language === 'ar' ? ' م' : ' PM') : (language === 'ar' ? ' ص' : ' AM');
+      periodSuffix = period;
+    } else {
+      displayHours = pad(hours);
+    }
+
+    const minStr = pad(minutes);
+    const secStr = showSeconds ? `:${pad(seconds)}` : '';
+    const rawTime = `${displayHours}:${minStr}${secStr}${periodSuffix}`;
+
+    return language === 'ar' ? toArabicNumerals(rawTime) : rawTime;
   };
+
 
   const getHijriDate = () => {
     const dateStr = language === 'ar' ? toArabicNumerals(hijriDate.formatted_ar) : hijriDate.formatted_en;

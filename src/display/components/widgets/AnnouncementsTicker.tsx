@@ -6,6 +6,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { getFontFamily, isRTL, getDirection } from '@/display/utils/helpers';
+import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
 
 const SEPARATOR_GLYPH = '\u2726';
 
@@ -17,6 +18,8 @@ interface AnnouncementsTickerProps {
 export function AnnouncementsTicker({ language, announcements }: AnnouncementsTickerProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+  const tickerSpeed = useMosqueConfigStore((s) => s.config.tickerSpeed ?? 'normal');
+  const logoUrl = useMosqueConfigStore((s) => s.config.logoUrl);
 
   useEffect(() => {
     const element = scrollRef.current;
@@ -31,7 +34,9 @@ export function AnnouncementsTicker({ language, announcements }: AnnouncementsTi
     let cancelled = false;
 
     const rtl = isRTL(language);
-    const speed = rtl ? 0.4 : -0.4;
+    const speedMagnitude =
+      tickerSpeed === 'slow' ? 0.2 : tickerSpeed === 'fast' ? 0.8 : 0.4;
+    const speed = rtl ? speedMagnitude : -speedMagnitude;
 
     const runPass = () => {
       if (cancelled) return;
@@ -65,7 +70,8 @@ export function AnnouncementsTicker({ language, announcements }: AnnouncementsTi
       cancelled = true;
       cancelAnimationFrame(animationId);
     };
-  }, [language, prefersReducedMotion, announcements]);
+  }, [language, prefersReducedMotion, announcements, tickerSpeed]);
+
 
   const segments: React.ReactNode[] = [];
   announcements.forEach((text, i) => {
@@ -134,10 +140,11 @@ export function AnnouncementsTicker({ language, announcements }: AnnouncementsTi
         >
           <Box
             component="img"
-            src={masjidLogo}
+            src={logoUrl || masjidLogo}
             alt="Masjid Logo"
             sx={{ height: { xs: 22, sm: 26, md: 28, lg: 30 }, width: 'auto', objectFit: 'contain' }}
           />
+
         </Box>
 
         <Box sx={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
