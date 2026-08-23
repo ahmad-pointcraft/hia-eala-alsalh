@@ -110,14 +110,14 @@ export function ContentList<T extends { id: string }>({
                         size="small"
                         checked={activeControl.isActive(item)}
                         onChange={() => activeControl.onToggle(item)}
-                        inputProps={{ 'aria-label': activeControl.ariaLabel(item) }}
+                        slotProps={{ input: { 'aria-label': activeControl.ariaLabel(item) } }}
                       />
                     ) : (
                       <Radio
                         size="small"
                         checked={activeControl.isActive(item)}
                         onChange={() => activeControl.onToggle(item)}
-                        inputProps={{ 'aria-label': activeControl.ariaLabel(item) }}
+                        slotProps={{ input: { 'aria-label': activeControl.ariaLabel(item) } }}
                       />
                     )
                   ) : <Box />}
@@ -179,14 +179,14 @@ export function ContentList<T extends { id: string }>({
                         size="small"
                         checked={activeControl.isActive(item)}
                         onChange={() => activeControl.onToggle(item)}
-                        inputProps={{ 'aria-label': activeControl.ariaLabel(item) }}
+                        slotProps={{ input: { 'aria-label': activeControl.ariaLabel(item) } }}
                       />
                     ) : (
                       <Radio
                         size="small"
                         checked={activeControl.isActive(item)}
                         onChange={() => activeControl.onToggle(item)}
-                        inputProps={{ 'aria-label': activeControl.ariaLabel(item) }}
+                        slotProps={{ input: { 'aria-label': activeControl.ariaLabel(item) } }}
                       />
                     )}
                   </TableCell>

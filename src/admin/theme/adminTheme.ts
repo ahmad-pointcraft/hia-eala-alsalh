@@ -31,6 +31,11 @@ export const adminTheme = createTheme({
         root: { minHeight: 44 },
       },
     },
+    MuiToggleButton: {
+      styleOverrides: {
+        root: { minHeight: 44 },
+      },
+    },
     // VISIBLE KEYBOARD FOCUS RING — 2px PRIMARY OUTLINE WITH OFFSET
     MuiButtonBase: {
       styleOverrides: {

@@ -14,7 +14,10 @@ export function PreviewButton() {
   const toast = useToast();
 
   const handleClick = () => {
-    const base = import.meta.env.VITE_DISPLAY_APP_URL || import.meta.env.BASE_URL;
+    // "/" (SHIPPED IN .env) OR EMPTY MEANS UNSET — SAME-ORIGIN DISPLAY ENTRY
+    // VIA BASE_URL, WHICH IS CORRECT UNDER THE PROJECT BASE PATH
+    const raw = import.meta.env.VITE_DISPLAY_APP_URL?.trim();
+    const base = !raw || raw === '/' ? import.meta.env.BASE_URL : raw;
     const url = `${base}?masjid=${masjidId}`;
     const opened = window.open(url, '_blank');
     if (!opened) {
@@ -38,3 +41,4 @@ export function PreviewButton() {
     </Button>
   );
 }
+

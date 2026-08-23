@@ -77,11 +77,17 @@ export function ContentFormDialog<T extends FieldValues>({
               {fields.map((f) => {
                 if (f.kind === 'bilingual') {
                   const pairError = errorMap[f.key]?.message;
+                  const arId = `field-${f.key}-ar`;
+                  const enId = `field-${f.key}-en`;
                   return (
                     <Stack key={f.key} spacing={1}>
-                      <InputLabel error={!!pairError} required={f.required}>{f.label}</InputLabel>
+                      {/* LABEL ASSOCIATION — htmlFor/id ON BOTH HALVES */}
+                      <InputLabel error={!!pairError} required={f.required} htmlFor={arId}>
+                        {f.label}
+                      </InputLabel>
                       <TextField
                         {...register(`${f.key}_ar` as Path<T>)}
+                        id={arId}
                         placeholder="العربية"
                         dir="rtl"
                         multiline={f.multiline}
@@ -93,6 +99,7 @@ export function ContentFormDialog<T extends FieldValues>({
                       />
                       <TextField
                         {...register(`${f.key}_en` as Path<T>)}
+                        id={enId}
                         placeholder="English"
                         dir="ltr"
                         multiline={f.multiline}

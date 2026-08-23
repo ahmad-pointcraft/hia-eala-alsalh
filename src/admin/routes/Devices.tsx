@@ -1,7 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
   Box,
+  Card,
+  CardContent,
   Paper,
+  Stack,
   Table,
   Button,
   TableRow,
@@ -19,10 +22,19 @@ import { formatLastSeen } from '@/shared/utils';
 import { useSession } from '@/admin/store/useSession';
 import { useBoolean } from '@/shared/hooks/useBoolean';
 import { useFocusHeading } from '@/admin/hooks/useFocusHeading';
+import { useIsMobile } from '@/admin/hooks/useIsMobile';
 import { AsyncState } from '@/admin/components/states/AsyncState';
 import { AddDeviceDialog } from '@/admin/components/AddDeviceDialog';
 import { RenameDeviceDialog } from '@/admin/components/RenameDeviceDialog';
 import { UnpairDeviceDialog } from '@/admin/components/UnpairDeviceDialog';
+
+function deviceRows(device: Device): { label: string; value: string }[] {
+  return [
+    { label: 'Name', value: device.name },
+    { label: 'Status', value: device.status },
+    { label: 'Last Seen', value: formatLastSeen(device.lastSeenAt) },
+  ];
+}
 
 export function Devices() {
   const session = useSession((s) => s.session);
@@ -34,6 +46,7 @@ export function Devices() {
   const [renameTarget, setRenameTarget] = useState<Device | null>(null);
   const [unpairTarget, setUnpairTarget] = useState<Device | null>(null);
   const headingRef = useFocusHeading<HTMLHeadingElement>();
+  const isPhone = useIsMobile('sm');
 
   const refresh = useCallback(async () => {
     if (!masjidId) return;
@@ -75,6 +88,33 @@ export function Devices() {
           action: { label: 'Add a device', onClick: addDialog.onTrue },
         }}
       >
+        {isPhone ? (
+          // PHONE LAYOUT — STACKED CARDS PRESERVING ALL DATA + ACTIONS (FR-013)
+          <Stack spacing={1.5}>
+            {devices.map((device) => (
+              <Card key={device.id}>
+                <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1, '&:last-child': { pb: 2 } }}>
+                  {deviceRows(device).map((row) => (
+                    <Box key={row.label} sx={{ minWidth: 0 }}>
+                      <Typography variant="caption" color="text.secondary" component="div">
+                        {row.label}
+                      </Typography>
+                      <Typography sx={{ overflowWrap: 'anywhere' }}>{row.value}</Typography>
+                    </Box>
+                  ))}
+                  <Box sx={{ display: 'flex', justifyContent: 'flex-end', pt: 0.5 }}>
+                    <IconButton aria-label={`Rename ${device.name}`} onClick={() => setRenameTarget(device)} size="small">
+                      <EditIcon fontSize="small" />
+                    </IconButton>
+                    <IconButton aria-label={`Unpair ${device.name}`} onClick={() => setUnpairTarget(device)} size="small">
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </Box>
+                </CardContent>
+              </Card>
+            ))}
+          </Stack>
+        ) : (
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -104,6 +144,7 @@ export function Devices() {
             </TableBody>
           </Table>
         </TableContainer>
+        )}
       </AsyncState>
 
       <AddDeviceDialog open={addDialog.value} onClose={addDialog.onFalse} onPaired={refresh} />

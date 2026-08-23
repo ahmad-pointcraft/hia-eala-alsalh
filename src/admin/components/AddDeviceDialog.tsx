@@ -71,7 +71,7 @@ export function AddDeviceDialog({ open, onClose, onPaired }: AddDeviceDialogProp
               autoFocus
               label="Pairing Code"
               onChange={(e) => field.onChange(e.target.value.replace(/\D/g, '').slice(0, 6))}
-              inputProps={{ inputMode: 'numeric', maxLength: 6 }}
+              slotProps={{ htmlInput: { inputMode: 'numeric', maxLength: 6 } }}
               placeholder="000000"
               error={!!fieldError}
               helperText={fieldError?.message ?? ''}
