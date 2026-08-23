@@ -32,6 +32,10 @@ export const iqamaPrayerConfigSchema = z.discriminatedUnion('mode', [
   z.object({ mode: z.literal('fixed'), value: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'Fixed time must be HH:MM') }),
 ]);
 
+export const timeFormatSchema = z.enum(['12h', '24h']);
+export const languageOrderSchema = z.enum(['ar-first', 'en-first']);
+export const tickerSpeedSchema = z.enum(['slow', 'normal', 'fast']);
+
 // ==================== MOSQUE CONFIG ====================
 
 export const mosqueConfigSchema = z.object({
@@ -51,7 +55,17 @@ export const mosqueConfigSchema = z.object({
   }),
   masjidName_en: z.string().min(1, 'Required'),
   masjidName_ar: z.string().min(1, 'Required'),
-  clockOffsetMs: z.number(),
+  clockOffsetMs: z.number().default(0),
+  logoUrl: z.string().nullable().optional().default(null),
+  timeFormat: timeFormatSchema.default('12h'),
+  showSeconds: z.boolean().default(true),
+  languageOrder: languageOrderSchema.default('en-first'),
+  slideDurationSec: z.number().min(5).max(60).default(10),
+  tickerSpeed: tickerSpeedSchema.default('normal'),
+  silenceAfterIqama: z.boolean().default(true),
+  silenceDurationMin: z.number().min(1).max(60).default(15),
+  ramadanMode: z.boolean().default(false),
+  jumuahSilence: z.boolean().default(false),
 });
 
 // ==================== HIJRI DATE INFO ====================

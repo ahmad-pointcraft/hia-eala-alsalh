@@ -6,6 +6,9 @@ import {
   iqamaPrayerConfigSchema,
   mosqueConfigSchema,
   hijriDateInfoSchema,
+  timeFormatSchema,
+  languageOrderSchema,
+  tickerSpeedSchema,
 } from './schema';
 
 export type AdhanMethod = z.infer<typeof adhanMethodSchema>;
@@ -14,6 +17,9 @@ export type HighLatitudeRule = z.infer<typeof highLatitudeRuleSchema>;
 export type IqamaPrayerConfig = z.infer<typeof iqamaPrayerConfigSchema>;
 export type MosqueConfig = z.infer<typeof mosqueConfigSchema>;
 export type HijriDateInfo = z.infer<typeof hijriDateInfoSchema>;
+export type TimeFormat = z.infer<typeof timeFormatSchema>;
+export type LanguageOrder = z.infer<typeof languageOrderSchema>;
+export type TickerSpeed = z.infer<typeof tickerSpeedSchema>;
 
 export function formatHijriDate(
   info: HijriDateInfo,
@@ -43,4 +49,14 @@ export const DEFAULT_MOSQUE_CONFIG: MosqueConfig = {
   masjidName_en: 'Mosque',
   masjidName_ar: '\u0645\u0633\u062C\u062F',
   clockOffsetMs: 0,
+  logoUrl: null,
+  timeFormat: '12h',
+  showSeconds: true,
+  languageOrder: 'en-first',
+  slideDurationSec: 10,
+  tickerSpeed: 'normal',
+  silenceAfterIqama: true,
+  silenceDurationMin: 15,
+  ramadanMode: false,
+  jumuahSilence: false,
 };
