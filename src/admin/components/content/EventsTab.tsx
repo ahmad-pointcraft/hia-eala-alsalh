@@ -47,10 +47,17 @@ export function EventsTab() {
       header: 'Title',
       render: (item) => (
         <Stack direction="row" spacing={1} alignItems="center">
-          <Typography noWrap sx={{ maxWidth: 260 }}>
+          <Typography noWrap sx={{ maxWidth: 260, fontWeight: 600 }}>
             {item.title_en || item.title_ar}
           </Typography>
-          {isPast(item.date) && <Chip size="small" label="past" variant="outlined" />}
+          {isPast(item.date) && (
+            <Chip
+              size="small"
+              label="Past"
+              variant="outlined"
+              sx={{ borderRadius: 1.5, fontSize: '0.72rem', height: 20, color: 'text.secondary' }}
+            />
+          )}
         </Stack>
       ),
     },
@@ -59,7 +66,7 @@ export function EventsTab() {
     {
       header: 'Speaker',
       render: (item) => (
-        <Typography noWrap sx={{ maxWidth: 180 }}>
+        <Typography noWrap sx={{ maxWidth: 180, color: item.speaker_en || item.speaker_ar ? 'text.primary' : 'text.disabled' }}>
           {item.speaker_en || item.speaker_ar || '—'}
         </Typography>
       ),
@@ -108,20 +115,27 @@ export function EventsTab() {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2.5 }}>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
           sx={{
-            fontWeight: '700',
+            borderRadius: 2,
+            px: 2.5,
+            fontWeight: 700,
+            boxShadow: '0 2px 8px rgba(46, 125, 50, 0.25)',
             transition: 'all 0.2s ease-in-out',
-            '&:hover': { transform: 'scale(1.05)' },
+            '&:hover': {
+              transform: 'scale(1.03)',
+              boxShadow: '0 4px 12px rgba(46, 125, 50, 0.35)',
+            },
           }}
           onClick={dialogs.openCreate}
         >
           Add Event
         </Button>
       </Box>
+
 
       <ContentList
         items={pager.slice(sorted)}

@@ -67,7 +67,7 @@ export function AnnouncementsTab() {
     ids[fullIndex] = b;
     ids[target] = a;
     reorder?.(ids)
-      .then(() => pager.reset()) // REORDER RESETS PAGE (FR-006)
+      .then(() => pager.reset()) // REORDER RESETS PAGE
       .catch(() => {
         toast.error('Failed to reorder — reverted');
       });
@@ -80,7 +80,7 @@ export function AnnouncementsTab() {
         toast.success('Announcement updated');
       } else {
         await create({ ...values, active: true, order: 0 });
-        pager.reset(); // NEW ROW STAYS VISIBLE (FR-006)
+        pager.reset(); // NEW ROW STAYS VISIBLE
         toast.success('Announcement created');
       }
     } catch (e) {
@@ -92,7 +92,7 @@ export function AnnouncementsTab() {
     if (!dialogs.deleteTarget) return;
     try {
       await remove(dialogs.deleteTarget.id);
-      pager.reset(); // AFFECTED ROWS STAY VISIBLE (FR-006)
+      pager.reset(); // AFFECTED ROWS STAY VISIBLE
       toast.success('Announcement deleted');
     } catch {
       toast.error('Failed to delete announcement');
@@ -103,14 +103,20 @@ export function AnnouncementsTab() {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2.5 }}>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
           sx={{
-            fontWeight: '700',
+            borderRadius: 2,
+            px: 2.5,
+            fontWeight: 700,
+            boxShadow: '0 2px 8px rgba(46, 125, 50, 0.25)',
             transition: 'all 0.2s ease-in-out',
-            '&:hover': { transform: 'scale(1.05)' },
+            '&:hover': {
+              transform: 'scale(1.03)',
+              boxShadow: '0 4px 12px rgba(46, 125, 50, 0.35)',
+            },
           }}
           onClick={dialogs.openCreate}
         >

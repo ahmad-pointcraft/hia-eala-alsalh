@@ -46,18 +46,30 @@ export function DonationsTab() {
     {
       header: 'Campaign',
       render: (item) => (
-        <Typography noWrap sx={{ maxWidth: 280 }}>
+        <Typography noWrap sx={{ maxWidth: 280, fontWeight: 600 }}>
           {item.title_en || item.title_ar}
         </Typography>
       ),
     },
     {
       header: 'Collected',
-      render: (item) => `$${item.collected.toLocaleString()}`,
-      width: '110px',
+      render: (item) => (
+        <Typography fontWeight={700} color="success.dark">
+          ${item.collected.toLocaleString()}
+        </Typography>
+      ),
+      width: '120px',
     },
-    { header: 'Goal', render: (item) => `$${item.goal.toLocaleString()}`, width: '110px' },
-    { header: 'Donors', render: (item) => item.donorCount, width: '80px' },
+    {
+      header: 'Goal',
+      render: (item) => (
+        <Typography color="text.secondary">
+          ${item.goal.toLocaleString()}
+        </Typography>
+      ),
+      width: '120px',
+    },
+    { header: 'Donors', render: (item) => item.donorCount, width: '90px' },
   ];
 
   // RADIO ACTIVATION — setActiveDonationCampaign DEACTIVATES THE REST ATOMICALLY
@@ -116,20 +128,27 @@ export function DonationsTab() {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2.5 }}>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
           sx={{
-            fontWeight: '700',
+            borderRadius: 2,
+            px: 2.5,
+            fontWeight: 700,
+            boxShadow: '0 2px 8px rgba(46, 125, 50, 0.25)',
             transition: 'all 0.2s ease-in-out',
-            '&:hover': { transform: 'scale(1.05)' },
+            '&:hover': {
+              transform: 'scale(1.03)',
+              boxShadow: '0 4px 12px rgba(46, 125, 50, 0.35)',
+            },
           }}
           onClick={dialogs.openCreate}
         >
           Add Campaign
         </Button>
       </Box>
+
 
       <ContentList
         items={pager.slice(sorted)}
