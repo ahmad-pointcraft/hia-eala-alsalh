@@ -1,39 +1,20 @@
 import { useState, useEffect, useCallback } from 'react';
-import {
-  Box,
-  Card,
-  CardContent,
-  Chip,
-  Stack,
-  Table,
-  Button,
-  TableRow,
-  TableBody,
-  TableCell,
-  TableHead,
-  Typography,
-  IconButton,
-  TableContainer,
-  Tooltip,
-} from '@mui/material';
-import {
-  EditOutlined as EditIcon,
-  DeleteOutline as DeleteIcon,
-  Add as AddIcon,
-  Tv as TvIcon,
-  AccessTime as TimeIcon,
-} from '@mui/icons-material';
+import { Box, Button, Typography } from '@mui/material';
+import { Add as AddIcon } from '@mui/icons-material';
 import { api } from '@/shared/api';
 import type { Device } from '@/shared/api';
-import { formatLastSeen } from '@/shared/utils';
 import { useSession } from '@/admin/store/useSession';
 import { useBoolean } from '@/shared/hooks/useBoolean';
 import { useFocusHeading } from '@/admin/hooks/useFocusHeading';
 import { useIsMobile } from '@/admin/hooks/useIsMobile';
 import { AsyncState } from '@/admin/components/states/AsyncState';
-import { AddDeviceDialog } from '@/admin/components/AddDeviceDialog';
-import { RenameDeviceDialog } from '@/admin/components/RenameDeviceDialog';
-import { UnpairDeviceDialog } from '@/admin/components/UnpairDeviceDialog';
+import {
+  DeviceTable,
+  DeviceCardList,
+  AddDeviceDialog,
+  RenameDeviceDialog,
+  UnpairDeviceDialog,
+} from '@/admin/components/devices';
 
 export function Devices() {
   const session = useSession((s) => s.session);
@@ -114,6 +95,7 @@ export function Devices() {
         </Button>
       </Box>
 
+      {/* SINGLE STATE PIPELINE — SHARED PRIMITIVES (UNPAGED SHORT LIST) */}
       <AsyncState
         loading={loading}
         error={fetchError}
@@ -127,260 +109,17 @@ export function Devices() {
         }}
       >
         {isPhone ? (
-          // PHONE LAYOUT — STACKED MODERN CARDS
-          <Stack spacing={2}>
-            {devices.map((device) => (
-              <Card
-                key={device.id}
-                sx={{
-                  borderRadius: 3,
-                  border: '1px solid rgba(0, 0, 0, 0.08)',
-                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.02)',
-                }}
-              >
-                <CardContent sx={{ p: 2.5, '&:last-child': { pb: 2.5 } }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                      <Box
-                        sx={{
-                          width: 40,
-                          height: 40,
-                          borderRadius: 2,
-                          bgcolor: 'rgba(46, 125, 50, 0.08)',
-                          color: 'primary.main',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          flexShrink: 0,
-                        }}
-                      >
-                        <TvIcon fontSize="small" />
-                      </Box>
-                      <Box>
-                        <Typography fontWeight={700} fontSize="1rem">
-                          {device.name}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          TV Screen
-                        </Typography>
-                      </Box>
-                    </Box>
-
-                    <Chip
-                      icon={
-                        <Box
-                          sx={{
-                            width: 6,
-                            height: 6,
-                            borderRadius: '50%',
-                            bgcolor: device.status === 'paired' ? 'success.main' : 'warning.main',
-                            ml: '6px !important',
-                          }}
-                        />
-                      }
-                      label={device.status === 'paired' ? 'Connected' : device.status}
-                      size="small"
-                      sx={{
-                        bgcolor:
-                          device.status === 'paired'
-                            ? 'rgba(46, 125, 50, 0.08)'
-                            : 'rgba(237, 108, 2, 0.08)',
-                        color: device.status === 'paired' ? 'success.dark' : 'warning.dark',
-                        fontWeight: 700,
-                        fontSize: '0.75rem',
-                        height: 24,
-                        borderRadius: 1.5,
-                      }}
-                    />
-                  </Box>
-
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      pt: 1.5,
-                      borderTop: '1px solid rgba(0, 0, 0, 0.06)',
-                    }}
-                  >
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-                      <TimeIcon sx={{ fontSize: 16, color: 'text.disabled' }} />
-                      <Typography variant="body2" color="text.secondary" fontSize="0.85rem">
-                        {formatLastSeen(device.lastSeenAt)}
-                      </Typography>
-                    </Box>
-
-                    <Box sx={{ display: 'flex', gap: 0.5 }}>
-                      <IconButton
-                        aria-label={`Rename ${device.name}`}
-                        onClick={() => setRenameTarget(device)}
-                        size="small"
-                        sx={{ borderRadius: 1.5, '&:hover': { bgcolor: 'rgba(46, 125, 50, 0.08)', color: 'primary.main' } }}
-                      >
-                        <EditIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton
-                        aria-label={`Unpair ${device.name}`}
-                        onClick={() => setUnpairTarget(device)}
-                        size="small"
-                        color="error"
-                        sx={{ borderRadius: 1.5, '&:hover': { bgcolor: 'rgba(211, 47, 47, 0.08)' } }}
-                      >
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
-                    </Box>
-                  </Box>
-                </CardContent>
-              </Card>
-            ))}
-          </Stack>
+          <DeviceCardList
+            devices={devices}
+            onRename={setRenameTarget}
+            onUnpair={setUnpairTarget}
+          />
         ) : (
-          // DESKTOP / TABLET MODERN TABLE
-          <Card
-            sx={{
-              borderRadius: 3,
-              border: '1px solid rgba(0, 0, 0, 0.08)',
-              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.02)',
-              overflow: 'hidden',
-            }}
-          >
-            <TableContainer>
-              <Table>
-                <TableHead>
-                  <TableRow sx={{ bgcolor: '#f8fafc' }}>
-                    <TableCell sx={{ fontWeight: 700, fontSize: '0.78rem', color: 'text.secondary', letterSpacing: 0.5, py: 1.75, pl: 3 }}>
-                      DEVICE
-                    </TableCell>
-                    <TableCell sx={{ fontWeight: 700, fontSize: '0.78rem', color: 'text.secondary', letterSpacing: 0.5, py: 1.75 }}>
-                      STATUS
-                    </TableCell>
-                    <TableCell sx={{ fontWeight: 700, fontSize: '0.78rem', color: 'text.secondary', letterSpacing: 0.5, py: 1.75 }}>
-                      LAST SEEN
-                    </TableCell>
-                    <TableCell align="right" sx={{ fontWeight: 700, fontSize: '0.78rem', color: 'text.secondary', letterSpacing: 0.5, py: 1.75, pr: 3 }}>
-                      ACTIONS
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {devices.map((device) => (
-                    <TableRow
-                      key={device.id}
-                      sx={{
-                        transition: 'background-color 0.15s ease',
-                        '&:hover': { bgcolor: 'rgba(46, 125, 50, 0.02)' },
-                        '&:last-child td': { borderBottom: 0 },
-                      }}
-                    >
-                      <TableCell sx={{ py: 2, pl: 3 }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.75 }}>
-                          <Box
-                            sx={{
-                              width: 38,
-                              height: 38,
-                              borderRadius: 2,
-                              bgcolor: 'rgba(46, 125, 50, 0.08)',
-                              color: 'primary.main',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              flexShrink: 0,
-                            }}
-                          >
-                            <TvIcon fontSize="small" />
-                          </Box>
-                          <Box>
-                            <Typography fontWeight={700} fontSize="0.95rem" color="text.primary">
-                              {device.name}
-                            </Typography>
-                            <Typography variant="caption" color="text.secondary">
-                              TV Display
-                            </Typography>
-                          </Box>
-                        </Box>
-                      </TableCell>
-                      <TableCell sx={{ py: 2 }}>
-                        <Chip
-                          icon={
-                            <Box
-                              sx={{
-                                width: 6,
-                                height: 6,
-                                borderRadius: '50%',
-                                bgcolor: device.status === 'paired' ? 'success.main' : 'warning.main',
-                                ml: '6px !important',
-                              }}
-                            />
-                          }
-                          label={device.status === 'paired' ? 'Connected' : device.status}
-                          size="small"
-                          sx={{
-                            bgcolor:
-                              device.status === 'paired'
-                                ? 'rgba(46, 125, 50, 0.08)'
-                                : 'rgba(237, 108, 2, 0.08)',
-                            color: device.status === 'paired' ? 'success.dark' : 'warning.dark',
-                            fontWeight: 700,
-                            fontSize: '0.75rem',
-                            height: 24,
-                            borderRadius: 1.5,
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell sx={{ py: 2 }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-                          <TimeIcon sx={{ fontSize: 16, color: 'text.disabled' }} />
-                          <Typography variant="body2" color="text.secondary" fontSize="0.88rem">
-                            {formatLastSeen(device.lastSeenAt)}
-                          </Typography>
-                        </Box>
-                      </TableCell>
-                      <TableCell align="right" sx={{ py: 2, pr: 3 }}>
-                        <Stack direction="row" spacing={0.75} justifyContent="flex-end">
-                          <Tooltip title="Rename device">
-                            <IconButton
-                              aria-label={`Rename ${device.name}`}
-                              onClick={() => setRenameTarget(device)}
-                              size="small"
-                              sx={{
-                                borderRadius: 1.5,
-                                border: '1px solid rgba(0, 0, 0, 0.08)',
-                                '&:hover': {
-                                  bgcolor: 'rgba(46, 125, 50, 0.08)',
-                                  color: 'primary.main',
-                                  borderColor: 'primary.main',
-                                },
-                              }}
-                            >
-                              <EditIcon fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="Unpair device">
-                            <IconButton
-                              aria-label={`Unpair ${device.name}`}
-                              onClick={() => setUnpairTarget(device)}
-                              size="small"
-                              color="error"
-                              sx={{
-                                borderRadius: 1.5,
-                                border: '1px solid rgba(211, 47, 47, 0.15)',
-                                '&:hover': {
-                                  bgcolor: 'rgba(211, 47, 47, 0.08)',
-                                  borderColor: 'error.main',
-                                },
-                              }}
-                            >
-                              <DeleteIcon fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-                        </Stack>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Card>
+          <DeviceTable
+            devices={devices}
+            onRename={setRenameTarget}
+            onUnpair={setUnpairTarget}
+          />
         )}
       </AsyncState>
 

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -9,19 +10,23 @@ import {
   Box,
 } from '@mui/material';
 import { DeleteOutline as DeleteIcon } from '@mui/icons-material';
-import { useState } from 'react';
 import { api } from '@/shared/api';
 import type { Device } from '@/shared/api';
 import { useDialogFullScreen } from '@/admin/hooks/useIsMobile';
 
-interface UnpairDeviceDialogProps {
+export interface UnpairDeviceDialogProps {
   device: Device | null;
   open: boolean;
   onClose: () => void;
   onUnpaired: () => void;
 }
 
-export function UnpairDeviceDialog({ device, open, onClose, onUnpaired }: UnpairDeviceDialogProps) {
+export function UnpairDeviceDialog({
+  device,
+  open,
+  onClose,
+  onUnpaired,
+}: UnpairDeviceDialogProps) {
   const [error, setError] = useState('');
 
   async function handleUnpair() {
@@ -102,4 +107,3 @@ export function UnpairDeviceDialog({ device, open, onClose, onUnpaired }: Unpair
     </Dialog>
   );
 }
-

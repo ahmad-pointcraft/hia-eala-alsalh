@@ -22,7 +22,7 @@ const renameDeviceSchema = z.object({
   name: z.string().min(1, 'Name is required'),
 });
 
-interface RenameDeviceDialogProps {
+export interface RenameDeviceDialogProps {
   device: Device | null;
   open: boolean;
   onClose: () => void;

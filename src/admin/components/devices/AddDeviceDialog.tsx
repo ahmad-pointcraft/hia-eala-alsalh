@@ -22,7 +22,7 @@ const addDeviceSchema = z.object({
   name: z.string(),
 });
 
-interface AddDeviceDialogProps {
+export interface AddDeviceDialogProps {
   open: boolean;
   onClose: () => void;
   onPaired: () => void;
@@ -166,4 +166,3 @@ export function AddDeviceDialog({ open, onClose, onPaired }: AddDeviceDialogProp
     </Dialog>
   );
 }
-
