@@ -2,10 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Stack,
   Typography,
 } from '@mui/material';
@@ -16,9 +12,9 @@ import { useSession } from '@/admin/store/useSession';
 import { useDisplaySettingsForm } from '@/admin/store/useDisplaySettingsForm';
 import { useDirtyGuard } from '@/admin/hooks/useDirtyGuard';
 import { useFocusHeading } from '@/admin/hooks/useFocusHeading';
-import { useDialogFullScreen } from '@/admin/hooks/useIsMobile';
 import { AsyncState } from '@/admin/components/states/AsyncState';
 import { useToast } from '@/admin/components/ToastProvider';
+import { UnsavedChangesDialog } from '@/admin/components/UnsavedChangesDialog';
 import { validateDisplaySettings, isValid } from '@/admin/utils/settings/validation';
 
 import { MosqueIdentityCard } from '@/admin/components/settings/MosqueIdentityCard';
@@ -70,7 +66,6 @@ export function DisplaySettings() {
 
   const blocker = useDirtyGuard(dirty);
   const toast = useToast();
-  const dialogFullScreen = useDialogFullScreen();
 
   const errors = useMemo(() => validateDisplaySettings(draft), [draft]);
   const formValid = isValid(errors);
@@ -164,23 +159,12 @@ export function DisplaySettings() {
         </Stack>
       </AsyncState>
 
-      {/* DIRTY GUARD DIALOG */}
-      {blocker.state === 'blocked' && (
-        <Dialog open onClose={() => blocker.reset?.()} fullScreen={dialogFullScreen}>
-          <DialogTitle>Unsaved Changes</DialogTitle>
-          <DialogContent>
-            <Typography>
-              You have unsaved changes in Display Settings. Leave without saving?
-            </Typography>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => blocker.reset?.()}>Stay</Button>
-            <Button color="error" onClick={() => blocker.proceed?.()}>
-              Leave
-            </Button>
-          </DialogActions>
-        </Dialog>
-      )}
+      {/* REUSABLE DIRTY GUARD DIALOG */}
+      <UnsavedChangesDialog
+        blocker={blocker}
+        message="You have unsaved changes in Display Settings. Leave without saving?"
+      />
     </Box>
   );
 }
+

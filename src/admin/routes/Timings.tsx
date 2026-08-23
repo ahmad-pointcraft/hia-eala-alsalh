@@ -4,10 +4,6 @@ import {
   Stack,
   Typography,
   Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
 } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import { api } from '@/shared/api';
@@ -16,9 +12,9 @@ import { useSession } from '@/admin/store/useSession';
 import { useTimingsForm } from '@/admin/store/useTimingsForm';
 import { useDirtyGuard } from '@/admin/hooks/useDirtyGuard';
 import { useFocusHeading } from '@/admin/hooks/useFocusHeading';
-import { useDialogFullScreen } from '@/admin/hooks/useIsMobile';
 import { AsyncState } from '@/admin/components/states/AsyncState';
 import { useToast } from '@/admin/components/ToastProvider';
+import { UnsavedChangesDialog } from '@/admin/components/UnsavedChangesDialog';
 import { validateConfig, isValid } from '@/admin/utils/timings/validation';
 
 import { LocationFields } from '@/admin/components/timings/LocationFields';
@@ -73,7 +69,6 @@ export function Timings() {
   // DIRTY GUARD
   const blocker = useDirtyGuard(dirty);
   const toast = useToast();
-  const dialogFullScreen = useDialogFullScreen();
 
   // VALIDATION
   const errors = useMemo(() => validateConfig(draft), [draft]);
@@ -163,26 +158,12 @@ export function Timings() {
       </Stack>
       </AsyncState>
 
-      {/* DIRTY GUARD DIALOG */}
-      {blocker.state === 'blocked' && (
-        <Dialog open onClose={() => blocker.reset?.()} fullScreen={dialogFullScreen}>
-          <DialogTitle>Unsaved Changes</DialogTitle>
-          <DialogContent>
-            <Typography>You have unsaved changes. Leave without saving?</Typography>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => blocker.reset?.()}>Stay</Button>
-            <Button
-              color="error"
-              onClick={() => {
-                blocker.proceed?.();
-              }}
-            >
-              Leave
-            </Button>
-          </DialogActions>
-        </Dialog>
-      )}
+      {/* REUSABLE DIRTY GUARD DIALOG */}
+      <UnsavedChangesDialog
+        blocker={blocker}
+        message="You have unsaved changes in Timings. Leave without saving?"
+      />
     </Box>
   );
 }
+
