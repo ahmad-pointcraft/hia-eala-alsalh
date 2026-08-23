@@ -31,5 +31,29 @@ export const adminTheme = createTheme({
         root: { minHeight: 44 },
       },
     },
+    // VISIBLE KEYBOARD FOCUS RING — 2px PRIMARY OUTLINE WITH OFFSET
+    MuiButtonBase: {
+      styleOverrides: {
+        root: {
+          '&.Mui-focusVisible': {
+            outline: '2px solid #2e7d32',
+            outlineOffset: 2,
+          },
+        },
+      },
+    },
+    // REDUCED MOTION — DISABLE NON-ESSENTIAL ANIMATION
+    MuiCssBaseline: {
+      styleOverrides: {
+        '@media (prefers-reduced-motion: reduce)': {
+          '*, *::before, *::after': {
+            animationDuration: '0.01ms !important',
+            animationIterationCount: '1 !important',
+            transitionDuration: '0.01ms !important',
+            scrollBehavior: 'auto !important',
+          },
+        },
+      },
+    },
   },
 });

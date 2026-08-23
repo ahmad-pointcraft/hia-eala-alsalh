@@ -209,11 +209,12 @@ export function ContentList<T extends { id: string }>({
         <TablePagination
           {...pagination}
           sx={{
-            flexWrap: { sm: 'wrap' },
-            alignItems: { sm: 'center' },
-            gap: { sm: 0.5 },
-            '& .MuiTablePagination-toolbar': { flexWrap: { sm: 'wrap' }, gap: { sm: 0.5 } },
-            '& .MuiTablePagination-spacer': { display: { sm: 'none' } },
+            // COMPACT REFLOW BELOW SM ONLY; SPACER KEEPS ACTIONS RIGHT-ALIGNED AT SM+
+            flexWrap: { xs: 'wrap', sm: 'nowrap' },
+            alignItems: 'center',
+            gap: { xs: 0.5, sm: 0 },
+            '& .MuiTablePagination-toolbar': { flexWrap: { xs: 'wrap', sm: 'nowrap' }, gap: { xs: 0.5, sm: 0 } },
+            '& .MuiTablePagination-spacer': { display: { xs: 'none', sm: 'block' } },
           }}
         />
       )}

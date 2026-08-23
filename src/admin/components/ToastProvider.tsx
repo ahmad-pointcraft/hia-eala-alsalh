@@ -76,6 +76,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             <Alert
               severity={toast.severity}
               variant="filled"
+              // LIVE-REGION SEMANTICS — ASSERTIVE FOR ERRORS, POLITE OTHERWISE
+              role={toast.severity === 'error' ? 'alert' : 'status'}
               onClose={() => dismiss(toast.id)}
               sx={{ minWidth: 280, whiteSpace: 'nowrap', alignItems: 'center', boxShadow: 3 }}
             >

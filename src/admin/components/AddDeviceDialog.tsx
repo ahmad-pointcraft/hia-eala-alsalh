@@ -66,6 +66,8 @@ export function AddDeviceDialog({ open, onClose, onPaired }: AddDeviceDialogProp
           render={({ field, fieldState: { error: fieldError } }) => (
             <TextField
               {...field}
+              // AUTOFOCUS IS INTENTIONAL — SINGLE-FIELD DIALOG FOCUS MANAGEMENT
+              // eslint-disable-next-line jsx-a11y/no-autofocus
               autoFocus
               label="Pairing Code"
               onChange={(e) => field.onChange(e.target.value.replace(/\D/g, '').slice(0, 6))}

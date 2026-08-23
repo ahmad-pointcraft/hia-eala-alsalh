@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "deploy": "yarn build && gh-pages -d dist"
+    "deploy": "yarn build && gh-pages -d dist",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
@@ -31,7 +32,10 @@
   "devDependencies": {
     "@types/react": "18.3.1",
     "@types/react-dom": "18.3.0",
+    "@typescript-eslint/parser": "^8.67.0",
     "@vitejs/plugin-react": "4.7.0",
+    "eslint": "^10.9.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
     "gh-pages": "^6.3.0",
     "msw": "^2.15.0",
     "typescript": "5.8.3",

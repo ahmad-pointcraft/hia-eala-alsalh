@@ -113,8 +113,9 @@ export function Sidebar({ open = false, onClose }: SidebarProps) {
       <Box sx={{ p: 2 }}>
         <Button fullWidth variant="outlined" onClick={handleSignOut} sx={{
           transition: 'all 0.3s ease',
+          // HOVER USES PRIMARY.MAIN — WHITE ON primary.light FAILS AA (≈3:1)
           "&:hover": {
-            backgroundColor: 'primary.light',
+            backgroundColor: 'primary.main',
             color: 'white',
             transform: 'scale(1.05)'
           },

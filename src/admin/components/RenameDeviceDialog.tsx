@@ -51,6 +51,8 @@ export function RenameDeviceDialog({ device, open, onClose, onSaved }: RenameDev
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
         <TextField
           {...register('name')}
+          // AUTOFOCUS IS INTENTIONAL — SINGLE-FIELD DIALOG FOCUS MANAGEMENT
+          // eslint-disable-next-line jsx-a11y/no-autofocus
           autoFocus
           label="Device Name"
           error={!!errors.name}
