@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import {
   Box,
   Card,
@@ -27,6 +27,13 @@ export function MosqueIdentityCard({ errors }: MosqueIdentityCardProps) {
   const setField = useDisplaySettingsForm((s) => s.setField);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const toast = useToast();
+  const [imgError, setImgError] = useState(false);
+
+  const logoUrl = draft.logoUrl?.trim() || null;
+
+  useEffect(() => {
+    setImgError(false);
+  }, [logoUrl]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -37,33 +44,71 @@ export function MosqueIdentityCard({ errors }: MosqueIdentityCardProps) {
       return;
     }
     const blobUrl = URL.createObjectURL(file);
+    setImgError(false);
     setField({ logoUrl: blobUrl });
     toast.success('Logo uploaded');
   };
 
   const handleRemoveLogo = () => {
     setField({ logoUrl: null });
+    setImgError(false);
     if (fileInputRef.current) fileInputRef.current.value = '';
     toast.info('Logo removed');
   };
 
-  return (
-    <Card sx={{ height: '100%', borderRadius: 2 }}>
-      <CardContent sx={{ p: 2.5 }}>
-        <Typography variant="h6" fontWeight={600} gutterBottom>
-          Mosque Identity & Branding
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          Configure the mosque name in both languages and the official emblem.
-        </Typography>
+  const hasValidLogo = Boolean(logoUrl && !imgError);
 
-        <Stack spacing={2}>
+  return (
+    <Card
+      sx={{
+        height: '100%',
+        borderRadius: 3,
+        border: '1px solid rgba(0, 0, 0, 0.08)',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.02)',
+      }}
+    >
+      <CardContent
+        sx={{
+          p: 2.5,
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          boxSizing: 'border-box',
+        }}
+      >
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, mb: 2.5 }}>
+          <Box
+            sx={{
+              width: 36,
+              height: 36,
+              borderRadius: 2,
+              bgcolor: 'rgba(46, 125, 50, 0.1)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'primary.main',
+            }}
+          >
+            <MosqueIcon fontSize="small" />
+          </Box>
+          <Typography variant="h6" fontWeight={700} fontSize="1.05rem">
+            Mosque Identity & Branding
+          </Typography>
+        </Box>
+
+        <Stack spacing={2} sx={{ flexGrow: 1, justifyContent: 'space-between' }}>
           <Box>
             <InputLabel
               htmlFor="masjidName_en"
               required
               error={!!errors.masjidName_en}
-              sx={{ mb: 0.5, fontSize: '0.875rem', fontWeight: 500 }}
+              sx={{
+                mb: 0.5,
+                fontSize: '0.8rem',
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: 0.4,
+              }}
             >
               Masjid Name (English)
             </InputLabel>
@@ -76,6 +121,7 @@ export function MosqueIdentityCard({ errors }: MosqueIdentityCardProps) {
               error={!!errors.masjidName_en}
               helperText={errors.masjidName_en}
               placeholder="e.g. Masjid Al-Noor"
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
             />
           </Box>
 
@@ -84,7 +130,13 @@ export function MosqueIdentityCard({ errors }: MosqueIdentityCardProps) {
               htmlFor="masjidName_ar"
               required
               error={!!errors.masjidName_ar}
-              sx={{ mb: 0.5, fontSize: '0.875rem', fontWeight: 500 }}
+              sx={{
+                mb: 0.5,
+                fontSize: '0.8rem',
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: 0.4,
+              }}
             >
               Masjid Name (Arabic)
             </InputLabel>
@@ -98,22 +150,40 @@ export function MosqueIdentityCard({ errors }: MosqueIdentityCardProps) {
               error={!!errors.masjidName_ar}
               helperText={errors.masjidName_ar}
               placeholder="مثال: مسجد النور"
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
             />
           </Box>
 
-          <Box sx={{ pt: 1 }}>
-            <Typography variant="caption" color="text.secondary" fontWeight={500} component="div" sx={{ mb: 1 }}>
+          <Box sx={{ pt: 0.5 }}>
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              fontWeight={600}
+              component="div"
+              sx={{ mb: 1, textTransform: 'uppercase', letterSpacing: 0.4 }}
+            >
               Mosque Logo
             </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: 2,
+                p: 1.25,
+                borderRadius: 2,
+                bgcolor: '#fafafa',
+                border: '1px solid rgba(0, 0, 0, 0.05)',
+              }}
+            >
               <Box
                 sx={{
-                  width: 64,
-                  height: 64,
+                  width: 52,
+                  height: 52,
                   borderRadius: 2,
                   border: '1px solid',
                   borderColor: 'divider',
-                  bgcolor: 'background.default',
+                  bgcolor: 'background.paper',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -121,19 +191,22 @@ export function MosqueIdentityCard({ errors }: MosqueIdentityCardProps) {
                   flexShrink: 0,
                 }}
               >
-                {draft.logoUrl ? (
+                {hasValidLogo ? (
                   <Box
                     component="img"
-                    src={draft.logoUrl}
+                    src={logoUrl!}
                     alt="Mosque Logo"
+                    onError={() => setImgError(true)}
                     sx={{ width: '100%', height: '100%', objectFit: 'contain' }}
                   />
                 ) : (
-                  <MosqueIcon sx={{ color: 'primary.main', fontSize: 32 }} />
+                  <MosqueIcon sx={{ color: 'primary.main', fontSize: 28 }} />
                 )}
               </Box>
 
-              <Box sx={{ flexGrow: 1 }}>
+              <Box
+                sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 0.5 }}
+              >
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -141,14 +214,15 @@ export function MosqueIdentityCard({ errors }: MosqueIdentityCardProps) {
                   hidden
                   onChange={handleFileChange}
                 />
-                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <Button
                     size="small"
                     variant="outlined"
                     startIcon={<UploadIcon />}
                     onClick={() => fileInputRef.current?.click()}
+                    sx={{ borderRadius: 1.5, textTransform: 'none', fontWeight: 600 }}
                   >
-                    {draft.logoUrl ? 'Change Logo' : 'Upload Logo'}
+                    {hasValidLogo ? 'Change Logo' : 'Upload Logo'}
                   </Button>
                   {draft.logoUrl && (
                     <Button
@@ -157,13 +231,18 @@ export function MosqueIdentityCard({ errors }: MosqueIdentityCardProps) {
                       variant="text"
                       startIcon={<DeleteIcon />}
                       onClick={handleRemoveLogo}
+                      sx={{ textTransform: 'none', fontWeight: 600 }}
                     >
                       Remove
                     </Button>
                   )}
                 </Box>
-                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
-                  PNG, JPG or SVG max 2MB
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ display: 'block', width: '100%', fontSize: '0.72rem' }}
+                >
+                  Max file size: 2MB
                 </Typography>
               </Box>
             </Box>

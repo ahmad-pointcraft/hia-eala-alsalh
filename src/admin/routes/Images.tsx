@@ -1,12 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import {
-  Box,
-  Button,
-  Card,
-  CardMedia,
-  IconButton,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Card, CardMedia, IconButton, Typography } from '@mui/material';
 import { CloudUpload as UploadIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { api } from '@/shared/api';
 import type { StoredImage } from '@/shared/api';
@@ -75,10 +68,15 @@ export function Images() {
     reordered[index] = swap;
     reordered[target] = moved;
     setImages(reordered.map((img, i) => ({ ...img, order: i })));
-    api.reorderCarouselImages(masjidId, reordered.map((i) => i.id)).catch(() => {
-      toast.error('Failed to reorder — reverted');
-      void load();
-    });
+    api
+      .reorderCarouselImages(
+        masjidId,
+        reordered.map((i) => i.id),
+      )
+      .catch(() => {
+        toast.error('Failed to reorder — reverted');
+        void load();
+      });
   }
 
   async function handleDelete() {
@@ -87,7 +85,9 @@ export function Images() {
     try {
       await api.deleteImage(deleteTarget.id);
       setImages((prev) => (prev ? prev.filter((i) => i.id !== deleteTarget.id) : prev));
-      toast.success(wasLast ? 'Removed — display falls back to the static photo set' : 'Photo deleted');
+      toast.success(
+        wasLast ? 'Removed — display falls back to the static photo set' : 'Photo deleted',
+      );
     } catch {
       toast.error('Failed to delete photo');
     } finally {
@@ -101,7 +101,8 @@ export function Images() {
         Slideshow Photos
       </Typography>
       <Typography color="text.secondary" sx={{ mb: 2 }}>
-        Photos ≤ 2MB show on the display when no events are active. With none uploaded, the display serves its bundled static set.
+        Photos ≤ 2MB show on the display when no events are active. With none uploaded, the display
+        serves its bundled static set.
       </Typography>
 
       <input
@@ -119,7 +120,12 @@ export function Images() {
         startIcon={<UploadIcon />}
         disabled={uploading}
         onClick={() => inputRef.current?.click()}
-        sx={{ mb: 3 }}
+        sx={{
+          fontWeight: '700',
+          transition: 'all 0.2s ease-in-out',
+          '&:hover': { transform: 'scale(1.05)' },
+          mb: 3,
+        }}
       >
         {uploading ? 'Uploading…' : 'Upload Photo'}
       </Button>
@@ -136,11 +142,29 @@ export function Images() {
           action: { label: 'Upload your first photo', onClick: () => inputRef.current?.click() },
         }}
       >
-        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 2 }}>
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+            gap: 2,
+          }}
+        >
           {sorted.map((img, index) => (
             <Card key={img.id}>
-              <CardMedia component="img" src={img.url} alt={img.name} sx={{ height: 140, objectFit: 'cover' }} />
-              <Box sx={{ p: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <CardMedia
+                component="img"
+                src={img.url}
+                alt={img.name}
+                sx={{ height: 140, objectFit: 'cover' }}
+              />
+              <Box
+                sx={{
+                  p: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
+              >
                 <Typography variant="caption" noWrap sx={{ maxWidth: 110 }}>
                   {img.name}
                 </Typography>

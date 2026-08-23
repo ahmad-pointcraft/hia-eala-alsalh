@@ -25,23 +25,22 @@ type DonationPatch = Partial<Omit<DonationCampaign, 'id' | 'masjidId' | 'active'
 export function DonationsTab() {
   const masjidId = useSession((s) => s.session?.masjidId ?? '');
 
-  const { items, loading, error, create, update, remove, refresh } =
-    useCrudList<DonationCampaign, DonationPatch>(masjidId, {
-      list: api.listDonations,
-      create: api.createDonationCampaign,
-      update: api.updateDonationCampaign,
-      remove: api.deleteDonationCampaign,
-    });
+  const { items, loading, error, create, update, remove, refresh } = useCrudList<
+    DonationCampaign,
+    DonationPatch
+  >(masjidId, {
+    list: api.listDonations,
+    create: api.createDonationCampaign,
+    update: api.updateDonationCampaign,
+    remove: api.deleteDonationCampaign,
+  });
 
   const dialogs = useCrudDialogs<DonationCampaign>((c) => c.qrImageUrl);
   const toast = useToast();
   const pager = usePagination<DonationCampaign>();
 
   // STABLE SORT — CREATION ORDER SO PAGES DON'T RESHUFFLE (PAGINATION PREREQ)
-  const sorted = useMemo(
-    () => [...items].sort((a, b) => a.id.localeCompare(b.id)),
-    [items],
-  );
+  const sorted = useMemo(() => [...items].sort((a, b) => a.id.localeCompare(b.id)), [items]);
 
   const columns: Column<DonationCampaign>[] = [
     {
@@ -52,7 +51,11 @@ export function DonationsTab() {
         </Typography>
       ),
     },
-    { header: 'Collected', render: (item) => `$${item.collected.toLocaleString()}`, width: '110px' },
+    {
+      header: 'Collected',
+      render: (item) => `$${item.collected.toLocaleString()}`,
+      width: '110px',
+    },
     { header: 'Goal', render: (item) => `$${item.goal.toLocaleString()}`, width: '110px' },
     { header: 'Donors', render: (item) => item.donorCount, width: '80px' },
   ];
@@ -72,7 +75,11 @@ export function DonationsTab() {
   }
 
   async function handleSave(values: DonationFormValues) {
-    const payload = { ...values, donateUrl: values.donateUrl || null, qrImageUrl: dialogs.draftImage };
+    const payload = {
+      ...values,
+      donateUrl: values.donateUrl || null,
+      qrImageUrl: dialogs.draftImage,
+    };
     try {
       if (dialogs.editing) {
         await update(dialogs.editing.id, payload);
@@ -110,7 +117,16 @@ export function DonationsTab() {
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={dialogs.openCreate}>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          sx={{
+            fontWeight: '700',
+            transition: 'all 0.2s ease-in-out',
+            '&:hover': { transform: 'scale(1.05)' },
+          }}
+          onClick={dialogs.openCreate}
+        >
           Add Campaign
         </Button>
       </Box>
@@ -140,11 +156,22 @@ export function DonationsTab() {
         title={dialogs.editing ? 'Edit Campaign' : 'Add Campaign'}
         fields={[
           { kind: 'bilingual', key: 'title', label: 'Title', required: true },
-          { kind: 'bilingual', key: 'description', label: 'Description', required: true, multiline: true },
+          {
+            kind: 'bilingual',
+            key: 'description',
+            label: 'Description',
+            required: true,
+            multiline: true,
+          },
           { kind: 'number', key: 'collected', label: 'Collected ($)', required: true },
           { kind: 'number', key: 'goal', label: 'Goal ($)', required: true },
           { kind: 'number', key: 'donorCount', label: 'Donor count', required: true },
-          { kind: 'text', key: 'donateUrl', label: 'Donate URL (optional)', placeholder: 'https://…' },
+          {
+            kind: 'text',
+            key: 'donateUrl',
+            label: 'Donate URL (optional)',
+            placeholder: 'https://…',
+          },
         ]}
         resolver={zodResolver(donationFormSchema)}
         defaultValues={dialogs.editing ?? undefined}
@@ -152,15 +179,16 @@ export function DonationsTab() {
         onSave={handleSave}
         onClose={dialogs.closeForm}
       >
-        <QrImagePicker
-          qrImageUrl={dialogs.draftImage}
-          onQrSelected={dialogs.setDraftImage}
-        />
+        <QrImagePicker qrImageUrl={dialogs.draftImage} onQrSelected={dialogs.setDraftImage} />
       </ContentFormDialog>
 
       <ConfirmDeleteDialog
         open={dialogs.deleteTarget !== null}
-        itemName={dialogs.deleteTarget ? (dialogs.deleteTarget.title_en || dialogs.deleteTarget.title_ar || 'this campaign') : ''}
+        itemName={
+          dialogs.deleteTarget
+            ? dialogs.deleteTarget.title_en || dialogs.deleteTarget.title_ar || 'this campaign'
+            : ''
+        }
         onConfirm={handleDelete}
         onCancel={dialogs.clearDelete}
       />

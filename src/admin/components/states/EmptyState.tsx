@@ -23,7 +23,11 @@ export function EmptyState({ icon, title, description, action }: EmptyStateProps
   return (
     <Paper sx={{ p: 4, textAlign: 'center' }}>
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
-        {icon && <Typography color="action.active" aria-hidden="true">{icon}</Typography>}
+        {icon && (
+          <Typography color="action.active" aria-hidden="true">
+            {icon}
+          </Typography>
+        )}
         <Typography color="text.secondary">{title}</Typography>
         {description && (
           <Typography variant="body2" color="text.secondary">
@@ -31,7 +35,17 @@ export function EmptyState({ icon, title, description, action }: EmptyStateProps
           </Typography>
         )}
         {action && (
-          <Button variant="contained" color="primary" onClick={action.onClick} sx={{ mt: 1 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={action.onClick}
+            sx={{
+              mt: 1,
+              fontWeight: '700',
+              transition: 'all 0.2s ease-in-out',
+              '&:hover': { transform: 'scale(1.05)' },
+            }}
+          >
             {action.label}
           </Button>
         )}

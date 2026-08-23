@@ -69,8 +69,21 @@ export function Devices() {
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-        <Typography variant="h5" component="h1" tabIndex={-1} ref={headingRef}>Devices</Typography>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={addDialog.onTrue}>
+        <Typography variant="h5" component="h1" tabIndex={-1} ref={headingRef}>
+          Devices
+        </Typography>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          sx={{
+            transition: 'all 0.2s ease-in-out',
+            '&:hover': {
+              transform: 'scale(1.03)',
+            },
+            fontWeight: '700',
+          }}
+          onClick={addDialog.onTrue}
+        >
           Add Device
         </Button>
       </Box>

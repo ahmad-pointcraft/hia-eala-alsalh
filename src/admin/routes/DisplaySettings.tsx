@@ -24,8 +24,6 @@ import { validateDisplaySettings, isValid } from '@/admin/utils/settings/validat
 import { MosqueIdentityCard } from '@/admin/components/settings/MosqueIdentityCard';
 import { ClockPresentationCard } from '@/admin/components/settings/ClockPresentationCard';
 import { SlideshowTickerCard } from '@/admin/components/settings/SlideshowTickerCard';
-import { PrayerSilenceCard } from '@/admin/components/settings/PrayerSilenceCard';
-import { SpecialModesCard } from '@/admin/components/settings/SpecialModesCard';
 
 export function DisplaySettings() {
   const masjidId = useSession((s) => s.session?.masjidId ?? '');
@@ -89,13 +87,22 @@ export function DisplaySettings() {
   }
 
   return (
-    <Box sx={{ pb: 6 }}>
-      <Typography variant="h5" component="h1" tabIndex={-1} ref={headingRef} fontWeight={600} gutterBottom>
-        Display Settings
-      </Typography>
-      <Typography color="text.secondary" sx={{ mb: 3 }}>
-        Configure mosque branding, clock presentation, slideshow speed, and operational modes for paired TV displays.
-      </Typography>
+    <Box sx={{ pb: 2 }}>
+      <Box sx={{ mb: { xs: 3, md: 6 } }}>
+        <Typography
+          variant="h5"
+          component="h1"
+          tabIndex={-1}
+          ref={headingRef}
+          fontWeight={600}
+          gutterBottom
+        >
+          Display Settings
+        </Typography>
+        <Typography color="text.secondary" sx={{ mb: 3 }}>
+          Configure mosque branding, clock presentation, slideshow speed.
+        </Typography>
+      </Box>
 
       <AsyncState
         loading={(loading || !loadedConfig) && loadError === null}
@@ -119,8 +126,6 @@ export function DisplaySettings() {
             <MosqueIdentityCard errors={errors} />
             <ClockPresentationCard />
             <SlideshowTickerCard />
-            <PrayerSilenceCard />
-            <SpecialModesCard />
           </Box>
 
           {/* STICKY SAVE / CANCEL ACTION BAR */}
@@ -128,10 +133,9 @@ export function DisplaySettings() {
             sx={{
               display: 'flex',
               alignItems: 'center',
+              justifyContent: { xs: 'center', md: 'flex-start' },
               gap: 2,
               pt: 2,
-              borderTop: '1px solid',
-              borderColor: 'divider',
             }}
           >
             <Button
@@ -165,7 +169,9 @@ export function DisplaySettings() {
         <Dialog open onClose={() => blocker.reset?.()} fullScreen={dialogFullScreen}>
           <DialogTitle>Unsaved Changes</DialogTitle>
           <DialogContent>
-            <Typography>You have unsaved changes in Display Settings. Leave without saving?</Typography>
+            <Typography>
+              You have unsaved changes in Display Settings. Leave without saving?
+            </Typography>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => blocker.reset?.()}>Stay</Button>

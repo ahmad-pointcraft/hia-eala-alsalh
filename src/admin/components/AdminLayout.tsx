@@ -17,10 +17,10 @@ export function AdminLayout() {
   }, [location.pathname]);
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#f8f9fa' }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh'}}>
       <Sidebar open={drawerOpen} onClose={() => setDrawerOpen(false)} />
-      <Box component="main" sx={{ flexGrow: 1, p: { xs: 2, sm: 3 }, minWidth: 0 }}>
-        <AppBar position="sticky" color="transparent" elevation={0} sx={{ bgcolor: '#f8f9fa', mb: 2 }}>
+      <Box component="main" sx={{ flexGrow: 1,  minWidth: 0 }}>
+        <AppBar position="sticky" color="transparent" elevation={0} sx={{ bgcolor: '#ffffff', mb: 2 , px:{xs: 2, sm: 3}}}>
           <Toolbar sx={{ gap: 1, px: { xs: 0, sm: 0 }, '&.MuiToolbar-root': { px: 0 } }}>
             {isTabletDown && (
               <IconButton
@@ -40,7 +40,7 @@ export function AdminLayout() {
             <PreviewButton />
           </Toolbar>
         </AppBar>
-        <Box sx={{ mt: 1 }}>
+        <Box sx={{ mt: 3, px:{xs:2, sm:3} }}>
           <Outlet />
         </Box>
       </Box>

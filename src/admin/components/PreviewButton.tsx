@@ -1,5 +1,5 @@
 import { Button } from '@mui/material';
-import { Monitor as MonitorIcon } from '@mui/icons-material';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useSession } from '@/admin/store/useSession';
 import { useToast } from '@/admin/components/ToastProvider';
 
@@ -27,14 +27,14 @@ export function PreviewButton() {
 
   return (
     <Button
-      variant="outlined"
+      variant="contained"
       color="primary"
       size="large"
-      startIcon={<MonitorIcon />}
+      startIcon={<VisibilityIcon />}
       onClick={handleClick}
       sx={{
         transition: 'all 0.2s ease-in-out',
-        '&:hover': { transform: 'scale(1.1)', bgcolor: 'primary.main', color: 'white' },
+        '&:hover': { transform: 'scale(1.1)',},
       }}
     >
       View Display

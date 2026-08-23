@@ -26,22 +26,21 @@ function isPast(date: string): boolean {
 export function EventsTab() {
   const masjidId = useSession((s) => s.session?.masjidId ?? '');
 
-  const { items, loading, error, create, updateOptimistic, remove, refresh } =
-    useCrudList<MasjidEvent, Update<MasjidEvent>>(masjidId, {
-      list: api.listEvents,
-      create: api.createEvent,
-      update: api.updateEvent,
-      remove: api.deleteEvent,
-    });
+  const { items, loading, error, create, updateOptimistic, remove, refresh } = useCrudList<
+    MasjidEvent,
+    Update<MasjidEvent>
+  >(masjidId, {
+    list: api.listEvents,
+    create: api.createEvent,
+    update: api.updateEvent,
+    remove: api.deleteEvent,
+  });
 
   const dialogs = useCrudDialogs<MasjidEvent>((e) => e.imageUrl);
   const toast = useToast();
   const pager = usePagination<MasjidEvent>();
 
-  const sorted = useMemo(
-    () => [...items].sort((a, b) => a.date.localeCompare(b.date)),
-    [items],
-  );
+  const sorted = useMemo(() => [...items].sort((a, b) => a.date.localeCompare(b.date)), [items]);
 
   const columns: Column<MasjidEvent>[] = [
     {
@@ -110,7 +109,16 @@ export function EventsTab() {
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={dialogs.openCreate}>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          sx={{
+            fontWeight: '700',
+            transition: 'all 0.2s ease-in-out',
+            '&:hover': { transform: 'scale(1.05)' },
+          }}
+          onClick={dialogs.openCreate}
+        >
           Add Event
         </Button>
       </Box>
@@ -154,15 +162,16 @@ export function EventsTab() {
         onSave={handleSave}
         onClose={dialogs.closeForm}
       >
-        <EventImagePicker
-          imageUrl={dialogs.draftImage}
-          onImageSelected={dialogs.setDraftImage}
-        />
+        <EventImagePicker imageUrl={dialogs.draftImage} onImageSelected={dialogs.setDraftImage} />
       </ContentFormDialog>
 
       <ConfirmDeleteDialog
         open={dialogs.deleteTarget !== null}
-        itemName={dialogs.deleteTarget ? (dialogs.deleteTarget.title_en || dialogs.deleteTarget.title_ar || 'this event') : ''}
+        itemName={
+          dialogs.deleteTarget
+            ? dialogs.deleteTarget.title_en || dialogs.deleteTarget.title_ar || 'this event'
+            : ''
+        }
         onConfirm={handleDelete}
         onCancel={dialogs.clearDelete}
       />

@@ -54,7 +54,8 @@ export function Sidebar({ open = false, onClose }: SidebarProps) {
 
     let mounted = true;
 
-    api.getMasjidConfig(session.masjidId)
+    api
+      .getMasjidConfig(session.masjidId)
       .then((cfg) => {
         if (mounted) setConfig(cfg);
       })
@@ -75,7 +76,13 @@ export function Sidebar({ open = false, onClose }: SidebarProps) {
     };
   }, [session?.masjidId]);
 
+  const [imgError, setImgError] = useState(false);
   const title = config?.masjidName_en ? `${config.masjidName_en}` : 'Masjid Admin';
+  const masjidLogo = config?.logoUrl?.trim() || '';
+
+  useEffect(() => {
+    setImgError(false);
+  }, [masjidLogo]);
 
   const handleSignOut = async () => {
     await signOut();
@@ -94,17 +101,40 @@ export function Sidebar({ open = false, onClose }: SidebarProps) {
           boxSizing: 'border-box',
           display: 'flex',
           flexDirection: 'column',
-          borderRight: '1px solid rgba(0, 0, 0, 0.08)',
+          borderRight: 'none',
         },
       }}
     >
       <Box sx={{ p: 2.5, display: 'flex', alignItems: 'center', gap: 1.5 }}>
-        <MosqueIcon sx={{ color: 'primary.main', fontSize: 28 }} />
-        <Typography variant="h6" color="primary" fontWeight={700} noWrap title={title} sx={{ fontSize: '1.1rem' }}>
+        {masjidLogo && !imgError ? (
+          <Box
+            component="img"
+            src={masjidLogo}
+            alt={title}
+            onError={() => setImgError(true)}
+            sx={{
+              width: 32,
+              height: 32,
+              borderRadius: 1,
+              objectFit: 'contain',
+              objectPosition: 'center',
+            }}
+          />
+        ) : (
+          <MosqueIcon sx={{ color: 'primary.main', fontSize: 28 }} />
+        )}
+        <Typography
+          variant="h6"
+          color="primary"
+          fontWeight={700}
+          noWrap
+          title={title}
+          sx={{ fontSize: '1.1rem' }}
+        >
           {title}
         </Typography>
       </Box>
-      <List sx={{ flexGrow: 1, px: 1 }}>
+      <List sx={{ flexGrow: 1 }}>
         {NAV_ITEMS.map((item) => {
           const selected = location.pathname === item.path;
           const Icon = item.icon;
@@ -117,33 +147,37 @@ export function Sidebar({ open = false, onClose }: SidebarProps) {
                 aria-current={selected ? 'page' : undefined}
                 onClick={isTabletDown ? onClose : undefined}
                 sx={{
-                  borderRadius: 2,
                   py: 1,
-                  px: 1.5,
+                  pl: 3,
+
                   transition: 'all 0.15s ease-in-out',
                   '&.Mui-selected': {
-                    backgroundColor: 'rgba(46, 125, 50, 0.12)',
+                    backgroundColor: 'rgb(245 245 245)',
                     color: 'primary.main',
                     '& .MuiListItemIcon-root': {
                       color: 'primary.main',
                     },
                     '&:hover': {
-                      backgroundColor: 'rgba(46, 125, 50, 0.18)',
+                      backgroundColor: 'rgb(245 245 245)',
                     },
                   },
                   '&:hover': {
-                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                    backgroundColor: 'rgb(245 245 245)',
                   },
                 }}
               >
-                <ListItemIcon sx={{ minWidth: 36, color: selected ? 'primary.main' : 'text.secondary' }}>
+                <ListItemIcon
+                  sx={{ minWidth: 36, color: selected ? 'primary.main' : 'text.secondary' }}
+                >
                   <Icon fontSize="small" />
                 </ListItemIcon>
                 <ListItemText
                   primary={item.label}
-                  primaryTypographyProps={{
-                    fontSize: '0.92rem',
-                    fontWeight: selected ? 600 : 500,
+                  slotProps={{
+                    primary: {
+                      fontSize: '0.92rem',
+                      fontWeight: selected ? 700 : 500,
+                    },
                   }}
                 />
               </ListItemButton>
@@ -154,14 +188,15 @@ export function Sidebar({ open = false, onClose }: SidebarProps) {
       <Box sx={{ p: 2 }}>
         <Button
           fullWidth
-          variant="outlined"
           startIcon={<LogoutIcon />}
           onClick={handleSignOut}
           sx={{
             transition: 'all 0.2s ease',
             '&:hover': {
-              backgroundColor: 'primary.main',
-              color: 'white',
+              color: 'primary.main',
+              backgroundColor: 'transparent',
+              fontWeight: '900',
+              scale: 1.1,
             },
           }}
         >

@@ -21,14 +21,16 @@ type AnnouncementFormValues = z.infer<typeof announcementFormSchema>;
 export function AnnouncementsTab() {
   const masjidId = useSession((s) => s.session?.masjidId ?? '');
 
-  const { items, loading, error, create, updateOptimistic, remove, reorder, refresh } =
-    useCrudList<Announcement, Update<Announcement>>(masjidId, {
-      list: api.listAnnouncements,
-      create: api.createAnnouncement,
-      update: api.updateAnnouncement,
-      remove: api.deleteAnnouncement,
-      reorder: api.reorderAnnouncements,
-    });
+  const { items, loading, error, create, updateOptimistic, remove, reorder, refresh } = useCrudList<
+    Announcement,
+    Update<Announcement>
+  >(masjidId, {
+    list: api.listAnnouncements,
+    create: api.createAnnouncement,
+    update: api.updateAnnouncement,
+    remove: api.deleteAnnouncement,
+    reorder: api.reorderAnnouncements,
+  });
 
   const dialogs = useCrudDialogs<Announcement>();
   const toast = useToast();
@@ -54,7 +56,7 @@ export function AnnouncementsTab() {
   }
 
   function handleReorder(index: number, direction: 'up' | 'down') {
-    // CONTENTLIST PASSES SLICE-RELATIVE INDEX — OFFSET TO THE FULL SORTED LIST
+    // CONTENT LIST PASSES SLICE-RELATIVE INDEX — OFFSET TO THE FULL SORTED LIST
     const fullIndex = pager.page * pager.rowsPerPage + index;
     const target = direction === 'up' ? fullIndex - 1 : fullIndex + 1;
     if (target < 0 || target >= sorted.length) return;
@@ -102,7 +104,16 @@ export function AnnouncementsTab() {
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={dialogs.openCreate}>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          sx={{
+            fontWeight: '700',
+            transition: 'all 0.2s ease-in-out',
+            '&:hover': { transform: 'scale(1.05)' },
+          }}
+          onClick={dialogs.openCreate}
+        >
           Add Announcement
         </Button>
       </Box>
@@ -131,16 +142,26 @@ export function AnnouncementsTab() {
       <ContentFormDialog<AnnouncementFormValues>
         open={dialogs.formOpen}
         title={dialogs.editing ? 'Edit Announcement' : 'Add Announcement'}
-        fields={[{ kind: 'bilingual', key: 'text', label: 'Text', required: true, multiline: true }]}
+        fields={[
+          { kind: 'bilingual', key: 'text', label: 'Text', required: true, multiline: true },
+        ]}
         resolver={zodResolver(announcementFormSchema)}
-        defaultValues={dialogs.editing ? { text_en: dialogs.editing.text_en, text_ar: dialogs.editing.text_ar } : undefined}
+        defaultValues={
+          dialogs.editing
+            ? { text_en: dialogs.editing.text_en, text_ar: dialogs.editing.text_ar }
+            : undefined
+        }
         onSave={handleSave}
         onClose={dialogs.closeForm}
       />
 
       <ConfirmDeleteDialog
         open={dialogs.deleteTarget !== null}
-        itemName={dialogs.deleteTarget ? (dialogs.deleteTarget.text_en || dialogs.deleteTarget.text_ar || 'this announcement') : ''}
+        itemName={
+          dialogs.deleteTarget
+            ? dialogs.deleteTarget.text_en || dialogs.deleteTarget.text_ar || 'this announcement'
+            : ''
+        }
         onConfirm={handleDelete}
         onCancel={dialogs.clearDelete}
       />
