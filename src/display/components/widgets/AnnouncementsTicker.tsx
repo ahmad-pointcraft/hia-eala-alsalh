@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
 import type { Language } from '@/display/types';
-import masjidLogo from '../../../assets/logo-masjid-design-1.png';
 import pointcraftLogo from '../../../assets/logo.png';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import MosqueIcon from '@mui/icons-material/Mosque';
 import { getFontFamily, isRTL, getDirection } from '@/display/utils/helpers';
 import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
 
@@ -34,8 +34,7 @@ export function AnnouncementsTicker({ language, announcements }: AnnouncementsTi
     let cancelled = false;
 
     const rtl = isRTL(language);
-    const speedMagnitude =
-      tickerSpeed === 'slow' ? 0.2 : tickerSpeed === 'fast' ? 0.8 : 0.4;
+    const speedMagnitude = tickerSpeed === 'slow' ? 0.2 : tickerSpeed === 'fast' ? 0.8 : 0.4;
     const speed = rtl ? speedMagnitude : -speedMagnitude;
 
     const runPass = () => {
@@ -71,7 +70,6 @@ export function AnnouncementsTicker({ language, announcements }: AnnouncementsTi
       cancelAnimationFrame(animationId);
     };
   }, [language, prefersReducedMotion, announcements, tickerSpeed]);
-
 
   const segments: React.ReactNode[] = [];
   announcements.forEach((text, i) => {
@@ -138,13 +136,25 @@ export function AnnouncementsTicker({ language, announcements }: AnnouncementsTi
             gap: 1,
           }}
         >
-          <Box
-            component="img"
-            src={logoUrl || masjidLogo}
-            alt="Masjid Logo"
-            sx={{ height: { xs: 22, sm: 26, md: 28, lg: 30 }, width: 'auto', objectFit: 'contain' }}
-          />
-
+          {logoUrl ? (
+            <Box
+              component="img"
+              src={logoUrl}
+              alt="Mosque Logo"
+              sx={{
+                height: { xs: 22, sm: 26, md: 28, lg: 30 },
+                width: 'auto',
+                objectFit: 'contain',
+              }}
+            />
+          ) : (
+            <MosqueIcon
+              sx={{
+                fontSize: { xs: 20, sm: 24, md: 26 },
+                color: (theme) => theme.palette.gold.main,
+              }}
+            />
+          )}
         </Box>
 
         <Box sx={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
