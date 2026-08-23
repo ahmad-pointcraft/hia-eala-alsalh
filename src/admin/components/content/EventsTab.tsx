@@ -96,7 +96,7 @@ export function EventsTab() {
     if (!dialogs.deleteTarget) return;
     try {
       await remove(dialogs.deleteTarget.id);
-      pager.reset(); // AFFECTED ROWS STAY VISIBLE (FR-006)
+      pager.reset(); // AFFECTED ROWS STAY VISIBLE
       toast.success('Event deleted');
     } catch {
       toast.error('Failed to delete event');

@@ -1,5 +1,6 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, Stack } from '@mui/material';
 import { WarningAmber as WarningAmberIcon } from '@mui/icons-material';
+import { useDialogFullScreen } from '@/admin/hooks/useIsMobile';
 
 /**
  * Confirmation dialog shown before every delete
@@ -17,8 +18,10 @@ export function ConfirmDeleteDialog({
   onConfirm,
   onCancel,
 }: ConfirmDeleteDialogProps) {
+  const fullScreen = useDialogFullScreen();
+
   return (
-    <Dialog open={open} onClose={onCancel} maxWidth="xs" fullWidth>
+    <Dialog open={open} onClose={onCancel} maxWidth="xs" fullWidth fullScreen={fullScreen}>
       <DialogTitle>
         <Stack direction="row" alignItems="center" spacing={1}>
           <WarningAmberIcon color="error" />

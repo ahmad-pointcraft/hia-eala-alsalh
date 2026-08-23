@@ -4,6 +4,7 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, T
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { api } from '@/shared/api';
+import { useDialogFullScreen } from '@/admin/hooks/useIsMobile';
 
 const addDeviceSchema = z.object({
   code: z.string().regex(/^\d{6}$/, 'Enter the 6-digit code'),
@@ -52,7 +53,7 @@ export function AddDeviceDialog({ open, onClose, onPaired }: AddDeviceDialogProp
   }
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="xs" fullWidth>
+    <Dialog open={open} onClose={handleClose} maxWidth="xs" fullWidth fullScreen={useDialogFullScreen()}>
       <DialogTitle>Add Device</DialogTitle>
       <DialogContent>
         <Typography sx={{ mb: 2, color: 'text.secondary' }}>

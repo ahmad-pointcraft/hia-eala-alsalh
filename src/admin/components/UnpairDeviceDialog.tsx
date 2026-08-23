@@ -10,6 +10,7 @@ import {
 import { useState } from 'react';
 import { api } from '@/shared/api';
 import type { Device } from '@/shared/api';
+import { useDialogFullScreen } from '@/admin/hooks/useIsMobile';
 
 interface UnpairDeviceDialogProps {
   device: Device | null;
@@ -34,7 +35,7 @@ export function UnpairDeviceDialog({ device, open, onClose, onUnpaired }: Unpair
   }
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="xs">
+    <Dialog open={open} onClose={onClose} maxWidth="xs" fullScreen={useDialogFullScreen()}>
       <DialogTitle>Unpair Device?</DialogTitle>
       <DialogContent>
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}

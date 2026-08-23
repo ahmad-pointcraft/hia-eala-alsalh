@@ -16,6 +16,7 @@ import { useSession } from '@/admin/store/useSession';
 import { useTimingsForm } from '@/admin/store/useTimingsForm';
 import { useDirtyGuard } from '@/admin/hooks/useDirtyGuard';
 import { useFocusHeading } from '@/admin/hooks/useFocusHeading';
+import { useDialogFullScreen } from '@/admin/hooks/useIsMobile';
 import { AsyncState } from '@/admin/components/states/AsyncState';
 import { useToast } from '@/admin/components/ToastProvider';
 import { validateConfig, isValid } from '@/admin/utils/timings/validation';
@@ -73,6 +74,7 @@ export function Timings() {
   // DIRTY GUARD
   const blocker = useDirtyGuard(dirty);
   const toast = useToast();
+  const dialogFullScreen = useDialogFullScreen();
 
   // VALIDATION
   const errors = useMemo(() => validateConfig(draft), [draft]);
@@ -104,7 +106,8 @@ export function Timings() {
         skeleton="form"
         skeletonRows={6}
       >
-      <Stack spacing={3} sx={{ maxWidth: 700 }}>
+      {/* SINGLE-COLUMN BELOW SM — FULL WIDTH, COMPRESSED SPACING, REACHABLE SAVE */}
+      <Stack spacing={{ xs: 2, sm: 3 }} sx={{ maxWidth: { sm: 700 } }}>
         {/* MASJID IDENTITY */}
         <Box>
           <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1.5 }}>Masjid Name</Typography>
@@ -169,7 +172,7 @@ export function Timings() {
 
       {/* DIRTY GUARD DIALOG */}
       {blocker.state === 'blocked' && (
-        <Dialog open onClose={() => blocker.reset?.()}>
+        <Dialog open onClose={() => blocker.reset?.()} fullScreen={dialogFullScreen}>
           <DialogTitle>Unsaved Changes</DialogTitle>
           <DialogContent>
             <Typography>You have unsaved changes. Leave without saving?</Typography>

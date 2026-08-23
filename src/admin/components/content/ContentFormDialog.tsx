@@ -1,8 +1,10 @@
 import { useEffect } from 'react';
 import type { FieldValues, Resolver, Path } from 'react-hook-form';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Stack, InputLabel } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Stack, InputLabel, IconButton } from '@mui/material';
+import { Close as CloseIcon } from '@mui/icons-material';
 import { useForm } from 'react-hook-form';
 import { useDirtyGuard } from '@/admin/hooks/useDirtyGuard';
+import { useDialogFullScreen } from '@/admin/hooks/useIsMobile';
 import { useBoolean } from '@/shared/hooks/useBoolean';
 
 export type FieldSchema =
@@ -49,6 +51,7 @@ export function ContentFormDialog<T extends FieldValues>({
   useDirtyGuard(open && canSave);
 
   const confirmClose = useBoolean();
+  const fullScreen = useDialogFullScreen();
 
   const requestClose = () => {
     if (isDirty) confirmClose.onTrue();
@@ -59,8 +62,15 @@ export function ContentFormDialog<T extends FieldValues>({
 
   return (
     <>
-      <Dialog open={open} onClose={requestClose} maxWidth="sm" fullWidth>
-        <DialogTitle>{title}</DialogTitle>
+      <Dialog open={open} onClose={requestClose} maxWidth="sm" fullWidth fullScreen={fullScreen}>
+        <DialogTitle>
+          {title}
+          {fullScreen && (
+            <IconButton aria-label="Close dialog" onClick={requestClose} sx={{ position: 'absolute', right: 8, top: 8 }}>
+              <CloseIcon />
+            </IconButton>
+          )}
+        </DialogTitle>
         <form onSubmit={handleSubmit((values) => { onSave(values); onClose(); })}>
           <DialogContent>
             <Stack spacing={2} sx={{ mt: 1 }}>

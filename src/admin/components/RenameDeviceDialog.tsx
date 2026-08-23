@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { api } from '@/shared/api';
 import type { Device } from '@/shared/api';
+import { useDialogFullScreen } from '@/admin/hooks/useIsMobile';
 
 const renameDeviceSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -44,7 +45,7 @@ export function RenameDeviceDialog({ device, open, onClose, onSaved }: RenameDev
   }
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth fullScreen={useDialogFullScreen()}>
       <DialogTitle>Rename Device</DialogTitle>
       <DialogContent>
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}

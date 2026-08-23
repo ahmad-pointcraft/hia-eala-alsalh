@@ -9,3 +9,11 @@ export function useIsMobile(breakpoint: 'sm' | 'md'): boolean {
   const theme = useTheme();
   return useMediaQuery(theme.breakpoints.down(breakpoint));
 }
+
+/**
+ * Spread-value for MUI Dialog: full-screen below `sm`, standard above
+ * Usage: `<Dialog fullScreen={useDialogFullScreen()} …>`.
+ */
+export function useDialogFullScreen(): boolean {
+  return useIsMobile('sm');
+}
