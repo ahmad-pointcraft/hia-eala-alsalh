@@ -1,6 +1,17 @@
 import { useState } from 'react';
 import { z } from 'zod';
-import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Typography, Alert } from '@mui/material';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Button,
+  Typography,
+  Alert,
+  Box,
+} from '@mui/material';
+import { Tv as TvIcon } from '@mui/icons-material';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { api } from '@/shared/api';
@@ -53,13 +64,45 @@ export function AddDeviceDialog({ open, onClose, onPaired }: AddDeviceDialogProp
   }
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="xs" fullWidth fullScreen={useDialogFullScreen()}>
-      <DialogTitle>Add Device</DialogTitle>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      maxWidth="xs"
+      fullWidth
+      fullScreen={useDialogFullScreen()}
+    >
+      <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1.5, pb: 1 }}>
+        <Box
+          sx={{
+            width: 40,
+            height: 40,
+            borderRadius: 2.5,
+            bgcolor: 'rgba(46, 125, 50, 0.1)',
+            color: 'primary.main',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+          }}
+        >
+          <TvIcon fontSize="small" />
+        </Box>
+        <Box>
+          <Typography variant="h6" fontWeight={700} fontSize="1.1rem" lineHeight={1.2}>
+            Add TV Device
+          </Typography>
+        </Box>
+      </DialogTitle>
+
       <DialogContent>
-        <Typography sx={{ mb: 2, color: 'text.secondary' }}>
-          Enter the 6-digit code shown on the TV
+        <Typography sx={{ mb: 2, color: 'text.secondary', fontSize: '0.9rem' }}>
+          Enter the 6-digit pairing code currently shown on your TV display screen.
         </Typography>
-        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+        {error && (
+          <Alert severity="error" sx={{ mb: 2, borderRadius: 2 }}>
+            {error}
+          </Alert>
+        )}
         <Controller
           name="code"
           control={control}
@@ -76,7 +119,18 @@ export function AddDeviceDialog({ open, onClose, onPaired }: AddDeviceDialogProp
               error={!!fieldError}
               helperText={fieldError?.message ?? ''}
               fullWidth
-              sx={{ '& .MuiInputBase-input': { textAlign: 'center', fontSize: '1.5rem', letterSpacing: '0.3em' } }}
+              sx={{
+                '& .MuiInputBase-input': {
+                  textAlign: 'center',
+                  fontSize: '1.6rem',
+                  fontWeight: 700,
+                  letterSpacing: '0.35em',
+                },
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 2.5,
+                  bgcolor: '#fafafa',
+                },
+              }}
             />
           )}
         />
@@ -86,15 +140,30 @@ export function AddDeviceDialog({ open, onClose, onPaired }: AddDeviceDialogProp
           placeholder="e.g. Main Hall TV"
           helperText="You can rename it later from the device list"
           fullWidth
-          sx={{ mt: 2 }}
+          sx={{ mt: 2.5, '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
         />
       </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={handleSubmit(onSubmit)} variant="contained" disabled={!isValid || loading}>
+
+      <DialogActions sx={{ pt: 1, pb: 2.5, px: 3, gap: 1.5 }}>
+        <Button
+          variant="outlined"
+          color="inherit"
+          onClick={handleClose}
+          sx={{ borderRadius: 2, px: 2.5, fontWeight: 600 }}
+        >
+          Cancel
+        </Button>
+        <Button
+          onClick={handleSubmit(onSubmit)}
+          variant="contained"
+          color="primary"
+          disabled={!isValid || loading}
+          sx={{ borderRadius: 2, px: 3, fontWeight: 700 }}
+        >
           {loading ? 'Pairing…' : 'Pair Device'}
         </Button>
       </DialogActions>
     </Dialog>
   );
 }
+

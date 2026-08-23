@@ -15,10 +15,56 @@ export const adminTheme = createTheme({
     h6: { fontWeight: 600 },
   },
   components: {
+    MuiDialog: {
+      styleOverrides: {
+        paper: {
+          borderRadius: 16,
+          border: '1px solid rgba(0, 0, 0, 0.08)',
+          boxShadow: '0 24px 48px -12px rgba(0, 0, 0, 0.18), 0 8px 24px -4px rgba(0, 0, 0, 0.08)',
+        },
+      },
+    },
+    MuiBackdrop: {
+      styleOverrides: {
+        root: {
+          backdropFilter: 'blur(6px)',
+          backgroundColor: 'rgba(15, 23, 42, 0.45)',
+        },
+      },
+    },
+    MuiDialogTitle: {
+      styleOverrides: {
+        root: {
+          fontWeight: 700,
+          fontSize: '1.2rem',
+          padding: '24px 24px 12px',
+        },
+      },
+    },
+    MuiDialogContent: {
+      styleOverrides: {
+        root: {
+          padding: '12px 24px 20px',
+        },
+      },
+    },
+    MuiDialogActions: {
+      styleOverrides: {
+        root: {
+          padding: '16px 24px 24px',
+          gap: 12,
+        },
+      },
+    },
     // TAP-TARGET FLOOR — ≥44px
     MuiButton: {
       styleOverrides: {
-        root: { minHeight: 44 },
+        root: {
+          minHeight: 44,
+          borderRadius: 8,
+          textTransform: 'none',
+          fontWeight: 600,
+        },
       },
     },
     MuiIconButton: {

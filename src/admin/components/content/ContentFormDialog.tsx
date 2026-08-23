@@ -1,11 +1,23 @@
 import { useEffect } from 'react';
 import type { FieldValues, Resolver, Path } from 'react-hook-form';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Stack, InputLabel, IconButton } from '@mui/material';
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  InputLabel,
+  Stack,
+  TextField,
+} from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import { useForm } from 'react-hook-form';
 import { useDirtyGuard } from '@/admin/hooks/useDirtyGuard';
 import { useDialogFullScreen } from '@/admin/hooks/useIsMobile';
 import { useBoolean } from '@/shared/hooks/useBoolean';
+import { UnsavedChangesDialog } from '@/admin/components/UnsavedChangesDialog';
 
 export type FieldSchema =
   | { kind: 'bilingual'; key: string; label: string; required?: boolean; multiline?: boolean }
@@ -37,7 +49,12 @@ export function ContentFormDialog<T extends FieldValues>({
   onClose,
   children,
 }: ContentFormDialogProps<T>) {
-  const { register, handleSubmit, reset, formState: { errors, isDirty } } = useForm<T>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isDirty },
+  } = useForm<T>({
     resolver,
     mode: 'onBlur',
   });
@@ -62,18 +79,49 @@ export function ContentFormDialog<T extends FieldValues>({
 
   return (
     <>
-      <Dialog open={open} onClose={requestClose} maxWidth="sm" fullWidth fullScreen={fullScreen}>
-        <DialogTitle>
+      <Dialog
+        open={open}
+        onClose={requestClose}
+        maxWidth="sm"
+        fullWidth
+        fullScreen={fullScreen}
+        scroll="paper"
+        sx={{
+          '& .MuiDialog-paper': {
+            maxHeight: fullScreen ? '100%' : 'calc(100vh - 64px)',
+            display: 'flex',
+            flexDirection: 'column',
+          },
+        }}
+      >
+        <DialogTitle sx={{ flexShrink: 0, position: 'relative' }}>
           {title}
           {fullScreen && (
-            <IconButton aria-label="Close dialog" onClick={requestClose} sx={{ position: 'absolute', insetInlineEnd: 8, top: 8 }}>
+            <IconButton
+              aria-label="Close dialog"
+              onClick={requestClose}
+              sx={{ position: 'absolute', insetInlineEnd: 8, top: 8 }}
+            >
               <CloseIcon />
             </IconButton>
           )}
         </DialogTitle>
-        <form onSubmit={handleSubmit((values) => { onSave(values); onClose(); })}>
-          <DialogContent>
-            <Stack spacing={2} sx={{ mt: 1 }}>
+        <Box
+          component="form"
+          onSubmit={handleSubmit((values) => {
+            onSave(values);
+            onClose();
+          })}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            flexGrow: 1,
+            minHeight: 0,
+            overflow: 'hidden',
+          }}
+        >
+          <DialogContent dividers sx={{ overflowY: 'auto', flexGrow: 1, py: 2 }}>
+            <Stack spacing={2} sx={{ mt: 0.5 }}>
               {fields.map((f) => {
                 if (f.kind === 'bilingual') {
                   const pairError = errorMap[f.key]?.message;
@@ -116,37 +164,66 @@ export function ContentFormDialog<T extends FieldValues>({
                 return (
                   <TextField
                     key={f.key}
-                    {...register(f.key as Path<T>, f.kind === 'number' ? { valueAsNumber: true } : undefined)}
+                    {...register(
+                      f.key as Path<T>,
+                      f.kind === 'number' ? { valueAsNumber: true } : undefined,
+                    )}
                     label={f.label}
                     required={f.required}
-                    type={f.kind === 'number' ? 'number' : f.kind === 'date' ? 'date' : f.kind === 'time' ? 'time' : 'text'}
+                    type={
+                      f.kind === 'number'
+                        ? 'number'
+                        : f.kind === 'date'
+                          ? 'date'
+                          : f.kind === 'time'
+                            ? 'time'
+                            : 'text'
+                    }
                     error={!!fieldError}
                     helperText={fieldError ?? ''}
                     size="small"
                     fullWidth
                     placeholder={f.kind === 'text' ? f.placeholder : undefined}
-                    InputLabelProps={f.kind === 'date' || f.kind === 'time' ? { shrink: true } : undefined}
+                    InputLabelProps={
+                      f.kind === 'date' || f.kind === 'time' ? { shrink: true } : undefined
+                    }
                   />
                 );
               })}
             </Stack>
             {children}
           </DialogContent>
-          <DialogActions>
-            <Button color="inherit" onClick={requestClose}>Cancel</Button>
-            <Button type="submit" variant="contained" disabled={!canSave}>Save</Button>
+          <DialogActions sx={{ pt: 1.5, pb: 2.5, px: 3, gap: 1.5, flexShrink: 0 }}>
+            <Button
+              variant="outlined"
+              color="inherit"
+              onClick={requestClose}
+              sx={{ borderRadius: 2, px: 2.5, fontWeight: 600 }}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={!canSave}
+              sx={{ borderRadius: 2, px: 3, fontWeight: 700 }}
+            >
+              Save
+            </Button>
           </DialogActions>
-        </form>
+        </Box>
       </Dialog>
 
-      <Dialog open={confirmClose.value} maxWidth="xs" fullWidth>
-        <DialogTitle>Unsaved changes</DialogTitle>
-        <DialogContent>You have unsaved changes. Leave without saving?</DialogContent>
-        <DialogActions>
-          <Button onClick={confirmClose.onFalse}>Stay</Button>
-          <Button color="error" onClick={() => { confirmClose.onFalse(); onClose(); }}>Leave</Button>
-        </DialogActions>
-      </Dialog>
+      <UnsavedChangesDialog
+        open={confirmClose.value}
+        message="You have unsaved changes in this form. If you leave now, your modifications will be discarded."
+        onStay={confirmClose.onFalse}
+        onDiscard={() => {
+          confirmClose.onFalse();
+          onClose();
+        }}
+      />
     </>
   );
 }
+

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { Sidebar } from './Sidebar';
-import { AdminHeader } from './AdminHeader';
+import { AdminHeader } from './Header';
 import { useIsMobile } from '@/admin/hooks/useIsMobile';
 
 export function AdminLayout() {
