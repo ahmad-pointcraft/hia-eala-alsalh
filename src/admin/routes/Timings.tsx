@@ -1,10 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Stack,
   Typography,
   Button,
-  Skeleton,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -16,6 +15,8 @@ import type { MosqueConfig } from '@/shared/types';
 import { useSession } from '@/admin/store/useSession';
 import { useTimingsForm } from '@/admin/store/useTimingsForm';
 import { useDirtyGuard } from '@/admin/hooks/useDirtyGuard';
+import { useFocusHeading } from '@/admin/hooks/useFocusHeading';
+import { AsyncState } from '@/admin/components/states/AsyncState';
 import { useToast } from '@/admin/components/ToastProvider';
 import { validateConfig, isValid } from '@/admin/utils/timings/validation';
 
@@ -31,6 +32,8 @@ import { IqamaEditor } from '@/admin/components/timings/IqamaEditor';
 export function Timings() {
   const masjidId = useSession((s) => s.session?.masjidId ?? '');
   const [loadedConfig, setLoadedConfig] = useState<MosqueConfig | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const headingRef = useFocusHeading<HTMLHeadingElement>();
 
   const draft = useTimingsForm((s) => s.draft);
   const dirty = useTimingsForm((s) => s.dirty);
@@ -42,20 +45,30 @@ export function Timings() {
   const save = useTimingsForm((s) => s.save);
 
   // LOAD CONFIG FROM THE API (admin session scoping — not the display kiosk store)
-  useEffect(() => {
+  const load = useCallback(() => {
     let cancelled = false;
-    if (!masjidId) return;
+    setLoadError(null);
     void api.getMasjidConfig(masjidId).then((config) => {
       if (!cancelled) {
         setLoadedConfig(config);
         init(config);
       }
+    }).catch(() => {
+      if (!cancelled) setLoadError('Failed to load timings. Please try again.');
     });
     return () => {
       cancelled = true;
+    };
+  }, [masjidId, init]);
+
+  useEffect(() => {
+    if (!masjidId) return;
+    const cleanup = load();
+    return () => {
+      cleanup();
       reset();
     };
-  }, [masjidId, init, reset]);
+  }, [masjidId, load, reset]);
 
   // DIRTY GUARD
   const blocker = useDirtyGuard(dirty);
@@ -77,22 +90,20 @@ export function Timings() {
     }
   }
 
-  // LOADING STATE — until the API config arrives
-  if (loading || !loadedConfig) {
-    return (
-      <Box sx={{ p: 3 }}>
-        <Skeleton variant="text" width={200} height={40} />
-        <Skeleton variant="rectangular" height={60} sx={{ my: 2 }} />
-        <Skeleton variant="rectangular" height={60} sx={{ my: 2 }} />
-        <Skeleton variant="rectangular" height={200} sx={{ my: 2 }} />
-      </Box>
-    );
-  }
-
   return (
     <Box>
-      <Typography variant="h5" gutterBottom>Timings Configuration</Typography>
+      <Typography variant="h5" component="h1" tabIndex={-1} ref={headingRef} gutterBottom>
+        Timings Configuration
+      </Typography>
 
+      {/* SINGLE STATE PIPELINE — FORM SKELETON + RETRY (SINGLETON CONFIG — NO EMPTY STATE) */}
+      <AsyncState
+        loading={(loading || !loadedConfig) && loadError === null}
+        error={loadError}
+        onRetry={load}
+        skeleton="form"
+        skeletonRows={6}
+      >
       <Stack spacing={3} sx={{ maxWidth: 700 }}>
         {/* MASJID IDENTITY */}
         <Box>
@@ -146,12 +157,15 @@ export function Timings() {
           <Button
             variant="outlined"
             disabled={!dirty || saving}
-            onClick={() => revert(loadedConfig)}
+            onClick={() => {
+              if (loadedConfig) revert(loadedConfig);
+            }}
           >
             Cancel
           </Button>
         </Stack>
       </Stack>
+      </AsyncState>
 
       {/* DIRTY GUARD DIALOG */}
       {blocker.state === 'blocked' && (

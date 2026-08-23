@@ -1,12 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  Alert,
   Box,
   Button,
   Card,
   CardMedia,
   IconButton,
-  Skeleton,
   Typography,
 } from '@mui/material';
 import { CloudUpload as UploadIcon, Delete as DeleteIcon } from '@mui/icons-material';
@@ -14,6 +12,8 @@ import { api } from '@/shared/api';
 import type { StoredImage } from '@/shared/api';
 import { useSession } from '@/admin/store/useSession';
 import { useToast } from '@/admin/components/ToastProvider';
+import { useFocusHeading } from '@/admin/hooks/useFocusHeading';
+import { AsyncState } from '@/admin/components/states/AsyncState';
 import { validateImageFile } from '@/admin/utils/content/imageGuard';
 import { UpDownReorder } from '@/admin/components/content/UpDownReorder';
 import { ConfirmDeleteDialog } from '@/admin/components/content/ConfirmDeleteDialog';
@@ -22,36 +22,29 @@ export function Images() {
   const masjidId = useSession((s) => s.session?.masjidId ?? '');
   const inputRef = useRef<HTMLInputElement>(null);
   const [images, setImages] = useState<StoredImage[] | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<StoredImage | null>(null);
   const toast = useToast();
+  const headingRef = useFocusHeading<HTMLHeadingElement>();
 
   const load = useCallback(async () => {
+    setLoadError(null);
     try {
       setImages(await api.listImages(masjidId, 'carousel'));
     } catch {
-      setImages([]);
-      toast.error('Failed to load carousel images');
+      setLoadError('Failed to load slideshow photos. Please try again.');
     }
-  }, [masjidId, toast]);
+  }, [masjidId]);
 
   useEffect(() => {
-    if (images === null) void load();
-  }, [images, load]);
+    if (images === null && loadError === null) void load();
+  }, [images, loadError, load]);
 
   const sorted = useMemo(
     () => (images ? [...images].sort((a, b) => a.order - b.order) : []),
     [images],
   );
-
-  if (images === null) {
-    return (
-      <Box sx={{ p: 3 }}>
-        <Skeleton variant="text" width={200} height={40} />
-        <Skeleton variant="rectangular" height={180} sx={{ my: 2 }} />
-      </Box>
-    );
-  }
 
   async function handleUpload(file: File | undefined) {
     if (!file) return;
@@ -64,9 +57,9 @@ export function Images() {
     try {
       await api.uploadImage(masjidId, file, 'carousel');
       await load();
-      toast.success('Image uploaded — display carousel rotates it in');
+      toast.success('Photo uploaded — it shows when no events are active');
     } catch (e) {
-      toast.error(`Failed to upload image: ${e instanceof Error ? e.message : String(e)}`);
+      toast.error(`Failed to upload photo: ${e instanceof Error ? e.message : String(e)}`);
     } finally {
       setUploading(false);
     }
@@ -94,9 +87,9 @@ export function Images() {
     try {
       await api.deleteImage(deleteTarget.id);
       setImages((prev) => (prev ? prev.filter((i) => i.id !== deleteTarget.id) : prev));
-      toast.success(wasLast ? 'Removed — display falls back to static images' : 'Image deleted');
+      toast.success(wasLast ? 'Removed — display falls back to the static photo set' : 'Photo deleted');
     } catch {
-      toast.error('Failed to delete image');
+      toast.error('Failed to delete photo');
     } finally {
       setDeleteTarget(null);
     }
@@ -104,9 +97,11 @@ export function Images() {
 
   return (
     <Box>
-      <Typography variant="h5" gutterBottom>Carousel Images</Typography>
+      <Typography variant="h5" component="h1" tabIndex={-1} ref={headingRef} gutterBottom>
+        Slideshow Photos
+      </Typography>
       <Typography color="text.secondary" sx={{ mb: 2 }}>
-        Images ≤ 2MB rotate on the display. With none uploaded, the display serves its bundled static set.
+        Photos ≤ 2MB show on the display when no events are active. With none uploaded, the display serves its bundled static set.
       </Typography>
 
       <input
@@ -126,14 +121,21 @@ export function Images() {
         onClick={() => inputRef.current?.click()}
         sx={{ mb: 3 }}
       >
-        {uploading ? 'Uploading…' : 'Upload Image'}
+        {uploading ? 'Uploading…' : 'Upload Photo'}
       </Button>
 
-      {sorted.length === 0 ? (
-        <Alert severity="info">
-          No carousel images yet — upload your first mosque photo above.
-        </Alert>
-      ) : (
+      {/* SINGLE STATE PIPELINE — SHARED PRIMITIVES (IDLE-SLIDESHOW COPY) */}
+      <AsyncState
+        loading={images === null && loadError === null}
+        error={loadError}
+        isEmpty={images !== null && sorted.length === 0}
+        onRetry={load}
+        empty={{
+          title: 'No slideshow photos yet',
+          description: 'Upload mosque photos to fill the display when no events are active.',
+          action: { label: 'Upload your first photo', onClick: () => inputRef.current?.click() },
+        }}
+      >
         <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 2 }}>
           {sorted.map((img, index) => (
             <Card key={img.id}>
@@ -162,7 +164,7 @@ export function Images() {
             </Card>
           ))}
         </Box>
-      )}
+      </AsyncState>
 
       <ConfirmDeleteDialog
         open={deleteTarget !== null}

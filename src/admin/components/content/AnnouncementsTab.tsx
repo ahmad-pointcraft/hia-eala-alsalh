@@ -104,7 +104,8 @@ export function AnnouncementsTab() {
         loading={loading}
         error={error}
         onRetry={refresh}
-        emptyPrompt="No announcements yet — add your first"
+        emptyPrompt="No announcements yet"
+        emptyAction={{ label: 'Create your first', onClick: dialogs.openCreate }}
         columns={columns}
         activeControl={{
           type: 'switch',

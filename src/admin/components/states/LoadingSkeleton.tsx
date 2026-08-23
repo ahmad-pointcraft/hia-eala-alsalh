@@ -55,9 +55,6 @@ export function LoadingSkeleton({ variant, rows = 4, columns = 3 }: LoadingSkele
                   <Skeleton />
                 </TableCell>
               ))}
-              <TableCell>
-                <Skeleton variant="rectangular" width={80} />
-              </TableCell>
             </TableRow>
           ))}
         </TableBody>

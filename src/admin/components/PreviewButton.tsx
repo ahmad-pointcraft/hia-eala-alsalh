@@ -23,7 +23,17 @@ export function PreviewButton() {
   };
 
   return (
-    <Button variant="outlined" color="primary" size="large" startIcon={<MonitorIcon />} onClick={handleClick}>
+    <Button
+      variant="outlined"
+      color="primary"
+      size="large"
+      startIcon={<MonitorIcon />}
+      onClick={handleClick}
+      sx={{
+        transition: 'all 0.2s ease-in-out',
+        '&:hover': { transform: 'scale(1.1)', bgcolor: 'primary.main', color: 'white' },
+      }}
+    >
       View Display
     </Button>
   );

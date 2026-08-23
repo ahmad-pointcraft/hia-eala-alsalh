@@ -108,7 +108,8 @@ export function DonationsTab() {
         loading={loading}
         error={error}
         onRetry={refresh}
-        emptyPrompt="No campaigns yet — add your first"
+        emptyPrompt="No campaigns yet"
+        emptyAction={{ label: 'Create your first', onClick: dialogs.openCreate }}
         columns={columns}
         activeControl={{
           type: 'radio',

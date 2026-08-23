@@ -116,7 +116,8 @@ export function EventsTab() {
         loading={loading}
         error={error}
         onRetry={refresh}
-        emptyPrompt="No events yet — add your first"
+        emptyPrompt="No events yet"
+        emptyAction={{ label: 'Create your first', onClick: dialogs.openCreate }}
         columns={columns}
         activeControl={{
           type: 'switch',

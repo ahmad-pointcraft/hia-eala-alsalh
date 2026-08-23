@@ -11,8 +11,6 @@ import {
   Typography,
   IconButton,
   TableContainer,
-  CircularProgress,
-  Alert,
 } from '@mui/material';
 import { Edit as EditIcon, Delete as DeleteIcon, Add as AddIcon } from '@mui/icons-material';
 import { api } from '@/shared/api';
@@ -20,6 +18,8 @@ import type { Device } from '@/shared/api';
 import { formatLastSeen } from '@/shared/utils';
 import { useSession } from '@/admin/store/useSession';
 import { useBoolean } from '@/shared/hooks/useBoolean';
+import { useFocusHeading } from '@/admin/hooks/useFocusHeading';
+import { AsyncState } from '@/admin/components/states/AsyncState';
 import { AddDeviceDialog } from '@/admin/components/AddDeviceDialog';
 import { RenameDeviceDialog } from '@/admin/components/RenameDeviceDialog';
 import { UnpairDeviceDialog } from '@/admin/components/UnpairDeviceDialog';
@@ -29,20 +29,21 @@ export function Devices() {
   const masjidId = session?.masjidId ?? '';
   const [devices, setDevices] = useState<Device[]>([]);
   const [loading, setLoading] = useState(true);
-  const [fetchError, setFetchError] = useState('');
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const addDialog = useBoolean();
   const [renameTarget, setRenameTarget] = useState<Device | null>(null);
   const [unpairTarget, setUnpairTarget] = useState<Device | null>(null);
+  const headingRef = useFocusHeading<HTMLHeadingElement>();
 
   const refresh = useCallback(async () => {
     if (!masjidId) return;
     setLoading(true);
-    setFetchError('');
+    setFetchError(null);
     try {
       const list = await api.listDevices(masjidId);
       setDevices(list);
     } catch {
-      setFetchError('Failed to load devices. Showing last known list.');
+      setFetchError('Failed to load devices. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -55,21 +56,25 @@ export function Devices() {
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-        <Typography variant="h5">Devices</Typography>
+        <Typography variant="h5" component="h1" tabIndex={-1} ref={headingRef}>Devices</Typography>
         <Button variant="contained" startIcon={<AddIcon />} onClick={addDialog.onTrue}>
           Add Device
         </Button>
       </Box>
 
-      {fetchError && <Alert severity="warning" sx={{ mb: 2 }}>{fetchError}</Alert>}
-
-      {loading ? (
-        <CircularProgress />
-      ) : devices.length === 0 ? (
-        <Typography color="text.secondary">
-          No devices paired yet. Click "Add Device" to pair a TV.
-        </Typography>
-      ) : (
+      {/* SINGLE STATE PIPELINE — SHARED PRIMITIVES (UNPAGED SHORT LIST) */}
+      <AsyncState
+        loading={loading}
+        error={fetchError}
+        isEmpty={devices.length === 0}
+        skeletonColumns={4}
+        onRetry={refresh}
+        empty={{
+          title: 'No devices paired yet',
+          description: 'Pair a TV to show the masjid display.',
+          action: { label: 'Add a device', onClick: addDialog.onTrue },
+        }}
+      >
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -99,7 +104,7 @@ export function Devices() {
             </TableBody>
           </Table>
         </TableContainer>
-      )}
+      </AsyncState>
 
       <AddDeviceDialog open={addDialog.value} onClose={addDialog.onFalse} onPaired={refresh} />
 

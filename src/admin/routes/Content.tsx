@@ -1,15 +1,19 @@
 import { useState } from 'react';
 import { Box, Tab, Tabs, Typography } from '@mui/material';
+import { useFocusHeading } from '@/admin/hooks/useFocusHeading';
 import { AnnouncementsTab } from '@/admin/components/content/AnnouncementsTab';
 import { EventsTab } from '@/admin/components/content/EventsTab';
 import { DonationsTab } from '@/admin/components/content/DonationsTab';
 
 export function Content() {
   const [tab, setTab] = useState(0);
+  const headingRef = useFocusHeading<HTMLHeadingElement>();
 
   return (
     <Box>
-      <Typography variant="h5" gutterBottom>Content</Typography>
+      <Typography variant="h5" component="h1" tabIndex={-1} ref={headingRef} gutterBottom>
+        Content
+      </Typography>
       <Tabs
         value={tab}
         onChange={(_, value) => setTab(value)}
