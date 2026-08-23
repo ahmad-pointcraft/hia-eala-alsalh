@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Box, Paper, Table, TableRow, TableBody, TableHead, TableCell, TableContainer, IconButton, Switch, Radio } from '@mui/material';
+import { Box, Paper, Table, TableRow, TableBody, TableHead, TableCell, TableContainer, TablePagination, IconButton, Switch, Radio, type TablePaginationProps } from '@mui/material';
 import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { AsyncState } from '@/admin/components/states/AsyncState';
 import type { EmptyStateAction } from '@/admin/components/states/EmptyState';
@@ -32,6 +32,12 @@ export interface ContentListProps<T extends { id: string }> {
   getItemName: (item: T) => string;
   onReorder?: (index: number, direction: 'up' | 'down') => void;
   isRowFaded?: (item: T) => boolean;
+  /**
+   * Pagination controls rendered under the table when provided (and the list
+   * is non-empty). Omit entirely for unpaged lists (Devices pattern).
+   * Spread the `paginationProps(totalCount)` bag from `usePagination`.
+   */
+  pagination?: TablePaginationProps;
 }
 
 export function ContentList<T extends { id: string }>({
@@ -48,24 +54,26 @@ export function ContentList<T extends { id: string }>({
   getItemName,
   onReorder,
   isRowFaded,
+  pagination,
 }: ContentListProps<T>) {
   const actionCount = (onEdit ? 1 : 0) + (onDelete ? 1 : 0) + (onReorder ? 1 : 0);
   const hasActions = actionCount > 0;
 
   return (
-    // SINGLE STATE PIPELINE — ASYNCSTATE INTERNALLY (NEVER NESTED STATE RENDERERS)
-    <AsyncState
-      loading={loading}
-      error={error}
-      isEmpty={items.length === 0}
-      skeleton="list"
-      skeletonRows={4}
-      skeletonColumns={columns.length + (activeControl ? 1 : 0) + (hasActions ? 1 : 0)}
-      onRetry={onRetry}
-      empty={{ title: emptyPrompt, action: emptyAction }}
-    >
-      <TableContainer component={Paper}>
-        <Table size="small">
+    <Box>
+      {/* SINGLE STATE PIPELINE — ASYNCSTATE INTERNALLY (NEVER NESTED STATE RENDERERS) */}
+      <AsyncState
+        loading={loading}
+        error={error}
+        isEmpty={items.length === 0}
+        skeleton="list"
+        skeletonRows={4}
+        skeletonColumns={columns.length + (activeControl ? 1 : 0) + (hasActions ? 1 : 0)}
+        onRetry={onRetry}
+        empty={{ title: emptyPrompt, action: emptyAction }}
+      >
+        <TableContainer component={Paper}>
+          <Table size="small">
           <TableHead>
             <TableRow>
               {columns.map((col) => (
@@ -137,6 +145,10 @@ export function ContentList<T extends { id: string }>({
           </TableBody>
         </Table>
       </TableContainer>
-    </AsyncState>
+      </AsyncState>
+
+      {/* PAGINATION — ONLY WHEN PROVIDED AND THE LIST IS NON-EMPTY (NEVER "PAGE 1 OF 0") */}
+      {pagination && items.length > 0 && <TablePagination {...pagination} />}
+    </Box>
   );
 }

@@ -8,6 +8,7 @@ import type { Announcement, Update } from '@/shared/api';
 import { useSession } from '@/admin/store/useSession';
 import { useCrudList } from '@/admin/hooks/useCrudList';
 import { useCrudDialogs } from '@/admin/hooks/useCrudDialogs';
+import { usePagination } from '@/admin/hooks/usePagination';
 import { useToast } from '@/admin/components/ToastProvider';
 import { announcementFormSchema } from '@/admin/utils/content/validation';
 import { ContentList } from './ContentList';
@@ -31,6 +32,7 @@ export function AnnouncementsTab() {
 
   const dialogs = useCrudDialogs<Announcement>();
   const toast = useToast();
+  const pager = usePagination<Announcement>();
 
   const sorted = useMemo(() => [...items].sort((a, b) => a.order - b.order), [items]);
 
@@ -52,17 +54,21 @@ export function AnnouncementsTab() {
   }
 
   function handleReorder(index: number, direction: 'up' | 'down') {
-    const target = direction === 'up' ? index - 1 : index + 1;
+    // CONTENTLIST PASSES SLICE-RELATIVE INDEX — OFFSET TO THE FULL SORTED LIST
+    const fullIndex = pager.page * pager.rowsPerPage + index;
+    const target = direction === 'up' ? fullIndex - 1 : fullIndex + 1;
     if (target < 0 || target >= sorted.length) return;
     const ids = sorted.map((i) => i.id);
-    const a = ids[index];
+    const a = ids[fullIndex];
     const b = ids[target];
     if (a === undefined || b === undefined) return;
-    ids[index] = b;
+    ids[fullIndex] = b;
     ids[target] = a;
-    reorder?.(ids).catch(() => {
-      toast.error('Failed to reorder — reverted');
-    });
+    reorder?.(ids)
+      .then(() => pager.reset()) // REORDER RESETS PAGE (FR-006)
+      .catch(() => {
+        toast.error('Failed to reorder — reverted');
+      });
   }
 
   async function handleSave(values: AnnouncementFormValues) {
@@ -72,6 +78,7 @@ export function AnnouncementsTab() {
         toast.success('Announcement updated');
       } else {
         await create({ ...values, active: true, order: 0 });
+        pager.reset(); // NEW ROW STAYS VISIBLE (FR-006)
         toast.success('Announcement created');
       }
     } catch (e) {
@@ -83,6 +90,7 @@ export function AnnouncementsTab() {
     if (!dialogs.deleteTarget) return;
     try {
       await remove(dialogs.deleteTarget.id);
+      pager.reset(); // AFFECTED ROWS STAY VISIBLE (FR-006)
       toast.success('Announcement deleted');
     } catch {
       toast.error('Failed to delete announcement');
@@ -100,12 +108,13 @@ export function AnnouncementsTab() {
       </Box>
 
       <ContentList
-        items={sorted}
+        items={pager.slice(sorted)}
         loading={loading}
         error={error}
         onRetry={refresh}
         emptyPrompt="No announcements yet"
         emptyAction={{ label: 'Create your first', onClick: dialogs.openCreate }}
+        pagination={pager.paginationProps(sorted.length)}
         columns={columns}
         activeControl={{
           type: 'switch',

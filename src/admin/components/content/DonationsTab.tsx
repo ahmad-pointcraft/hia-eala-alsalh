@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import type { z } from 'zod';
 import { Box, Button, Typography } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
@@ -7,6 +8,7 @@ import type { DonationCampaign } from '@/shared/api';
 import { useSession } from '@/admin/store/useSession';
 import { useCrudList } from '@/admin/hooks/useCrudList';
 import { useCrudDialogs } from '@/admin/hooks/useCrudDialogs';
+import { usePagination } from '@/admin/hooks/usePagination';
 import { useToast } from '@/admin/components/ToastProvider';
 import { donationFormSchema } from '@/admin/utils/content/validation';
 import { ContentList } from './ContentList';
@@ -33,6 +35,13 @@ export function DonationsTab() {
 
   const dialogs = useCrudDialogs<DonationCampaign>((c) => c.qrImageUrl);
   const toast = useToast();
+  const pager = usePagination<DonationCampaign>();
+
+  // STABLE SORT — CREATION ORDER SO PAGES DON'T RESHUFFLE (PAGINATION PREREQ)
+  const sorted = useMemo(
+    () => [...items].sort((a, b) => a.id.localeCompare(b.id)),
+    [items],
+  );
 
   const columns: Column<DonationCampaign>[] = [
     {
@@ -49,6 +58,7 @@ export function DonationsTab() {
   ];
 
   // RADIO ACTIVATION — setActiveDonationCampaign DEACTIVATES THE REST ATOMICALLY
+  // (PAGE PRESERVED — ACTIVATION DOESN'T MOVE ROWS)
   async function handleActivate(item: DonationCampaign) {
     if (item.active) return;
     try {
@@ -69,6 +79,7 @@ export function DonationsTab() {
         toast.success('Campaign updated');
       } else {
         await create({ ...payload, active: false });
+        pager.reset(); // NEW ROW STAYS VISIBLE (FR-006)
         toast.success('Campaign created — activate it with the radio');
       }
     } catch (e) {
@@ -81,6 +92,7 @@ export function DonationsTab() {
     const wasActive = dialogs.deleteTarget.active;
     try {
       await remove(dialogs.deleteTarget.id);
+      pager.reset(); // AFFECTED ROWS STAY VISIBLE (FR-006)
       toast.success(
         wasActive
           ? 'Active campaign deleted — overlay falls back until another is activated'
@@ -104,12 +116,13 @@ export function DonationsTab() {
       </Box>
 
       <ContentList
-        items={items}
+        items={pager.slice(sorted)}
         loading={loading}
         error={error}
         onRetry={refresh}
         emptyPrompt="No campaigns yet"
         emptyAction={{ label: 'Create your first', onClick: dialogs.openCreate }}
+        pagination={pager.paginationProps(sorted.length)}
         columns={columns}
         activeControl={{
           type: 'radio',

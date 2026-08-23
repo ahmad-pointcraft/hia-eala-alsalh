@@ -8,6 +8,7 @@ import type { MasjidEvent, Update } from '@/shared/api';
 import { useSession } from '@/admin/store/useSession';
 import { useCrudList } from '@/admin/hooks/useCrudList';
 import { useCrudDialogs } from '@/admin/hooks/useCrudDialogs';
+import { usePagination } from '@/admin/hooks/usePagination';
 import { useToast } from '@/admin/components/ToastProvider';
 import { eventFormSchema } from '@/admin/utils/content/validation';
 import { ContentList } from './ContentList';
@@ -35,6 +36,7 @@ export function EventsTab() {
 
   const dialogs = useCrudDialogs<MasjidEvent>((e) => e.imageUrl);
   const toast = useToast();
+  const pager = usePagination<MasjidEvent>();
 
   const sorted = useMemo(
     () => [...items].sort((a, b) => a.date.localeCompare(b.date)),
@@ -82,6 +84,7 @@ export function EventsTab() {
           imageUrl: dialogs.draftImage,
           active: true,
         });
+        pager.reset(); // NEW ROW STAYS VISIBLE
         toast.success('Event created');
       }
     } catch (e) {
@@ -93,6 +96,7 @@ export function EventsTab() {
     if (!dialogs.deleteTarget) return;
     try {
       await remove(dialogs.deleteTarget.id);
+      pager.reset(); // AFFECTED ROWS STAY VISIBLE (FR-006)
       toast.success('Event deleted');
     } catch {
       toast.error('Failed to delete event');
@@ -112,12 +116,13 @@ export function EventsTab() {
       </Box>
 
       <ContentList
-        items={sorted}
+        items={pager.slice(sorted)}
         loading={loading}
         error={error}
         onRetry={refresh}
         emptyPrompt="No events yet"
         emptyAction={{ label: 'Create your first', onClick: dialogs.openCreate }}
+        pagination={pager.paginationProps(sorted.length)}
         columns={columns}
         activeControl={{
           type: 'switch',
