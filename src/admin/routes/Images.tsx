@@ -1,6 +1,20 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Box, Button, Card, CardMedia, IconButton, Typography } from '@mui/material';
-import { CloudUpload as UploadIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import {
+  Box,
+  Button,
+  Card,
+  CardMedia,
+  Chip,
+  IconButton,
+  Stack,
+  Tooltip,
+  Typography,
+} from '@mui/material';
+import {
+  CloudUpload as UploadIcon,
+  DeleteOutline as DeleteIcon,
+  Collections as GalleryIcon,
+} from '@mui/icons-material';
 import { api } from '@/shared/api';
 import type { StoredImage } from '@/shared/api';
 import { useSession } from '@/admin/store/useSession';
@@ -18,6 +32,7 @@ export function Images() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<StoredImage | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const toast = useToast();
   const headingRef = useFocusHeading<HTMLHeadingElement>();
 
@@ -95,42 +110,86 @@ export function Images() {
     }
   }
 
-  return (
-    <Box>
-      <Typography variant="h5" component="h1" tabIndex={-1} ref={headingRef} gutterBottom>
-        Slideshow Photos
-      </Typography>
-      <Typography color="text.secondary" sx={{ mb: 2 }}>
-        Photos ≤ 2MB show on the display when no events are active. With none uploaded, the display
-        serves its bundled static set.
-      </Typography>
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
 
-      <input
-        ref={inputRef}
-        type="file"
-        accept="image/*"
-        hidden
-        onChange={(e) => {
-          void handleUpload(e.target.files?.[0]);
-          e.target.value = '';
-        }}
-      />
-      <Button
-        variant="contained"
-        startIcon={<UploadIcon />}
-        disabled={uploading}
-        onClick={() => inputRef.current?.click()}
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) void handleUpload(file);
+  };
+
+  return (
+    <Box sx={{ pb: 2 }}>
+      {/* HEADER SECTION */}
+      <Box
         sx={{
-          fontWeight: '700',
-          transition: 'all 0.2s ease-in-out',
-          '&:hover': { transform: 'scale(1.05)' },
-          mb: 3,
+          display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' },
+          justifyContent: 'space-between',
+          alignItems: { xs: 'flex-start', sm: 'center' },
+          gap: 2,
+          mb: { xs: 3, md: 4 },
         }}
       >
-        {uploading ? 'Uploading…' : 'Upload Photo'}
-      </Button>
+        <Box>
+          <Typography
+            variant="h5"
+            component="h1"
+            tabIndex={-1}
+            ref={headingRef}
+            fontWeight={600}
+            gutterBottom
+          >
+            Slideshow Photos
+          </Typography>
+          <Typography color="text.secondary" fontSize="0.95rem">
+            Photos (≤ 2MB) show in a rotating carousel on the kiosk display when no events are active.
+          </Typography>
+        </Box>
 
-      {/* SINGLE STATE PIPELINE — SHARED PRIMITIVES (IDLE-SLIDESHOW COPY) */}
+        <input
+          ref={inputRef}
+          type="file"
+          accept="image/*"
+          hidden
+          onChange={(e) => {
+            void handleUpload(e.target.files?.[0]);
+            e.target.value = '';
+          }}
+        />
+
+        <Button
+          variant="contained"
+          startIcon={<UploadIcon />}
+          disabled={uploading}
+          onClick={() => inputRef.current?.click()}
+          sx={{
+            borderRadius: 2,
+            px: 2.5,
+            fontWeight: 700,
+            boxShadow: '0 2px 8px rgba(46, 125, 50, 0.25)',
+            transition: 'all 0.2s ease-in-out',
+            whiteSpace: 'nowrap',
+            '&:hover': {
+              transform: 'scale(1.03)',
+              boxShadow: '0 4px 12px rgba(46, 125, 50, 0.35)',
+            },
+          }}
+        >
+          {uploading ? 'Uploading…' : 'Upload Photo'}
+        </Button>
+      </Box>
+
+      {/* SINGLE STATE PIPELINE — SHARED PRIMITIVES */}
       <AsyncState
         loading={images === null && loadError === null}
         error={loadError}
@@ -143,47 +202,126 @@ export function Images() {
         }}
       >
         <Box
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
           sx={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
-            gap: 2,
+            gridTemplateColumns: {
+              xs: '1fr',
+              sm: 'repeat(auto-fill, minmax(260px, 1fr))',
+            },
+            gap: 2.5,
+            p: isDragging ? 2 : 0,
+            borderRadius: 3,
+            border: isDragging ? '2px dashed #2e7d32' : 'none',
+            bgcolor: isDragging ? 'rgba(46, 125, 50, 0.04)' : 'transparent',
+            transition: 'all 0.2s ease',
           }}
         >
           {sorted.map((img, index) => (
-            <Card key={img.id}>
-              <CardMedia
-                component="img"
-                src={img.url}
-                alt={img.name}
-                sx={{ height: 140, objectFit: 'cover' }}
-              />
+            <Card
+              key={img.id}
+              sx={{
+                borderRadius: 3,
+                border: '1px solid rgba(0, 0, 0, 0.08)',
+                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.02)',
+                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column',
+                transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                '&:hover': {
+                  transform: 'translateY(-3px)',
+                  boxShadow: '0 6px 20px rgba(0, 0, 0, 0.08)',
+                  '& .media-img': {
+                    transform: 'scale(1.04)',
+                  },
+                },
+              }}
+            >
+              {/* IMAGE WRAPPER WITH HOVER ZOOM & GLASS BADGE */}
+              <Box sx={{ position: 'relative', height: 165, overflow: 'hidden', bgcolor: '#0f172a' }}>
+                <CardMedia
+                  component="img"
+                  src={img.url}
+                  alt={img.name}
+                  className="media-img"
+                  sx={{
+                    height: '100%',
+                    width: '100%',
+                    objectFit: 'cover',
+                    transition: 'transform 0.3s ease-in-out',
+                  }}
+                />
+                <Chip
+                  icon={<GalleryIcon sx={{ fontSize: '14px !important', color: '#fff' }} />}
+                  label={`#${index + 1}`}
+                  size="small"
+                  sx={{
+                    position: 'absolute',
+                    top: 10,
+                    left: 10,
+                    bgcolor: 'rgba(15, 23, 42, 0.7)',
+                    color: '#ffffff',
+                    backdropFilter: 'blur(6px)',
+                    fontWeight: 700,
+                    fontSize: '0.75rem',
+                    height: 24,
+                    borderRadius: 1.5,
+                  }}
+                />
+              </Box>
+
+              {/* CARD DETAILS & ACTIONS */}
               <Box
                 sx={{
-                  p: 1,
+                  p: 1.75,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
+                  gap: 1,
+                  bgcolor: '#ffffff',
+                  borderTop: '1px solid rgba(0, 0, 0, 0.06)',
                 }}
               >
-                <Typography variant="caption" noWrap sx={{ maxWidth: 110 }}>
-                  {img.name}
-                </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Tooltip title={img.name}>
+                  <Typography
+                    variant="body2"
+                    fontWeight={600}
+                    noWrap
+                    sx={{ maxWidth: 140, color: 'text.primary' }}
+                  >
+                    {img.name}
+                  </Typography>
+                </Tooltip>
+
+                <Stack direction="row" spacing={0.75} alignItems="center">
                   <UpDownReorder
                     isFirst={index === 0}
                     isLast={index === sorted.length - 1}
                     onMoveUp={() => handleReorder(index, 'up')}
                     onMoveDown={() => handleReorder(index, 'down')}
                   />
-                  <IconButton
-                    size="small"
-                    color="error"
-                    aria-label={`Delete ${img.name}`}
-                    onClick={() => setDeleteTarget(img)}
-                  >
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
-                </Box>
+                  <Tooltip title="Delete photo">
+                    <IconButton
+                      size="small"
+                      color="error"
+                      aria-label={`Delete ${img.name}`}
+                      onClick={() => setDeleteTarget(img)}
+                      sx={{
+                        borderRadius: 1.5,
+                        border: '1px solid rgba(211, 47, 47, 0.15)',
+                        p: 0.5,
+                        '&:hover': {
+                          bgcolor: 'rgba(211, 47, 47, 0.08)',
+                          borderColor: 'error.main',
+                        },
+                      }}
+                    >
+                      <DeleteIcon sx={{ fontSize: 17 }} />
+                    </IconButton>
+                  </Tooltip>
+                </Stack>
               </Box>
             </Card>
           ))}
@@ -199,3 +337,4 @@ export function Images() {
     </Box>
   );
 }
+
