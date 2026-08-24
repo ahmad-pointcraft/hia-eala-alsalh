@@ -17,6 +17,7 @@ import {
   FolderOutlined as ContentIcon,
   ImageOutlined as ImagesIcon,
   DisplaySettings as SettingsIcon,
+  PeopleOutline as TeamIcon,
   Mosque as MosqueIcon,
   Logout as LogoutIcon,
 } from '@mui/icons-material';
@@ -24,15 +25,24 @@ import { useSession } from '@/admin/store/useSession';
 import { api } from '@/shared/api';
 import type { MosqueConfig } from '@/shared/types';
 import { useIsMobile } from '@/admin/hooks/useIsMobile';
+import { hasPermission, type Permission } from '@/admin/utils/permissions';
 
 const DRAWER_WIDTH = 250;
 
-const NAV_ITEMS = [
-  { label: 'Devices', path: '/devices', icon: DevicesIcon },
-  { label: 'Timings', path: '/timings', icon: TimingsIcon },
-  { label: 'Content', path: '/content', icon: ContentIcon },
-  { label: 'Images', path: '/images', icon: ImagesIcon },
-  { label: 'Display Settings', path: '/settings', icon: SettingsIcon },
+interface NavItem {
+  label: string;
+  path: string;
+  icon: typeof DevicesIcon;
+  permission: Permission;
+}
+
+const NAV_ITEMS: NavItem[] = [
+  { label: 'Devices', path: '/devices', icon: DevicesIcon, permission: 'devices:manage' },
+  { label: 'Timings', path: '/timings', icon: TimingsIcon, permission: 'timings:manage' },
+  { label: 'Content', path: '/content', icon: ContentIcon, permission: 'content:manage' },
+  { label: 'Images', path: '/images', icon: ImagesIcon, permission: 'images:manage' },
+  { label: 'Display Settings', path: '/settings', icon: SettingsIcon, permission: 'settings:manage' },
+  { label: 'Team', path: '/team', icon: TeamIcon, permission: 'team:manage' },
 ];
 
 export interface SidebarProps {
@@ -178,7 +188,7 @@ export function Sidebar({ open = false, onClose }: SidebarProps) {
           Menu
         </Typography>
         <List sx={{ p: 0 }}>
-          {NAV_ITEMS.map((item) => {
+          {NAV_ITEMS.filter((item) => hasPermission(session?.user?.role, item.permission)).map((item) => {
             const selected = location.pathname === item.path;
             const Icon = item.icon;
             return (
