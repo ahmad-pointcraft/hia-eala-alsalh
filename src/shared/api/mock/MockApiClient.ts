@@ -1,3 +1,4 @@
+import { DEFAULT_MOSQUE_CONFIG } from '@/shared/types';
 import {
   generateId,
   generateNumericCode,
@@ -39,6 +40,9 @@ function normalizeStore(store: MockStore): MockStore {
 }
 
 const PAIRING_CODE_TTL_MS = 10 * MS_PER_MINUTE;
+const AUTH_LATENCY_MS = 200;
+
+const delay = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
 // ============================================================================
 // MOCK API CLIENT (DEV & DEMO MODE) 
@@ -119,26 +123,104 @@ export function createMockApiClient(): ApiClient {
   // ==================== AUTH API ====================
 
   // SIGN IN ADMIN USER
-  async function signIn(email: string, _password: string): Promise<Session> {
+  async function signIn(email: string, password: string): Promise<Session> {
+    await delay(AUTH_LATENCY_MS);
+    const normalizedEmail = email.trim().toLowerCase();
+    const record = store.users[normalizedEmail];
+    if (!record || record.password !== password) {
+      throw new Error('Invalid email or password');
+    }
+
     const session: Session = {
-      user: {
-        id: generateId('user'),
-        email,
-        name: 'Admin',
-        role: 'masjid_admin',
-        masjidId: DEMO_MASJID_ID,
-        createdAt: '2026-01-01T00:00:00.000Z',
-      },
-      masjidId: DEMO_MASJID_ID,
+      user: record.user,
+      masjidId: record.user.masjidId ?? DEMO_MASJID_ID,
       token: generateId('token'),
+      expiresAt: getExpirationTime(7 * MS_PER_DAY),
     };
     currentSession = session;
     return session;
   }
 
-  // REGISTER NEW ADMIN ACCOUNT
+  // REGISTER NEW ADMIN ACCOUNT (CREATE NEW MASJID OR JOIN VIA INVITE CODE)
   async function signUp(input: SignUpInput): Promise<Session> {
-    return signIn(input.email, input.password);
+    await delay(AUTH_LATENCY_MS);
+    const normalizedEmail = input.email.trim().toLowerCase();
+
+    if (store.users[normalizedEmail]) {
+      if (input.mode === 'join') {
+        throw new Error('Account already exists — sign in instead');
+      }
+      throw new Error('An account with this email already exists');
+    }
+
+    if (input.mode === 'create') {
+      const masjidId = generateId('masjid');
+      const newMasjid: MasjidData = {
+        config: {
+          ...DEFAULT_MOSQUE_CONFIG,
+          masjidName_en: input.masjidName_en.trim(),
+          masjidName_ar: input.masjidName_ar.trim(),
+        },
+        announcements: [],
+        events: [],
+        donations: [],
+        images: [],
+      };
+      store.masjids[masjidId] = newMasjid;
+
+      const newUser: User = {
+        id: generateId('user'),
+        email: normalizedEmail,
+        name: input.name.trim(),
+        role: 'masjid_admin',
+        masjidId,
+        createdAt: new Date().toISOString(),
+      };
+      store.users[normalizedEmail] = {
+        user: newUser,
+        password: input.password,
+      };
+      persist();
+
+      const session: Session = {
+        user: newUser,
+        masjidId,
+        token: generateId('token'),
+        expiresAt: getExpirationTime(7 * MS_PER_DAY),
+      };
+      currentSession = session;
+      return session;
+    }
+
+    // Join mode
+    const invite = store.inviteCodes[input.inviteCode.trim()];
+    if (!invite || invite.used || isExpired(invite.expiresAt)) {
+      throw new Error('Invalid or expired invite code');
+    }
+
+    invite.used = true;
+    const newUser: User = {
+      id: generateId('user'),
+      email: normalizedEmail,
+      name: input.name.trim(),
+      role: invite.role,
+      masjidId: invite.masjidId,
+      createdAt: new Date().toISOString(),
+    };
+    store.users[normalizedEmail] = {
+      user: newUser,
+      password: input.password,
+    };
+    persist();
+
+    const session: Session = {
+      user: newUser,
+      masjidId: invite.masjidId,
+      token: generateId('token'),
+      expiresAt: getExpirationTime(7 * MS_PER_DAY),
+    };
+    currentSession = session;
+    return session;
   }
 
   // END CURRENT ADMIN SESSION
@@ -146,8 +228,12 @@ export function createMockApiClient(): ApiClient {
     currentSession = null;
   }
 
-  // GET CURRENT ACTIVE SESSION
+  // GET CURRENT ACTIVE SESSION (WITH EXPIRY VALIDATION)
   async function getSession(): Promise<Session | null> {
+    if (currentSession && isExpired(currentSession.expiresAt)) {
+      currentSession = null;
+      return null;
+    }
     return currentSession;
   }
 
