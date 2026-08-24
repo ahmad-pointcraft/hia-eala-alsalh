@@ -11,8 +11,7 @@ import {
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { adminTheme } from '@/admin/theme/adminTheme';
-import { AuthGate } from '@/admin/components/AuthGate';
-import { RoleGate } from '@/admin/components/RoleGate';
+import { AuthGate, RoleGate } from '@/admin/components/auth';
 import { AdminLayout } from '@/admin/components/layout';
 import { SignIn } from '@/admin/routes/SignIn';
 import { SignUp } from '@/admin/routes/SignUp';

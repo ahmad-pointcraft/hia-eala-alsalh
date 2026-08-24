@@ -1,9 +1,9 @@
+import { useEffect } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useSession } from '@/admin/store/useSession';
 import { isExpired } from '@/shared/utils';
-import { useEffect } from 'react';
 
-export function AuthGate() {
+export function AuthGate(): JSX.Element {
   const session = useSession((s) => s.session);
   const signOut = useSession((s) => s.signOut);
   const expired = isExpired(session?.expiresAt);
