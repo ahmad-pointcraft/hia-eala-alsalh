@@ -1,8 +1,8 @@
 import type { ApiClient } from '../contract';
 
-const NOT_IMPLEMENTED = 'not implemented — Spec 017';
+const NOT_IMPLEMENTED = 'not implemented';
 
-// REAL API CLIENT STUB — closure factory, no `this`; every method throws until Spec 017
+// REAL API CLIENT STUB — closure factory, no `this`; every method throws
 export function createRealApiClient(): ApiClient {
   const unimplemented = (): never => {
     throw new Error(NOT_IMPLEMENTED);
@@ -13,6 +13,8 @@ export function createRealApiClient(): ApiClient {
     signUp: unimplemented,
     signOut: unimplemented,
     getSession: unimplemented,
+    createInviteCode: unimplemented,
+    listTeamMembers: unimplemented,
     registerDevice: unimplemented,
     getDeviceStatus: unimplemented,
     pairDevice: unimplemented,
@@ -39,6 +41,8 @@ export function createRealApiClient(): ApiClient {
     listImages: unimplemented,
     deleteImage: unimplemented,
     reorderCarouselImages: unimplemented,
-    subscribe: () => () => { /* noop */ },
+    subscribe: () => () => {
+      /* noop */
+    },
   };
 }

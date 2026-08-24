@@ -20,7 +20,14 @@ export function SignUp() {
     setError('');
     setLoading(true);
     try {
-      await signUp(data.email, data.password);
+      await signUp({
+        mode: 'create',
+        name: 'Admin',
+        email: data.email,
+        password: data.password,
+        masjidName_en: 'Masjid',
+        masjidName_ar: '\u0645\u0633\u062C\u062F',
+      });
       navigate('/');
     } catch {
       setError('Sign-up failed. Try again.');

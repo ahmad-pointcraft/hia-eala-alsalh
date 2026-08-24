@@ -1,4 +1,18 @@
-import type { Session, Device, MasjidSummary, MosqueConfig, ContentChangePayload, Announcement, MasjidEvent, DonationCampaign, StoredImage, ImageKind } from './types';
+import type {
+  Session,
+  User,
+  UserRole,
+  SignUpInput,
+  Device,
+  MasjidSummary,
+  MosqueConfig,
+  ContentChangePayload,
+  Announcement,
+  MasjidEvent,
+  DonationCampaign,
+  StoredImage,
+  ImageKind,
+} from './types';
 
 /**
  * Authentication operations for admin users.
@@ -7,14 +21,27 @@ export interface AuthApi {
   /** Authenticates an admin user with email and password credentials. */
   signIn(email: string, password: string): Promise<Session>;
 
-  /** Registers a new admin account. */
-  signUp(email: string, password: string): Promise<Session>;
+  /**
+   * Registers a new account either by creating a new masjid or joining via an invite code.
+   * In create mode: provisions a new masjid and registers the user as masjid_admin.
+   * In join mode: redeems a single-use invite code and registers the user with the assigned role.
+   */
+  signUp(input: SignUpInput): Promise<Session>;
 
   /** Signs out the current admin user session. */
   signOut(): Promise<void>;
 
-  /** Retrieves the active admin user session, or null if unauthenticated. */
+  /** Retrieves the active admin user session, or null if unauthenticated or expired. */
   getSession(): Promise<Session | null>;
+
+  /**
+   * Generates a 6-digit single-use invite code for a specific masjid and role.
+   * Admin-gated: caller must possess 'team:manage' permission (masjid_admin).
+   */
+  createInviteCode(masjidId: string, role: UserRole): Promise<{ code: string; expiresAt: number }>;
+
+  /** Lists all registered administrative team members for a specific masjid. */
+  listTeamMembers(masjidId: string): Promise<User[]>;
 }
 
 /**
@@ -28,7 +55,10 @@ export interface DeviceApi {
   getDeviceStatus(deviceId: string): Promise<{ paired: boolean; masjidId: string | null }>;
 
   /** Pairs an unpaired display device using a 6-digit numeric pairing code. Optional `name` labels the device at pair time. */
-  pairDevice(pairingCode: string, name?: string): Promise<{ device: Device; masjid: MasjidSummary }>;
+  pairDevice(
+    pairingCode: string,
+    name?: string,
+  ): Promise<{ device: Device; masjid: MasjidSummary }>;
 
   /** Lists all display devices registered under a specific masjid ID. */
   listDevices(masjidId: string): Promise<Device[]>;
@@ -63,7 +93,10 @@ export interface ContentApi {
   /** Lists announcements for a masjid. */
   listAnnouncements(masjidId: string): Promise<Announcement[]>;
   /** Creates an announcement (appended at the end — order = max existing + 1, or 0). */
-  createAnnouncement(masjidId: string, input: Omit<Announcement, 'id' | 'masjidId'>): Promise<Announcement>;
+  createAnnouncement(
+    masjidId: string,
+    input: Omit<Announcement, 'id' | 'masjidId'>,
+  ): Promise<Announcement>;
   /** Partial-updates an announcement; identity fields are un-patchable via `Update<T>`. */
   updateAnnouncement(id: string, patch: Update<Announcement>): Promise<Announcement>;
   /** Deletes an announcement. */
@@ -85,9 +118,15 @@ export interface ContentApi {
   /** Lists donation campaigns for a masjid. */
   listDonations(masjidId: string): Promise<DonationCampaign[]>;
   /** Creates a donation campaign. */
-  createDonationCampaign(masjidId: string, input: Omit<DonationCampaign, 'id' | 'masjidId'>): Promise<DonationCampaign>;
+  createDonationCampaign(
+    masjidId: string,
+    input: Omit<DonationCampaign, 'id' | 'masjidId'>,
+  ): Promise<DonationCampaign>;
   /** Partial-updates a campaign. `active` is NOT patchable — it is excluded from the patch type so activation flows ONLY through `setActiveDonationCampaign` . */
-  updateDonationCampaign(id: string, patch: Partial<Omit<DonationCampaign, 'id' | 'masjidId' | 'active'>>): Promise<DonationCampaign>;
+  updateDonationCampaign(
+    id: string,
+    patch: Partial<Omit<DonationCampaign, 'id' | 'masjidId' | 'active'>>,
+  ): Promise<DonationCampaign>;
   /** Deletes a donation campaign. */
   deleteDonationCampaign(id: string): Promise<void>;
   /** Activates one campaign and atomically deactivates the rest (the at-most-one-active invariant). */

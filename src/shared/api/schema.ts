@@ -1,13 +1,61 @@
 import { z } from 'zod';
 import { mosqueConfigSchema } from '@/shared/types/schema';
 
+// ==================== USER & ROLE ====================
+
+export const userRoleSchema = z.enum(['masjid_admin', 'content_editor']);
+
+export const userSchema = z.object({
+  id: z.string(),
+  email: z.string(),
+  name: z.string().optional().default('Admin'),
+  role: userRoleSchema.optional().default('masjid_admin'),
+  masjidId: z.string().optional(),
+  createdAt: z.string().optional(),
+});
+
 // ==================== SESSION ====================
 
 export const sessionSchema = z.object({
-  user: z.object({ id: z.string(), email: z.string() }),
+  user: userSchema,
   masjidId: z.string(),
   token: z.string(),
+  expiresAt: z.number().optional(),
 });
+
+// ==================== INVITE CODE ====================
+
+export const inviteCodeSchema = z.object({
+  code: z.string().length(6),
+  masjidId: z.string(),
+  role: userRoleSchema,
+  expiresAt: z.number(),
+  used: z.boolean(),
+});
+
+// ==================== SIGN UP INPUTS ====================
+
+const baseSignUpSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+});
+
+export const createMasjidSignUpSchema = baseSignUpSchema.extend({
+  mode: z.literal('create'),
+  masjidName_en: z.string().min(1, 'English masjid name is required'),
+  masjidName_ar: z.string().min(1, 'Arabic masjid name is required'),
+});
+
+export const joinMasjidSignUpSchema = baseSignUpSchema.extend({
+  mode: z.literal('join'),
+  inviteCode: z.string().length(6, 'Invite code must be 6 digits'),
+});
+
+export const signUpInputSchema = z.discriminatedUnion('mode', [
+  createMasjidSignUpSchema,
+  joinMasjidSignUpSchema,
+]);
 
 // ==================== DEVICE ====================
 

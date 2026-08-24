@@ -1,7 +1,17 @@
-import { generateId } from '@/shared/utils';
+import {
+  generateId,
+  generateNumericCode,
+  getExpirationTime,
+  isExpired,
+  MS_PER_MINUTE,
+  MS_PER_DAY,
+} from '@/shared/utils';
 import type { ApiClient } from '../contract';
 import type {
   Session,
+  User,
+  UserRole,
+  SignUpInput,
   Device,
   MasjidSummary,
   MosqueConfig,
@@ -22,15 +32,13 @@ function normalizeStore(store: MockStore): MockStore {
     devices: store.devices ?? {},
     pairingCodes: store.pairingCodes ?? {},
     sessions: store.sessions ?? {},
+    users: store.users ?? {},
+    inviteCodes: store.inviteCodes ?? {},
     realtimeSubscribers: store.realtimeSubscribers ?? new Set(),
   };
 }
 
-const PAIRING_CODE_TTL_MS = 10 * 60 * 1000;
-
-function generatePairingCode(): string {
-  return Math.floor(100000 + Math.random() * 900000).toString();
-}
+const PAIRING_CODE_TTL_MS = 10 * MS_PER_MINUTE;
 
 // ============================================================================
 // MOCK API CLIENT (DEV & DEMO MODE) 
@@ -113,7 +121,14 @@ export function createMockApiClient(): ApiClient {
   // SIGN IN ADMIN USER
   async function signIn(email: string, _password: string): Promise<Session> {
     const session: Session = {
-      user: { id: generateId('user'), email },
+      user: {
+        id: generateId('user'),
+        email,
+        name: 'Admin',
+        role: 'masjid_admin',
+        masjidId: DEMO_MASJID_ID,
+        createdAt: '2026-01-01T00:00:00.000Z',
+      },
       masjidId: DEMO_MASJID_ID,
       token: generateId('token'),
     };
@@ -122,8 +137,8 @@ export function createMockApiClient(): ApiClient {
   }
 
   // REGISTER NEW ADMIN ACCOUNT
-  async function signUp(email: string, _password: string): Promise<Session> {
-    return signIn(email, _password);
+  async function signUp(input: SignUpInput): Promise<Session> {
+    return signIn(input.email, input.password);
   }
 
   // END CURRENT ADMIN SESSION
@@ -136,13 +151,35 @@ export function createMockApiClient(): ApiClient {
     return currentSession;
   }
 
+  // CREATE SINGLE-USE INVITE CODE
+  async function createInviteCode(masjidId: string, role: UserRole): Promise<{ code: string; expiresAt: number }> {
+    const code = generateNumericCode();
+    const expiresAt = getExpirationTime(MS_PER_DAY);
+    store.inviteCodes[code] = {
+      code,
+      masjidId,
+      role,
+      expiresAt,
+      used: false,
+    };
+    persist();
+    return { code, expiresAt };
+  }
+
+  // LIST ADMIN TEAM MEMBERS FOR A MASJID
+  async function listTeamMembers(masjidId: string): Promise<User[]> {
+    return Object.values(store.users)
+      .filter((u) => u.user.masjidId === masjidId)
+      .map((u) => u.user);
+  }
+
   // ==================== DEVICE PAIRING API ====================
 
   // REGISTER UNPAIRED DISPLAY DEVICE & GENERATE 6-DIGIT CODE
   async function registerDevice(): Promise<{ deviceId: string; pairingCode: string; expiresAt: number }> {
     const deviceId = generateId('device');
-    const pairingCode = generatePairingCode();
-    const expiresAt = Date.now() + PAIRING_CODE_TTL_MS;
+    const pairingCode = generateNumericCode();
+    const expiresAt = getExpirationTime(PAIRING_CODE_TTL_MS);
 
     store.devices[deviceId] = {
       id: deviceId,
@@ -166,7 +203,7 @@ export function createMockApiClient(): ApiClient {
   // PAIR DEVICE USING 6-DIGIT CODE ENTERED IN ADMIN PORTAL (optional name labels it)
   async function pairDevice(pairingCode: string, name?: string): Promise<{ device: Device; masjid: MasjidSummary }> {
     const entry = store.pairingCodes[pairingCode];
-    if (!entry || entry.expiresAt < Date.now()) {
+    if (!entry || isExpired(entry.expiresAt)) {
       throw new Error('Invalid or expired pairing code');
     }
     const device = store.devices[entry.deviceId];
@@ -487,6 +524,8 @@ export function createMockApiClient(): ApiClient {
     signUp,
     signOut,
     getSession,
+    createInviteCode,
+    listTeamMembers,
     registerDevice,
     getDeviceStatus,
     pairDevice,

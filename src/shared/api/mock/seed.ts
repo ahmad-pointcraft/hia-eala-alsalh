@@ -8,8 +8,20 @@ import {
   storedImageSchema,
   deviceSchema,
   sessionSchema,
+  userSchema,
+  inviteCodeSchema,
 } from '../schema';
-import type { Device, Announcement, MasjidEvent, DonationCampaign, StoredImage, Session, ContentChangePayload } from '../types';
+import type {
+  Device,
+  Announcement,
+  MasjidEvent,
+  DonationCampaign,
+  StoredImage,
+  Session,
+  User,
+  InviteCode,
+  ContentChangePayload,
+} from '../types';
 
 export const DEMO_MASJID_ID = 'masjid-demo-1';
 
@@ -21,11 +33,22 @@ export interface MasjidData {
   images: StoredImage[];
 }
 
+/**
+ * Plaintext passwords by design for mock development data.
+ * Real password hashing and secure token handling are implemented in the Backend Integration spec.
+ */
+export interface MockUserRecord {
+  user: User;
+  password: string;
+}
+
 export interface MockStore {
   masjids: Record<string, MasjidData>;
   devices: Record<string, Device>;
   pairingCodes: Record<string, { deviceId: string; expiresAt: number }>;
   sessions: Record<string, { session: Session; masjidId: string }>;
+  users: Record<string, MockUserRecord>;
+  inviteCodes: Record<string, InviteCode>;
   realtimeSubscribers: Set<{
     masjidId: string;
     handlers: {
@@ -58,6 +81,31 @@ export function createInitialStore(): MockStore {
       name: 'Prayer Hall TV',
       status: 'paired',
       lastSeenAt: now,
+    },
+  };
+
+  const users: Record<string, MockUserRecord> = {
+    'admin@alnoor.org': {
+      user: {
+        id: 'usr-admin-1',
+        email: 'admin@alnoor.org',
+        name: 'Al-Noor Admin',
+        role: 'masjid_admin',
+        masjidId: DEMO_MASJID_ID,
+        createdAt: '2026-01-01T00:00:00.000Z',
+      },
+      password: 'admin1234',
+    },
+    'editor@alnoor.org': {
+      user: {
+        id: 'usr-editor-1',
+        email: 'editor@alnoor.org',
+        name: 'Al-Noor Editor',
+        role: 'content_editor',
+        masjidId: DEMO_MASJID_ID,
+        createdAt: '2026-01-01T00:00:00.000Z',
+      },
+      password: 'editor1234',
     },
   };
 
@@ -208,6 +256,8 @@ export function createInitialStore(): MockStore {
     devices,
     pairingCodes: {},
     sessions: {},
+    users,
+    inviteCodes: {},
     realtimeSubscribers: new Set(),
   };
 }
@@ -230,6 +280,8 @@ const persistedStoreSchema = z.object({
   devices: z.record(z.string(), deviceSchema),
   pairingCodes: z.record(z.string(), z.object({ deviceId: z.string(), expiresAt: z.number() })),
   sessions: z.record(z.string(), z.object({ session: sessionSchema, masjidId: z.string() })),
+  users: z.record(z.string(), z.object({ user: userSchema, password: z.string() })).optional(),
+  inviteCodes: z.record(z.string(), inviteCodeSchema).optional(),
 });
 
 type PersistedStore = z.infer<typeof persistedStoreSchema>;
@@ -263,6 +315,8 @@ export function loadStore(): MockStore {
           devices: { ...seed.devices, ...parsed.devices },
           pairingCodes: { ...seed.pairingCodes, ...parsed.pairingCodes },
           sessions: { ...seed.sessions, ...parsed.sessions },
+          users: { ...seed.users, ...(parsed.users as Record<string, MockUserRecord> | undefined) },
+          inviteCodes: { ...seed.inviteCodes, ...parsed.inviteCodes },
           realtimeSubscribers: new Set(),
         };
       }

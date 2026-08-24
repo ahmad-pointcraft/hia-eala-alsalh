@@ -1,7 +1,13 @@
 import type { z } from 'zod';
 import type { mosqueConfigSchema } from '@/shared/types/schema';
 import {
+  userRoleSchema,
+  userSchema,
   sessionSchema,
+  inviteCodeSchema,
+  signUpInputSchema,
+  createMasjidSignUpSchema,
+  joinMasjidSignUpSchema,
   deviceSchema,
   pairingCodeSchema,
   masjidSummarySchema,
@@ -21,7 +27,13 @@ import {
 
 export type MosqueConfig = z.infer<typeof mosqueConfigSchema>;
 
+export type UserRole = z.infer<typeof userRoleSchema>;
+export type User = z.infer<typeof userSchema>;
 export type Session = z.infer<typeof sessionSchema>;
+export type InviteCode = z.infer<typeof inviteCodeSchema>;
+export type SignUpInput = z.infer<typeof signUpInputSchema>;
+export type CreateMasjidSignUp = z.infer<typeof createMasjidSignUpSchema>;
+export type JoinMasjidSignUp = z.infer<typeof joinMasjidSignUpSchema>;
 export type Device = z.infer<typeof deviceSchema>;
 export type PairingCode = z.infer<typeof pairingCodeSchema>;
 export type MasjidSummary = z.infer<typeof masjidSummarySchema>;
