@@ -13,17 +13,30 @@ import {
   ToggleButton,
   Divider,
   CircularProgress,
+  InputAdornment,
+  IconButton,
+  Stack,
 } from '@mui/material';
 import {
   AddBusinessOutlined as CreateIcon,
   GroupAddOutlined as JoinIcon,
+  PersonOutline as PersonIcon,
+  EmailOutlined as EmailIcon,
+  LockOutlined as LockIcon,
+  VisibilityOutlined as VisibilityIcon,
+  VisibilityOffOutlined as VisibilityOffIcon,
+  MosqueOutlined as MosqueIcon,
+  VpnKeyOutlined as KeyIcon,
 } from '@mui/icons-material';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSession } from '@/admin/store/useSession';
 import { signUpFormSchema, type SignUpFormData } from '@/admin/utils/auth';
+import { AuthLayout } from '@/admin/components/auth';
 
 export function SignUp(): JSX.Element {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const signUp = useSession((s) => s.signUp);
@@ -93,62 +106,81 @@ export function SignUp(): JSX.Element {
   }
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100vh',
-        p: 2,
-        bgcolor: 'background.default',
-      }}
-    >
+    <AuthLayout maxWidth="sm">
       <Card
         elevation={0}
         sx={{
-          maxWidth: 480,
+          maxWidth: 540,
           width: '100%',
-          border: 1,
-          borderColor: 'divider',
+          mx: 'auto',
           borderRadius: 3,
+          border: '1px solid rgba(0, 0, 0, 0.08)',
+          boxShadow: '0 16px 36px -12px rgba(0, 0, 0, 0.06), 0 1px 3px 0 rgba(0, 0, 0, 0.04)',
+          bgcolor: '#ffffff',
         }}
       >
-        <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
-          <Typography variant="h5" component="h1" fontWeight={700} gutterBottom align="center">
-            {mode === 'create' ? 'Create Mosque Portal' : 'Join Mosque Team'}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" align="center" sx={{ mb: 3 }}>
-            {mode === 'create'
-              ? 'Register your mosque and start managing displays'
-              : 'Enter your invite code to join an existing team'}
-          </Typography>
+        <CardContent sx={{ p: { xs: 2.5, sm: 3 } }}>
+          <Box sx={{ mb: 2, textAlign: 'center' }}>
+            <Typography variant="h6" component="h2" fontWeight={700} sx={{ color: 'text.primary', fontSize: '1.2rem' }}>
+              {mode === 'create' ? 'Create Mosque Portal' : 'Join Mosque Team'}
+            </Typography>
+            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.25 }}>
+              {mode === 'create'
+                ? 'Register your mosque and begin managing prayer displays'
+                : 'Enter your 6-digit invitation code to join your team'}
+            </Typography>
+          </Box>
 
-          <ToggleButtonGroup
-            value={mode}
-            exclusive
-            onChange={handleModeChange}
-            fullWidth
-            size="small"
-            sx={{ mb: 3 }}
-          >
-            <ToggleButton
-              value="create"
-              sx={{ textTransform: 'none', gap: 1, py: 1, fontWeight: 600 }}
+          {/* MODE TOGGLE */}
+          <Box sx={{ p: 0.4, bgcolor: 'rgba(0, 0, 0, 0.04)', borderRadius: 2.5, mb: 2 }}>
+            <ToggleButtonGroup
+              value={mode}
+              exclusive
+              onChange={handleModeChange}
+              fullWidth
+              size="small"
+              sx={{
+                '& .MuiToggleButton-root': {
+                  border: 'none',
+                  borderRadius: 2,
+                  py: 0.6,
+                  fontWeight: 600,
+                  fontSize: '0.82rem',
+                  textTransform: 'none',
+                  color: 'text.secondary',
+                  transition: 'all 0.15s ease',
+                  '&.Mui-selected': {
+                    bgcolor: '#ffffff',
+                    color: 'primary.main',
+                    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.06)',
+                    fontWeight: 700,
+                    '&:hover': { bgcolor: '#ffffff' },
+                  },
+                },
+              }}
             >
-              <CreateIcon fontSize="small" />
-              Create Masjid
-            </ToggleButton>
-            <ToggleButton
-              value="join"
-              sx={{ textTransform: 'none', gap: 1, py: 1, fontWeight: 600 }}
-            >
-              <JoinIcon fontSize="small" />
-              Join with Code
-            </ToggleButton>
-          </ToggleButtonGroup>
+              <ToggleButton value="create" sx={{ gap: 0.75 }}>
+                <CreateIcon fontSize="small" />
+                Create New Masjid
+              </ToggleButton>
+              <ToggleButton value="join" sx={{ gap: 0.75 }}>
+                <JoinIcon fontSize="small" />
+                Join with Code
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
 
           {error && (
-            <Alert severity="error" sx={{ mb: 2.5, borderRadius: 2 }}>
+            <Alert
+              severity="error"
+              sx={{
+                mb: 2,
+                py: 0.5,
+                borderRadius: 2,
+                fontSize: '0.85rem',
+                '& .MuiAlert-message': { fontWeight: 500 },
+              }}
+            >
               {error}
             </Alert>
           )}
@@ -156,89 +188,181 @@ export function SignUp(): JSX.Element {
           <Box
             component="form"
             onSubmit={handleSubmit(onSubmit)}
-            sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+            sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}
           >
-            <TextField
-              {...register('name')}
-              label="Full Name"
-              placeholder="e.g. Bilal ibn Rabah"
-              error={!!errors.name}
-              helperText={errors.name?.message ?? ''}
-              fullWidth
-              autoComplete="name"
-              disabled={loading}
-            />
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
+              <TextField
+                {...register('name')}
+                label="Full Name"
+                placeholder="e.g. Bilal ibn Rabah"
+                size="small"
+                error={!!errors.name}
+                helperText={errors.name?.message ?? ''}
+                fullWidth
+                autoComplete="name"
+                disabled={loading}
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PersonIcon fontSize="small" sx={{ color: 'text.secondary', fontSize: '1.1rem' }} />
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+              />
 
-            <TextField
-              {...register('email')}
-              label="Email"
-              type="email"
-              placeholder="you@example.org"
-              error={!!errors.email}
-              helperText={errors.email?.message ?? ''}
-              fullWidth
-              autoComplete="email"
-              disabled={loading}
-            />
+              <TextField
+                {...register('email')}
+                label="Email Address"
+                type="email"
+                placeholder="you@example.org"
+                size="small"
+                error={!!errors.email}
+                helperText={errors.email?.message ?? ''}
+                fullWidth
+                autoComplete="email"
+                disabled={loading}
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <EmailIcon fontSize="small" sx={{ color: 'text.secondary', fontSize: '1.1rem' }} />
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+              />
+            </Stack>
 
-            <TextField
-              {...register('password')}
-              label="Password"
-              type="password"
-              placeholder="Min. 8 characters"
-              error={!!errors.password}
-              helperText={errors.password?.message ?? ''}
-              fullWidth
-              autoComplete="new-password"
-              disabled={loading}
-            />
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
+              <TextField
+                {...register('password')}
+                label="Password"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Min. 8 characters"
+                size="small"
+                error={!!errors.password}
+                helperText={errors.password?.message ?? ''}
+                fullWidth
+                autoComplete="new-password"
+                disabled={loading}
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <LockIcon fontSize="small" sx={{ color: 'text.secondary', fontSize: '1.1rem' }} />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label={showPassword ? 'Hide password' : 'Show password'}
+                          onClick={() => setShowPassword((prev) => !prev)}
+                          edge="end"
+                          size="small"
+                          sx={{ color: 'text.secondary' }}
+                        >
+                          {showPassword ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+              />
 
-            <TextField
-              {...register('confirmPassword')}
-              label="Confirm Password"
-              type="password"
-              placeholder="Repeat your password"
-              error={!!errors.confirmPassword}
-              helperText={errors.confirmPassword?.message ?? ''}
-              fullWidth
-              autoComplete="new-password"
-              disabled={loading}
-            />
+              <TextField
+                {...register('confirmPassword')}
+                label="Confirm Password"
+                type={showConfirmPassword ? 'text' : 'password'}
+                placeholder="Repeat password"
+                size="small"
+                error={!!errors.confirmPassword}
+                helperText={errors.confirmPassword?.message ?? ''}
+                fullWidth
+                autoComplete="new-password"
+                disabled={loading}
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <LockIcon fontSize="small" sx={{ color: 'text.secondary', fontSize: '1.1rem' }} />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+                          onClick={() => setShowConfirmPassword((prev) => !prev)}
+                          edge="end"
+                          size="small"
+                          sx={{ color: 'text.secondary' }}
+                        >
+                          {showConfirmPassword ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+              />
+            </Stack>
 
             {mode === 'create' ? (
               <>
-                <Divider sx={{ my: 1 }}>
-                  <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
+                <Divider sx={{ my: 0.25 }}>
+                  <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', letterSpacing: 0.5, fontSize: '0.7rem' }}>
                     MOSQUE INFORMATION
                   </Typography>
                 </Divider>
 
-                <TextField
-                  {...register('masjidName_en')}
-                  label="Mosque Name (English)"
-                  placeholder="e.g. Masjid Al-Noor"
-                  error={!!errors.masjidName_en}
-                  helperText={errors.masjidName_en?.message ?? ''}
-                  fullWidth
-                  disabled={loading}
-                />
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
+                  <TextField
+                    {...register('masjidName_en')}
+                    label="Mosque Name (English)"
+                    placeholder="e.g. Masjid Al-Noor"
+                    size="small"
+                    error={!!errors.masjidName_en}
+                    helperText={errors.masjidName_en?.message ?? ''}
+                    fullWidth
+                    disabled={loading}
+                    slotProps={{
+                      input: {
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <MosqueIcon fontSize="small" sx={{ color: 'text.secondary', fontSize: '1.1rem' }} />
+                          </InputAdornment>
+                        ),
+                      },
+                    }}
+                  />
 
-                <TextField
-                  {...register('masjidName_ar')}
-                  label="Mosque Name (Arabic)"
-                  placeholder="e.g. مسجد النور"
-                  error={!!errors.masjidName_ar}
-                  helperText={errors.masjidName_ar?.message ?? ''}
-                  fullWidth
-                  dir="rtl"
-                  disabled={loading}
-                />
+                  <TextField
+                    {...register('masjidName_ar')}
+                    label="Mosque Name (Arabic)"
+                    placeholder="مسجد النور"
+                    size="small"
+                    error={!!errors.masjidName_ar}
+                    helperText={errors.masjidName_ar?.message ?? ''}
+                    fullWidth
+                    dir="rtl"
+                    disabled={loading}
+                    slotProps={{
+                      input: {
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <MosqueIcon fontSize="small" sx={{ color: 'text.secondary', fontSize: '1.1rem' }} />
+                          </InputAdornment>
+                        ),
+                      },
+                    }}
+                  />
+                </Stack>
               </>
             ) : (
               <>
-                <Divider sx={{ my: 1 }}>
-                  <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600 }}>
-                    INVITATION
+                <Divider sx={{ my: 0.25 }}>
+                  <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', letterSpacing: 0.5, fontSize: '0.7rem' }}>
+                    TEAM INVITATION
                   </Typography>
                 </Divider>
 
@@ -246,11 +370,24 @@ export function SignUp(): JSX.Element {
                   {...register('inviteCode')}
                   label="6-Digit Invite Code"
                   placeholder="123456"
+                  size="small"
                   error={!!errors.inviteCode}
-                  helperText={errors.inviteCode?.message ?? 'Provided by your mosque administrator'}
+                  helperText={errors.inviteCode?.message ?? 'Enter the 6-digit code shared by your mosque administrator'}
                   fullWidth
-                  inputProps={{ maxLength: 6 }}
+                  inputProps={{
+                    maxLength: 6,
+                    style: { letterSpacing: 6, fontFamily: 'monospace', fontWeight: 700, textAlign: 'center' },
+                  }}
                   disabled={loading}
+                  slotProps={{
+                    input: {
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <KeyIcon fontSize="small" sx={{ color: 'text.secondary', fontSize: '1.1rem' }} />
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
                 />
               </>
             )}
@@ -259,10 +396,19 @@ export function SignUp(): JSX.Element {
               type="submit"
               variant="contained"
               fullWidth
-              size="large"
               disabled={loading || !isValid}
-              startIcon={loading ? <CircularProgress size={18} color="inherit" /> : null}
-              sx={{ mt: 1, py: 1.2, fontWeight: 600 }}
+              startIcon={loading ? <CircularProgress size={16} color="inherit" /> : null}
+              sx={{
+                mt: 0.75,
+                py: 1.1,
+                fontSize: '0.9rem',
+                fontWeight: 700,
+                borderRadius: 2,
+                boxShadow: '0 3px 10px rgba(46, 125, 50, 0.22)',
+                '&:hover': {
+                  boxShadow: '0 5px 14px rgba(46, 125, 50, 0.32)',
+                },
+              }}
             >
               {loading
                 ? mode === 'create'
@@ -274,16 +420,25 @@ export function SignUp(): JSX.Element {
             </Button>
           </Box>
 
-          <Divider sx={{ my: 3 }} />
+          <Divider sx={{ my: 2 }} />
 
-          <Typography variant="body2" sx={{ textAlign: 'center', color: 'text.secondary' }}>
+          <Typography variant="body2" sx={{ textAlign: 'center', color: 'text.secondary', fontSize: '0.82rem' }}>
             Already have an account?{' '}
-            <Link component={RouterLink} to="/signin" fontWeight={600}>
+            <Link
+              component={RouterLink}
+              to="/signin"
+              fontWeight={700}
+              sx={{
+                color: 'primary.main',
+                textDecoration: 'none',
+                '&:hover': { textDecoration: 'underline' },
+              }}
+            >
               Sign in
             </Link>
           </Typography>
         </CardContent>
       </Card>
-    </Box>
+    </AuthLayout>
   );
 }
