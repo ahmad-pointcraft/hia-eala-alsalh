@@ -390,6 +390,7 @@ export function createMockApiClient(): ApiClient {
 
   // CREATE ANNOUNCEMENT (appended at end — order = max+1)
   async function createAnnouncement(masjidId: string, input: Omit<Announcement, 'id' | 'masjidId'>): Promise<Announcement> {
+    await delay(150);
     const masjid = store.masjids[masjidId];
     if (!masjid) throw new Error('Masjid not found');
     const { order: _ignoredOrder, ...rest } = input;
@@ -404,6 +405,7 @@ export function createMockApiClient(): ApiClient {
 
   // UPDATE ANNOUNCEMENT (identity un-patchable via Update<T>)
   async function updateAnnouncement(id: string, patch: Partial<Omit<Announcement, 'id' | 'masjidId'>>): Promise<Announcement> {
+    await delay(150);
     const found = findMasjidByPredicate((m) => m.announcements.some((a) => a.id === id));
     if (!found) throw new Error('Announcement not found');
     const { masjidId, masjid } = found;
@@ -417,6 +419,7 @@ export function createMockApiClient(): ApiClient {
 
   // DELETE ANNOUNCEMENT
   async function deleteAnnouncement(id: string): Promise<void> {
+    await delay(150);
     const found = findMasjidByPredicate((m) => m.announcements.some((a) => a.id === id));
     if (!found) return;
     const { masjidId, masjid } = found;
@@ -427,6 +430,7 @@ export function createMockApiClient(): ApiClient {
 
   // REORDER ANNOUNCEMENTS — full id list → dense sequential order (FR-021)
   async function reorderAnnouncements(masjidId: string, orderedIds: string[]): Promise<void> {
+    await delay(150);
     const masjid = store.masjids[masjidId];
     if (!masjid) throw new Error('Masjid not found');
     const byId = new Map(masjid.announcements.map((a) => [a.id, a]));
@@ -448,6 +452,7 @@ export function createMockApiClient(): ApiClient {
 
   // CREATE EVENT
   async function createEvent(masjidId: string, input: Omit<MasjidEvent, 'id' | 'masjidId'>): Promise<MasjidEvent> {
+    await delay(150);
     const masjid = store.masjids[masjidId];
     if (!masjid) throw new Error('Masjid not found');
     const event: MasjidEvent = { id: generateId('evt'), masjidId, ...input };
@@ -459,6 +464,7 @@ export function createMockApiClient(): ApiClient {
 
   // UPDATE EVENT (event image assigned here via { imageUrl } — P0-5)
   async function updateEvent(id: string, patch: Partial<Omit<MasjidEvent, 'id' | 'masjidId'>>): Promise<MasjidEvent> {
+    await delay(150);
     const found = findMasjidByPredicate((m) => m.events.some((e) => e.id === id));
     if (!found) throw new Error('Event not found');
     const { masjidId, masjid } = found;
@@ -472,6 +478,7 @@ export function createMockApiClient(): ApiClient {
 
   // DELETE EVENT
   async function deleteEvent(id: string): Promise<void> {
+    await delay(150);
     const found = findMasjidByPredicate((m) => m.events.some((e) => e.id === id));
     if (!found) return;
     const { masjidId, masjid } = found;
@@ -484,6 +491,7 @@ export function createMockApiClient(): ApiClient {
 
   // CREATE DONATION CAMPAIGN (if active, deactivates the rest to preserve at-most-one — P1-7)
   async function createDonationCampaign(masjidId: string, input: Omit<DonationCampaign, 'id' | 'masjidId'>): Promise<DonationCampaign> {
+    await delay(150);
     const masjid = store.masjids[masjidId];
     if (!masjid) throw new Error('Masjid not found');
     if (input.active) {
@@ -498,6 +506,7 @@ export function createMockApiClient(): ApiClient {
 
   // UPDATE DONATION CAMPAIGN (`active` excluded from patch type — P1-7, type-enforced)
   async function updateDonationCampaign(id: string, patch: Partial<Omit<DonationCampaign, 'id' | 'masjidId' | 'active'>>): Promise<DonationCampaign> {
+    await delay(150);
     const found = findMasjidByPredicate((m) => m.donations.some((d) => d.id === id));
     if (!found) throw new Error('Donation campaign not found');
     const { masjidId, masjid } = found;
@@ -511,6 +520,7 @@ export function createMockApiClient(): ApiClient {
 
   // DELETE DONATION CAMPAIGN (may leave zero-active — overlay falls back)
   async function deleteDonationCampaign(id: string): Promise<void> {
+    await delay(150);
     const found = findMasjidByPredicate((m) => m.donations.some((d) => d.id === id));
     if (!found) return;
     const { masjidId, masjid } = found;

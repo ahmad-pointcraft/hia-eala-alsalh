@@ -28,40 +28,27 @@ export function useCrudList<
   const [items, setItems] = useState<T[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const mounted = useRef(true);
-
 
   const fnsRef = useRef(fns);
   fnsRef.current = fns;
-
-  useEffect(() => {
-    mounted.current = true;
-    return () => {
-      mounted.current = false;
-    };
-  }, []);
 
   const refresh = useCallback(() => {
     if (!masjidId) {
       setLoading(false);
       setError(null);
       return;
-    };
+    }
     setLoading(true);
     setError(null);
     fnsRef.current
       .list(masjidId)
       .then((result) => {
-        if (mounted.current) {
-          setItems(result);
-          setLoading(false);
-        }
+        setItems(result);
+        setLoading(false);
       })
       .catch((err) => {
-        if (mounted.current) {
-          setError(err instanceof Error ? err.message : 'Failed to load');
-          setLoading(false);
-        }
+        setError(err instanceof Error ? err.message : 'Failed to load');
+        setLoading(false);
       });
   }, [masjidId]);
 
@@ -71,24 +58,20 @@ export function useCrudList<
 
   const create = useCallback(
     async (input: Omit<T, 'id' | 'masjidId'>) => {
-      const created = await fns.create(masjidId, input);
-      if (mounted.current) {
-        setItems((prev) =>
-          prev.some((item) => item.id === created.id) ? prev : [...prev, created],
-        );
-      }
+      await fnsRef.current.create(masjidId, input);
+      const fresh = await fnsRef.current.list(masjidId);
+      setItems(fresh);
     },
-    [masjidId, fns],
+    [masjidId],
   );
 
   const update = useCallback(
     async (id: string, patch: P) => {
-      const updated = await fns.update(id, patch);
-      if (mounted.current) {
-        setItems((prev) => prev.map((item) => (item.id === id ? updated : item)));
-      }
+      await fnsRef.current.update(id, patch);
+      const fresh = await fnsRef.current.list(masjidId);
+      setItems(fresh);
     },
-    [fns],
+    [masjidId],
   );
 
   const updateOptimistic = useCallback(
@@ -96,46 +79,43 @@ export function useCrudList<
       const prev = items;
       setItems(prev.map((item) => (item.id === id ? { ...item, ...patch } : item)));
       try {
-        await fns.update(id, patch);
+        await fnsRef.current.update(id, patch);
       } catch (err) {
-        if (mounted.current) setItems(prev);
+        setItems(prev);
         throw err;
       }
     },
-    [fns, items],
+    [items],
   );
 
   const remove = useCallback(
     async (id: string) => {
-      await fns.remove(id);
-      if (mounted.current) {
-        setItems((prev) => prev.filter((item) => item.id !== id));
-      }
+      await fnsRef.current.remove(id);
+      const fresh = await fnsRef.current.list(masjidId);
+      setItems(fresh);
     },
-    [fns],
+    [masjidId],
   );
 
   const reorder = useCallback(
     async (orderedIds: string[]) => {
-      if (!fns.reorder) return;
+      if (!fnsRef.current.reorder) return;
       const prev = items;
-      // OPTIMISTIC — rebuild in the given order AND stamp dense order = index,
-      // mirroring what the adapter persists (sort-by-order consumers depend on it)
       const reordered = orderedIds
         .map((id, index) => {
           const item = prev.find((it) => it.id === id);
           return item ? ({ ...item, order: index } as T) : undefined;
         })
         .filter((item): item is T => item !== undefined);
-      if (mounted.current) setItems(reordered);
+      setItems(reordered);
       try {
-        await fns.reorder(masjidId, orderedIds);
+        await fnsRef.current.reorder(masjidId, orderedIds);
       } catch (err) {
-        if (mounted.current) setItems(prev);
+        setItems(prev);
         throw err;
       }
     },
-    [fns, masjidId, items],
+    [masjidId, items],
   );
 
   return fns.reorder
