@@ -60,7 +60,7 @@ export function useCrudList<
     async (input: Omit<T, 'id' | 'masjidId'>) => {
       await fnsRef.current.create(masjidId, input);
       const fresh = await fnsRef.current.list(masjidId);
-      setItems(fresh);
+      setItems([...fresh]);
     },
     [masjidId],
   );
@@ -69,7 +69,7 @@ export function useCrudList<
     async (id: string, patch: P) => {
       await fnsRef.current.update(id, patch);
       const fresh = await fnsRef.current.list(masjidId);
-      setItems(fresh);
+      setItems([...fresh]);
     },
     [masjidId],
   );
@@ -92,7 +92,7 @@ export function useCrudList<
     async (id: string) => {
       await fnsRef.current.remove(id);
       const fresh = await fnsRef.current.list(masjidId);
-      setItems(fresh);
+      setItems([...fresh]);
     },
     [masjidId],
   );

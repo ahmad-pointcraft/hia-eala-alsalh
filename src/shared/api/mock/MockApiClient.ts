@@ -371,19 +371,19 @@ export function createMockApiClient(): ApiClient {
   // LIST ANNOUNCEMENTS FOR A MASJID
   async function listAnnouncements(masjidId: string): Promise<Announcement[]> {
     const masjid = store.masjids[masjidId];
-    return masjid?.announcements ?? [];
+    return masjid ? [...masjid.announcements] : [];
   }
 
   // LIST COMMUNITY EVENTS FOR A MASJID
   async function listEvents(masjidId: string): Promise<MasjidEvent[]> {
     const masjid = store.masjids[masjidId];
-    return masjid?.events ?? [];
+    return masjid ? [...masjid.events] : [];
   }
 
   // LIST DONATION CAMPAIGNS FOR A MASJID
   async function listDonations(masjidId: string): Promise<DonationCampaign[]> {
     const masjid = store.masjids[masjidId];
-    return masjid?.donations ?? [];
+    return masjid ? [...masjid.donations] : [];
   }
 
   // ==================== ANNOUNCEMENT WRITE OPS ====================
