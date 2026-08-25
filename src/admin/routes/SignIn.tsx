@@ -14,20 +14,16 @@ import {
   Stack,
   CircularProgress,
   InputAdornment,
-  IconButton,
 } from '@mui/material';
 import {
   EmailOutlined as EmailIcon,
-  LockOutlined as LockIcon,
-  VisibilityOutlined as VisibilityIcon,
-  VisibilityOffOutlined as VisibilityOffIcon,
   FlashOnOutlined as QuickFillIcon,
 } from '@mui/icons-material';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSession } from '@/admin/store/useSession';
 import { authFormSchema, type AuthFormData } from '@/admin/utils/auth';
-import { AuthLayout } from '@/admin/components/auth';
+import { AuthLayout, PasswordField } from '@/admin/components/auth';
 
 const IS_MOCK_ENV =
   import.meta.env.VITE_MOCK === 'true' ||
@@ -45,7 +41,6 @@ export function SignIn(): JSX.Element {
     mode: 'onBlur',
   });
 
-  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const signIn = useSession((s) => s.signIn);
@@ -136,10 +131,9 @@ export function SignIn(): JSX.Element {
               }}
             />
 
-            <TextField
+            <PasswordField
               {...register('password')}
               label="Password"
-              type={showPassword ? 'text' : 'password'}
               placeholder="••••••••"
               size="small"
               error={!!errors.password}
@@ -147,28 +141,6 @@ export function SignIn(): JSX.Element {
               fullWidth
               autoComplete="current-password"
               disabled={loading}
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <LockIcon fontSize="small" sx={{ color: 'text.secondary', fontSize: '1.1rem' }} />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label={showPassword ? 'Hide password' : 'Show password'}
-                        onClick={() => setShowPassword((prev) => !prev)}
-                        edge="end"
-                        size="small"
-                        sx={{ color: 'text.secondary' }}
-                      >
-                        {showPassword ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                },
-              }}
             />
 
             <Button
