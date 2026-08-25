@@ -1,6 +1,7 @@
 import { AppBar, Box, IconButton, Toolbar, Typography, Chip } from '@mui/material';
 import { Menu as MenuIcon, Wifi as WifiIcon } from '@mui/icons-material';
 import { PreviewButton } from './PreviewButton';
+import appLogo from '@/assets/app-logo.png';
 
 export interface AdminHeaderProps {
   /** Called when hamburger icon is clicked on mobile/tablet. */
@@ -45,7 +46,18 @@ export function AdminHeader({ onOpenDrawer, isTabletDown = false }: AdminHeaderP
           </IconButton>
         )}
 
-        <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', gap: 1.5 }}>
+        <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', gap: 1.25 }}>
+          <Box
+            component="img"
+            src={appLogo}
+            alt="Hia Eala Al-Salah"
+            sx={{
+              width: 32,
+              height: 32,
+              objectFit: 'contain',
+              borderRadius: 1,
+            }}
+          />
           <Typography
             variant="h6"
             component="h2"

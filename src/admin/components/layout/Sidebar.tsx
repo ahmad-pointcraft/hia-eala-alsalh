@@ -41,7 +41,12 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Timings', path: '/timings', icon: TimingsIcon, permission: 'timings:manage' },
   { label: 'Content', path: '/content', icon: ContentIcon, permission: 'content:manage' },
   { label: 'Images', path: '/images', icon: ImagesIcon, permission: 'images:manage' },
-  { label: 'Display Settings', path: '/settings', icon: SettingsIcon, permission: 'settings:manage' },
+  {
+    label: 'Display Settings',
+    path: '/settings',
+    icon: SettingsIcon,
+    permission: 'settings:manage',
+  },
   { label: 'Team', path: '/team', icon: TeamIcon, permission: 'team:manage' },
 ];
 
@@ -188,57 +193,59 @@ export function Sidebar({ open = false, onClose }: SidebarProps) {
           Menu
         </Typography>
         <List sx={{ p: 0 }}>
-          {NAV_ITEMS.filter((item) => hasPermission(session?.user?.role, item.permission)).map((item) => {
-            const selected = location.pathname === item.path;
-            const Icon = item.icon;
-            return (
-              <ListItem key={item.path} disablePadding sx={{ mb: 0.5 }}>
-                <ListItemButton
-                  component={Link}
-                  to={item.path}
-                  selected={selected}
-                  aria-current={selected ? 'page' : undefined}
-                  onClick={isTabletDown ? onClose : undefined}
-                  sx={{
-                    borderRadius: 2,
-                    py: 1,
-                    px: 2,
-                    mx: 0.5,
-                    transition: 'all 0.15s ease-in-out',
-                    '&.Mui-selected': {
-                      backgroundColor: 'rgba(46, 125, 50, 0.09)',
-                      color: 'primary.main',
-                      fontWeight: 700,
-                      '& .MuiListItemIcon-root': {
+          {NAV_ITEMS.filter((item) => hasPermission(session?.user?.role, item.permission)).map(
+            (item) => {
+              const selected = location.pathname === item.path;
+              const Icon = item.icon;
+              return (
+                <ListItem key={item.path} disablePadding sx={{ mb: 0.5 }}>
+                  <ListItemButton
+                    component={Link}
+                    to={item.path}
+                    selected={selected}
+                    aria-current={selected ? 'page' : undefined}
+                    onClick={isTabletDown ? onClose : undefined}
+                    sx={{
+                      borderRadius: 2,
+                      py: 1,
+                      px: 2,
+                      mx: 0.5,
+                      transition: 'all 0.15s ease-in-out',
+                      '&.Mui-selected': {
+                        backgroundColor: 'rgba(46, 125, 50, 0.09)',
                         color: 'primary.main',
+                        fontWeight: 700,
+                        '& .MuiListItemIcon-root': {
+                          color: 'primary.main',
+                        },
+                        '&:hover': {
+                          backgroundColor: 'rgba(46, 125, 50, 0.14)',
+                        },
                       },
                       '&:hover': {
-                        backgroundColor: 'rgba(46, 125, 50, 0.14)',
-                      },
-                    },
-                    '&:hover': {
-                      backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                    },
-                  }}
-                >
-                  <ListItemIcon
-                    sx={{ minWidth: 36, color: selected ? 'primary.main' : 'text.secondary' }}
-                  >
-                    <Icon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={item.label}
-                    slotProps={{
-                      primary: {
-                        fontSize: '0.9rem',
-                        fontWeight: selected ? 700 : 500,
+                        backgroundColor: 'rgba(0, 0, 0, 0.04)',
                       },
                     }}
-                  />
-                </ListItemButton>
-              </ListItem>
-            );
-          })}
+                  >
+                    <ListItemIcon
+                      sx={{ minWidth: 36, color: selected ? 'primary.main' : 'text.secondary' }}
+                    >
+                      <Icon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={item.label}
+                      slotProps={{
+                        primary: {
+                          fontSize: '0.9rem',
+                          fontWeight: selected ? 700 : 500,
+                        },
+                      }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              );
+            },
+          )}
         </List>
       </Box>
 
