@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import type { FieldValues, Resolver, Path } from 'react-hook-form';
 import {
   Box,
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -33,7 +34,7 @@ export interface ContentFormDialogProps<T extends FieldValues> {
   resolver: Resolver<T>;
   defaultValues?: T;
   extraDirty?: boolean;
-  onSave: (values: T) => void;
+  onSave: (values: T) => Promise<void> | void;
   onClose: () => void;
   children?: React.ReactNode;
 }
@@ -49,6 +50,7 @@ export function ContentFormDialog<T extends FieldValues>({
   onClose,
   children,
 }: ContentFormDialogProps<T>) {
+  const [saving, setSaving] = useState(false);
   const {
     register,
     handleSubmit,
@@ -59,7 +61,7 @@ export function ContentFormDialog<T extends FieldValues>({
     mode: 'onBlur',
   });
 
-  const canSave = isDirty || extraDirty;
+  const canSave = (isDirty || extraDirty) && !saving;
 
   useEffect(() => {
     if (open) reset((defaultValues ?? {}) as T);
@@ -108,9 +110,15 @@ export function ContentFormDialog<T extends FieldValues>({
         </DialogTitle>
         <Box
           component="form"
-          onSubmit={handleSubmit((values) => {
-            onSave(values);
-            onClose();
+          onSubmit={handleSubmit(async (values) => {
+            if (saving) return;
+            setSaving(true);
+            try {
+              await onSave(values);
+              onClose();
+            } finally {
+              setSaving(false);
+            }
           })}
           sx={{
             display: 'flex',
@@ -197,6 +205,7 @@ export function ContentFormDialog<T extends FieldValues>({
             <Button
               variant="outlined"
               color="inherit"
+              disabled={saving}
               onClick={requestClose}
               sx={{ borderRadius: 2, px: 2.5, fontWeight: 600 }}
             >
@@ -206,9 +215,10 @@ export function ContentFormDialog<T extends FieldValues>({
               type="submit"
               variant="contained"
               disabled={!canSave}
+              startIcon={saving ? <CircularProgress size={16} color="inherit" /> : null}
               sx={{ borderRadius: 2, px: 3, fontWeight: 700 }}
             >
-              Save
+              {saving ? 'Saving…' : 'Save'}
             </Button>
           </DialogActions>
         </Box>

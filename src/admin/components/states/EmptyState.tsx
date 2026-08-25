@@ -36,6 +36,7 @@ export function EmptyState({ icon, title, description, action }: EmptyStateProps
         )}
         {action && (
           <Button
+            type="button"
             variant="contained"
             color="primary"
             onClick={action.onClick}

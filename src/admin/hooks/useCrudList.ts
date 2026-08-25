@@ -72,7 +72,11 @@ export function useCrudList<
   const create = useCallback(
     async (input: Omit<T, 'id' | 'masjidId'>) => {
       const created = await fns.create(masjidId, input);
-      if (mounted.current) setItems((prev) => [...prev, created]);
+      if (mounted.current) {
+        setItems((prev) =>
+          prev.some((item) => item.id === created.id) ? prev : [...prev, created],
+        );
+      }
     },
     [masjidId, fns],
   );
