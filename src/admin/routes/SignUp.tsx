@@ -121,10 +121,19 @@ export function SignUp(): JSX.Element {
       >
         <CardContent sx={{ p: { xs: 2.5, sm: 3 } }}>
           <Box sx={{ mb: 2, textAlign: 'center' }}>
-            <Typography variant="h6" component="h2" fontWeight={700} sx={{ color: 'text.primary', fontSize: '1.2rem' }}>
+            <Typography
+              variant="h6"
+              component="h2"
+              fontWeight={700}
+              sx={{ color: 'text.primary', fontSize: '1.2rem' }}
+            >
               {mode === 'create' ? 'Create Mosque Portal' : 'Join Mosque Team'}
             </Typography>
-            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.25 }}>
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ display: 'block', mt: 0.25 }}
+            >
               {mode === 'create'
                 ? 'Register your mosque and begin managing prayer displays'
                 : 'Enter your 6-digit invitation code to join your team'}
@@ -205,7 +214,10 @@ export function SignUp(): JSX.Element {
                   input: {
                     startAdornment: (
                       <InputAdornment position="start">
-                        <PersonIcon fontSize="small" sx={{ color: 'text.secondary', fontSize: '1.1rem' }} />
+                        <PersonIcon
+                          fontSize="small"
+                          sx={{ color: 'text.secondary', fontSize: '1.1rem' }}
+                        />
                       </InputAdornment>
                     ),
                   },
@@ -227,7 +239,10 @@ export function SignUp(): JSX.Element {
                   input: {
                     startAdornment: (
                       <InputAdornment position="start">
-                        <EmailIcon fontSize="small" sx={{ color: 'text.secondary', fontSize: '1.1rem' }} />
+                        <EmailIcon
+                          fontSize="small"
+                          sx={{ color: 'text.secondary', fontSize: '1.1rem' }}
+                        />
                       </InputAdornment>
                     ),
                   },
@@ -251,7 +266,10 @@ export function SignUp(): JSX.Element {
                   input: {
                     startAdornment: (
                       <InputAdornment position="start">
-                        <LockIcon fontSize="small" sx={{ color: 'text.secondary', fontSize: '1.1rem' }} />
+                        <LockIcon
+                          fontSize="small"
+                          sx={{ color: 'text.secondary', fontSize: '1.1rem' }}
+                        />
                       </InputAdornment>
                     ),
                     endAdornment: (
@@ -263,7 +281,11 @@ export function SignUp(): JSX.Element {
                           size="small"
                           sx={{ color: 'text.secondary' }}
                         >
-                          {showPassword ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}
+                          {showPassword ? (
+                            <VisibilityOffIcon fontSize="small" />
+                          ) : (
+                            <VisibilityIcon fontSize="small" />
+                          )}
                         </IconButton>
                       </InputAdornment>
                     ),
@@ -286,19 +308,28 @@ export function SignUp(): JSX.Element {
                   input: {
                     startAdornment: (
                       <InputAdornment position="start">
-                        <LockIcon fontSize="small" sx={{ color: 'text.secondary', fontSize: '1.1rem' }} />
+                        <LockIcon
+                          fontSize="small"
+                          sx={{ color: 'text.secondary', fontSize: '1.1rem' }}
+                        />
                       </InputAdornment>
                     ),
                     endAdornment: (
                       <InputAdornment position="end">
                         <IconButton
-                          aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+                          aria-label={
+                            showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'
+                          }
                           onClick={() => setShowConfirmPassword((prev) => !prev)}
                           edge="end"
                           size="small"
                           sx={{ color: 'text.secondary' }}
                         >
-                          {showConfirmPassword ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}
+                          {showConfirmPassword ? (
+                            <VisibilityOffIcon fontSize="small" />
+                          ) : (
+                            <VisibilityIcon fontSize="small" />
+                          )}
                         </IconButton>
                       </InputAdornment>
                     ),
@@ -310,7 +341,15 @@ export function SignUp(): JSX.Element {
             {mode === 'create' ? (
               <>
                 <Divider sx={{ my: 0.25 }}>
-                  <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', letterSpacing: 0.5, fontSize: '0.7rem' }}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      fontWeight: 700,
+                      color: 'text.secondary',
+                      letterSpacing: 0.5,
+                      fontSize: '0.7rem',
+                    }}
+                  >
                     MOSQUE INFORMATION
                   </Typography>
                 </Divider>
@@ -329,7 +368,10 @@ export function SignUp(): JSX.Element {
                       input: {
                         startAdornment: (
                           <InputAdornment position="start">
-                            <MosqueIcon fontSize="small" sx={{ color: 'text.secondary', fontSize: '1.1rem' }} />
+                            <MosqueIcon
+                              fontSize="small"
+                              sx={{ color: 'text.secondary', fontSize: '1.1rem' }}
+                            />
                           </InputAdornment>
                         ),
                       },
@@ -350,7 +392,10 @@ export function SignUp(): JSX.Element {
                       input: {
                         startAdornment: (
                           <InputAdornment position="start">
-                            <MosqueIcon fontSize="small" sx={{ color: 'text.secondary', fontSize: '1.1rem' }} />
+                            <MosqueIcon
+                              fontSize="small"
+                              sx={{ color: 'text.secondary', fontSize: '1.1rem' }}
+                            />
                           </InputAdornment>
                         ),
                       },
@@ -361,7 +406,15 @@ export function SignUp(): JSX.Element {
             ) : (
               <>
                 <Divider sx={{ my: 0.25 }}>
-                  <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', letterSpacing: 0.5, fontSize: '0.7rem' }}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      fontWeight: 700,
+                      color: 'text.secondary',
+                      letterSpacing: 0.5,
+                      fontSize: '0.7rem',
+                    }}
+                  >
                     TEAM INVITATION
                   </Typography>
                 </Divider>
@@ -372,18 +425,29 @@ export function SignUp(): JSX.Element {
                   placeholder="123456"
                   size="small"
                   error={!!errors.inviteCode}
-                  helperText={errors.inviteCode?.message ?? 'Enter the 6-digit code shared by your mosque administrator'}
+                  helperText={
+                    errors.inviteCode?.message ??
+                    'Enter the 6-digit code shared by your mosque administrator'
+                  }
                   fullWidth
-                  inputProps={{
-                    maxLength: 6,
-                    style: { letterSpacing: 6, fontFamily: 'monospace', fontWeight: 700, textAlign: 'center' },
-                  }}
                   disabled={loading}
                   slotProps={{
+                    htmlInput: {
+                      maxLength: 6,
+                      style: {
+                        letterSpacing: 6,
+                        fontFamily: 'monospace',
+                        fontWeight: 700,
+                        textAlign: 'center',
+                      },
+                    },
                     input: {
                       startAdornment: (
                         <InputAdornment position="start">
-                          <KeyIcon fontSize="small" sx={{ color: 'text.secondary', fontSize: '1.1rem' }} />
+                          <KeyIcon
+                            fontSize="small"
+                            sx={{ color: 'text.secondary', fontSize: '1.1rem' }}
+                          />
                         </InputAdornment>
                       ),
                     },
@@ -422,7 +486,10 @@ export function SignUp(): JSX.Element {
 
           <Divider sx={{ my: 2 }} />
 
-          <Typography variant="body2" sx={{ textAlign: 'center', color: 'text.secondary', fontSize: '0.82rem' }}>
+          <Typography
+            variant="body2"
+            sx={{ textAlign: 'center', color: 'text.secondary', fontSize: '0.82rem' }}
+          >
             Already have an account?{' '}
             <Link
               component={RouterLink}
