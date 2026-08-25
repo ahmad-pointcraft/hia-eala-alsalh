@@ -48,16 +48,20 @@ export function AdminHeader({ onOpenDrawer, isTabletDown = false }: AdminHeaderP
 
         <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', gap: 1.25 }}>
           <Box
-            component="img"
-            src={appLogo}
-            alt="Hia Eala Al-Salah"
             sx={{
-              width: 32,
-              height: 32,
-              objectFit: 'contain',
-              borderRadius: 1,
+              width: 50,
+              height: 50,
+              borderRadius: 8,
+              boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
             }}
-          />
+          >
+            <Box
+              component="img"
+              src={appLogo}
+              alt="Hayya 'Ala Al-Salah"
+              sx={{ width: '100%', height: '100%', objectFit: 'contain' }}
+            />
+          </Box>
           <Typography
             variant="h6"
             component="h2"

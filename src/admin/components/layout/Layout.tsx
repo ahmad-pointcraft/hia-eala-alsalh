@@ -64,18 +64,27 @@ export function AdminLayout() {
             }}
           >
             <Box
-              component="img"
-              src={appLogo}
-              alt="Hia Eala Al-Salah"
-              sx={{ width: 40, height: 40, objectFit: 'contain' }}
-            />
+              sx={{
+                width: 50,
+                height: 50,
+                borderRadius: 8,
+                bgcolor: 'white',
+              }}
+            >
+              <Box
+                component="img"
+                src={appLogo}
+                alt="Hayya 'Ala Al-Salah"
+                sx={{ width: '100%', height: '100%', objectFit: 'contain' }}
+              />
+            </Box>
             <Typography
               variant="caption"
               color="text.secondary"
               fontWeight={600}
               sx={{ fontSize: '0.75rem' }}
             >
-              Hia Eala Al-Salah
+              Hayya 'Ala Al-Salah
             </Typography>
             <Typography variant="caption" color="text.disabled" sx={{ fontSize: '0.75rem' }}>
               •
