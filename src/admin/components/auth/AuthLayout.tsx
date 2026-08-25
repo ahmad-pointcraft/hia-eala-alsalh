@@ -42,26 +42,18 @@ export function AuthLayout({ children, maxWidth = 'sm' }: AuthLayoutProps): JSX.
         <Stack alignItems="center" spacing={0.6} sx={{ mb: 2.25, textAlign: 'center' }}>
           <Box
             sx={{
-              p: 1,
-              borderRadius: 3,
-              bgcolor: '#ffffff',
-              boxShadow: '0 8px 20px -4px rgba(46, 125, 50, 0.14), 0 0 0 1px rgba(46, 125, 50, 0.1)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: 54,
-              height: 54,
+              width: 100,
+              height: 80,
             }}
           >
             <Box
               component="img"
               src={appLogo}
-              alt="Hia Eala Al-Salah Logo"
-              sx={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'contain',
-              }}
+              alt="Hayya 'Ala Al-Salah"
+              sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />
           </Box>
 
@@ -77,7 +69,7 @@ export function AuthLayout({ children, maxWidth = 'sm' }: AuthLayoutProps): JSX.
               mt: 0.25,
             }}
           >
-            Hia Eala Al-Salah
+            Hayya 'Ala Al-Salah
           </Typography>
 
           <Typography
@@ -117,6 +109,11 @@ export function AuthLayout({ children, maxWidth = 'sm' }: AuthLayoutProps): JSX.
 
         {/* POWERED BY POINTCRAFT FOOTER */}
         <Stack
+          component="a"
+          href="https://point-craft.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Visit Pointcraft website"
           direction="row"
           alignItems="center"
           justifyContent="center"
@@ -125,11 +122,17 @@ export function AuthLayout({ children, maxWidth = 'sm' }: AuthLayoutProps): JSX.
             mt: 2,
             pt: 0.5,
             opacity: 0.8,
-            transition: 'opacity 0.2s ease',
-            '&:hover': { opacity: 1 },
+            textDecoration: 'none',
+            transition: 'opacity 0.2s ease, transform 0.2s ease',
+            '&:hover': { opacity: 1, transform: 'scale(1.03)' },
           }}
         >
-          <Typography variant="caption" color="text.secondary" fontWeight={500} sx={{ fontSize: '0.75rem' }}>
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            fontWeight={500}
+            sx={{ fontSize: '0.75rem' }}
+          >
             Powered by
           </Typography>
           <Box

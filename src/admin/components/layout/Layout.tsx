@@ -98,11 +98,26 @@ export function AdminLayout() {
               Powered by
             </Typography>
             <Box
-              component="img"
-              src={pointcraftLogo}
-              alt="Pointcraft"
-              sx={{ height: 23, width: 'auto', objectFit: 'contain' }}
-            />
+              component="a"
+              href="https://point-craft.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Visit Pointcraft website"
+              sx={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                textDecoration: 'none',
+                transition: 'opacity 0.2s ease, transform 0.2s ease',
+                '&:hover': { opacity: 0.8, transform: 'scale(1.05)' },
+              }}
+            >
+              <Box
+                component="img"
+                src={pointcraftLogo}
+                alt="Pointcraft"
+                sx={{ height: 23, width: 'auto', objectFit: 'contain' }}
+              />
+            </Box>
           </Box>
         </Box>
       </Box>

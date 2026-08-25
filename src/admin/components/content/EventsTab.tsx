@@ -95,6 +95,7 @@ export function EventsTab() {
       }
     } catch (e) {
       toast.error(`Failed to save event: ${e instanceof Error ? e.message : String(e)}`);
+      throw e;
     }
   }
 

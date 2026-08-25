@@ -103,6 +103,7 @@ export function DonationsTab() {
       }
     } catch (e) {
       toast.error(`Failed to save campaign: ${e instanceof Error ? e.message : String(e)}`);
+      throw e;
     }
   }
 

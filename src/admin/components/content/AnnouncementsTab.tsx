@@ -85,6 +85,7 @@ export function AnnouncementsTab() {
       }
     } catch (e) {
       toast.error(`Failed to save announcement: ${e instanceof Error ? e.message : String(e)}`);
+      throw e;
     }
   }
 

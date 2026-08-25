@@ -116,6 +116,8 @@ export function ContentFormDialog<T extends FieldValues>({
             try {
               await onSave(values);
               onClose();
+            } catch {
+              // Keep dialog open on save error so user input is preserved
             } finally {
               setSaving(false);
             }
