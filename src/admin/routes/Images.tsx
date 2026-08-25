@@ -109,7 +109,7 @@ export function Images() {
         onRetry={load}
         empty={{
           title: 'No slideshow photos yet',
-          description: 'Upload mosque photos to fill the display when no events are active.',
+          description: 'Upload 16:9 widescreen photos (e.g. 1920 × 1080 px) of your mosque to fill the display when no events are active.',
           action: {
             label: 'Upload your first photo',
             onClick: () => {

@@ -42,7 +42,7 @@ export function PhotoUploadHeader({
           Slideshow Photos
         </Typography>
         <Typography color="text.secondary" fontSize="0.95rem">
-          Photos (≤ 2MB) show in a rotating carousel on the kiosk display when no events are active.
+          Upload 16:9 widescreen landscape photos (e.g. 1920 × 1080 px, max 2MB). They display automatically on paired screens when no events are active.
         </Typography>
       </Box>
 

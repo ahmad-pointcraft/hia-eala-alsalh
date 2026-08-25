@@ -51,34 +51,85 @@ export function QrImagePicker({ qrImageUrl, onQrSelected }: QrImagePickerProps) 
         }}
       />
       {qrImageUrl ? (
-        <Card sx={{ position: 'relative', mt: 1 }}>
-          <CardMedia component="img" src={qrImageUrl} alt="QR code" sx={{ maxHeight: 160, objectFit: 'contain' }} />
+        <Card
+          sx={{
+            position: 'relative',
+            mt: 1,
+            borderRadius: 2,
+            overflow: 'hidden',
+            border: '1px solid rgba(0, 0, 0, 0.12)',
+            width: 140,
+            height: 140,
+            bgcolor: '#ffffff',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            p: 1.5,
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
+          }}
+        >
+          <CardMedia
+            component="img"
+            src={qrImageUrl}
+            alt="Donation QR Code"
+            sx={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'contain',
+            }}
+          />
           <IconButton
             size="small"
             color="error"
             aria-label="Remove QR code"
             onClick={() => onQrSelected(null)}
-            sx={{ position: 'absolute', top: 4, right: 4, bgcolor: 'background.paper' }}
+            sx={{
+              position: 'absolute',
+              top: 6,
+              right: 6,
+              bgcolor: 'rgba(255, 255, 255, 0.95)',
+              boxShadow: '0 2px 6px rgba(0, 0, 0, 0.15)',
+              '&:hover': { bgcolor: '#ffffff' },
+            }}
           >
             <DeleteIcon fontSize="small" />
           </IconButton>
         </Card>
       ) : (
-        <>
+        <Box sx={{ mt: 1 }}>
           <Button
             fullWidth
             variant="outlined"
             startIcon={<UploadIcon />}
             disabled={busy}
             onClick={() => inputRef.current?.click()}
-            sx={{ mt: 1, py: 2, borderStyle: 'dashed' }}
+            sx={{
+              py: 1.75,
+              borderStyle: 'dashed',
+              borderRadius: 2,
+              fontWeight: 600,
+            }}
           >
-            {busy ? 'Uploading…' : 'Upload QR code (optional)'}
+            {busy ? 'Uploading…' : 'Upload QR Code Image (Optional)'}
           </Button>
-          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
-            Max file size: 2MB
-          </Typography>
-        </>
+          <Box sx={{ mt: 1, px: 0.5 }}>
+            <Typography
+              variant="caption"
+              color="text.primary"
+              fontWeight={600}
+              sx={{ display: 'block', fontSize: '0.76rem' }}
+            >
+              Recommended: 1:1 square format (e.g. 512 × 512 px)
+            </Typography>
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ display: 'block', fontSize: '0.72rem', mt: 0.25 }}
+            >
+              High-contrast square QR codes scan reliably on the kiosk display • Max 2MB (PNG, JPG)
+            </Typography>
+          </Box>
+        </Box>
       )}
     </Box>
   );

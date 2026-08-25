@@ -36,7 +36,6 @@ export function EventSlideshow({ events, images, interval = 5000, language }: Ev
   const event = events[currentIndex];
   if (!event) return null;
 
-
   const bgImage = event.imageUrl;
 
   return (
@@ -66,15 +65,37 @@ export function EventSlideshow({ events, images, interval = 5000, language }: Ev
           style={{ width: '100%', height: '100%' }}
         >
           {bgImage && (
-            <img
-              src={bgImage}
-              alt=""
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-              }}
-            />
+            <Box sx={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
+              {/* AMBIENT BACKDROP GLOW */}
+              <Box
+                component="img"
+                src={bgImage}
+                alt=""
+                aria-hidden="true"
+                sx={{
+                  position: 'absolute',
+                  inset: 0,
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  filter: 'blur(24px) brightness(0.5)',
+                  transform: 'scale(1.1)',
+                }}
+              />
+              {/* PRIMARY CRISP IMAGE */}
+              <Box
+                component="img"
+                src={bgImage}
+                alt={event.title}
+                sx={{
+                  position: 'relative',
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain',
+                  objectPosition: 'center 20%',
+                }}
+              />
+            </Box>
           )}
         </motion.div>
       </AnimatePresence>
