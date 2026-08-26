@@ -9,12 +9,9 @@ function mpaDevPlugin(): Plugin {
       server.middlewares.use((req, _res, next) => {
         if (req.url) {
           const url = req.url;
-          if (
-            url.startsWith('/admin') ||
-            url.startsWith('/hia-eala-alsalh/admin')
-          ) {
+          if (url.startsWith('/admin') || url.startsWith('/hayya-ala-al-salah/admin')) {
             if (!path.extname(url.split('?')[0])) {
-              req.url = '/hia-eala-alsalh/admin/index.html';
+              req.url = '/hayya-ala-al-salah/admin/index.html';
             }
           }
         }
@@ -25,7 +22,7 @@ function mpaDevPlugin(): Plugin {
 }
 
 export default defineConfig({
-  base: '/hia-eala-alsalh/',
+  base: '/hayya-ala-al-salah/',
   plugins: [react(), mpaDevPlugin()],
   resolve: {
     alias: {
