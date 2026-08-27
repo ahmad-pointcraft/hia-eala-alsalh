@@ -30,7 +30,8 @@ async function bootstrap(root: HTMLElement) {
 
 void bootstrap(rootElement);
 
-if ('serviceWorker' in navigator) {
+// PRODUCTION ONLY — skip the cache SW in dev so it never serves stale
+if (!import.meta.env.DEV && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js').catch((err) => {
       console.warn('[SW] Registration failed:', err);

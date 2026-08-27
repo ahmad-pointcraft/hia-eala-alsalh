@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { Coordinates, PrayerTimes } from 'adhan';
 import type { PrayerTime, NextPrayer, IqamaPrayerConfig } from '@/shared/types';
 import { useMosqueConfigStore } from '@/display/store';
@@ -9,6 +9,7 @@ import {
   getCurrentPrayer,
   getNextPrayer,
   getWallClockSeconds,
+  getLocalDateKey,
 } from '@/display/utils';
 import {
   AZAN_MAX_DURATION_SEC,
@@ -74,13 +75,20 @@ function formatAdhanTime(date: Date | null, timeZone: string): string {
 export function usePrayerState(currentTime: Date, prayerNames: PrayerNames): PrayerStateResult {
   const config = useMosqueConfigStore((s) => s.config);
 
+  // LIVE CLOCK REF — the solar calc below must not depend on the per-second tick
+  const currentTimeRef = useRef(currentTime);
+  currentTimeRef.current = currentTime;
+
+  // MASJID-LOCAL DAY KEY — prayer times only change on day rollover or config change
+  const dayKey = getLocalDateKey(currentTime, config.timeZone);
+
   const prayers = useMemo<PrayerTime[]>(() => {
     const coords = new Coordinates(config.latitude, config.longitude);
     const params = getCalculationParams(config.calculationMethod);
     params.madhab = getMadhab(config.madhab);
     params.highLatitudeRule = getHighLatitudeRule(config.highLatitudeRule);
 
-    const prayerTimes = new PrayerTimes(coords, currentTime, params);
+    const prayerTimes = new PrayerTimes(coords, currentTimeRef.current, params);
 
     const keys = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'] as const;
 
@@ -98,8 +106,11 @@ export function usePrayerState(currentTime: Date, prayerNames: PrayerNames): Pra
         name: prayerNames[key.toLowerCase()] ?? key,
       };
     });
+    // dayKey is a deliberate cache-buster — the solar calc reads the clock via
+    // ref, so this dep is what triggers recompute on day rollover
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    currentTime,
+    dayKey,
     config.latitude,
     config.longitude,
     config.calculationMethod,
@@ -128,6 +139,8 @@ export function usePrayerState(currentTime: Date, prayerNames: PrayerNames): Pra
     const sunsetTime = prayers.find((p) => p.key === 'Maghrib')?.time ?? DEFAULT_SUNSET_TIME;
 
     const nowMinutes = getWallClockSeconds(currentTime, config.timeZone) / 60;
+    // IQAMA PRAYER WINDOW IN MINUTES (same window as the silence phase)
+    const iqamaWindowMin = PRAYER_WINDOW_SEC / 60;
     const prayingPrayer =
       prayerPrayers.find((p) => {
         if (p.iqamaTime === '\u2014') return false;
@@ -135,7 +148,7 @@ export function usePrayerState(currentTime: Date, prayerNames: PrayerNames): Pra
         const ih = parts[0] ?? 0;
         const im = parts[1] ?? 0;
         const iqamaMinutes = ih * 60 + im;
-        return nowMinutes >= iqamaMinutes && nowMinutes < iqamaMinutes + 8;
+        return nowMinutes >= iqamaMinutes && nowMinutes < iqamaMinutes + iqamaWindowMin;
       }) ?? null;
     const isPraying = !!prayingPrayer;
 

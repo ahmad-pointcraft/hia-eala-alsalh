@@ -1,18 +1,13 @@
 import { z } from 'zod';
+import { baseSignUpSchema } from '@/shared/api/schema';
 
-export const authFormSchema = z.object({
-  email: z.email('Enter a valid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
-});
+export const authFormSchema = baseSignUpSchema.pick({ email: true, password: true });
 
 export type AuthFormData = z.infer<typeof authFormSchema>;
 
-export const signUpFormSchema = z
-  .object({
+export const signUpFormSchema = baseSignUpSchema
+  .extend({
     mode: z.enum(['create', 'join']),
-    name: z.string().min(1, 'Full name is required'),
-    email: z.string().email('Enter a valid email address'),
-    password: z.string().min(8, 'Password must be at least 8 characters'),
     confirmPassword: z.string().min(1, 'Confirm your password'),
     masjidName_en: z.string().optional(),
     masjidName_ar: z.string().optional(),

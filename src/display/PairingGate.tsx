@@ -8,6 +8,7 @@ import {
   clearDeviceToken,
   getCachedConfig,
   setCachedConfig,
+  DEVICE_TOKEN_STORAGE_KEY,
   type DeviceToken,
 } from '@/display/utils';
 import { PairingCodeScreen } from '@/display/components/PairingCodeScreen';
@@ -59,7 +60,8 @@ export function PairingGate() {
       void startPairing();
     }
 
-    const handleStorageChange = () => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key !== DEVICE_TOKEN_STORAGE_KEY && e.key !== null) return;
       const currentToken = getDeviceToken();
       if (currentToken) {
         void validateAndLoad(currentToken);
@@ -154,11 +156,6 @@ export function PairingGate() {
 
   async function loadContent(masjidId: string) {
     try {
-      // PREVENT DOUBLE SUBSCRIPTION WHEN loadContent RUNS TWICE (storage events)
-      if (unsubRef.current) {
-        unsubRef.current();
-        unsubRef.current = null;
-      }
       const config = await api.getMasjidConfig(masjidId);
       if (!mountedRef.current) return;
       setConfig(config);
@@ -166,7 +163,11 @@ export function PairingGate() {
       setCachedConfig(config);
       updatePhase('content');
 
-      unsubRef.current = api.subscribe(masjidId, {
+      // ATOMIC SUBSCRIPTION SWAP — subscribe first, THEN drop the old
+      // subscription. Unsubscribing before the await would leave a window
+      // with zero subscribers, and realtime writes in that window would
+      // never invalidate the display caches (stale until refresh).
+      const nextUnsub = api.subscribe(masjidId, {
         onConfigChange: async (cfg) => {
           if (mountedRef.current) {
             const token = getDeviceToken();
@@ -193,6 +194,10 @@ export function PairingGate() {
           if (payload.carouselImages) cacheStore.invalidate(`images-carousel-${masjidId}`);
         },
       });
+
+      const previousUnsub = unsubRef.current;
+      unsubRef.current = nextUnsub;
+      previousUnsub?.();
     } catch {
       const cached = getCachedConfig();
       if (cached && mountedRef.current) {

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import Box from '@mui/material/Box';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { SlideIndicators } from './SlideIndicators';
 
 interface ImageCarouselProps {
   images: string[];
@@ -82,42 +83,12 @@ export function ImageCarousel({ images, interval = 5000 }: ImageCarouselProps) {
       </AnimatePresence>
 
       {images.length > 1 && (
-        <Box
-          sx={{
-            position: 'absolute',
-            bottom: 0,
-            insetInline: 0,
-            height: { xs: 44, sm: 52, md: 60, lg: 60 },
-            background: (theme) => `linear-gradient(transparent, ${theme.palette.surface.medium})`,
-            display: 'flex',
-            alignItems: 'flex-end',
-            justifyContent: 'center',
-            pb: 2,
-            gap: 1,
-          }}
-        >
-          {images.map((_, index) => (
-            <Box
-              component="button"
-              key={index}
-              onClick={() => setCurrentIndex(index)}
-              aria-label={`Go to slide ${index + 1}`}
-              sx={{
-                width: index === currentIndex ? 28 : 10,
-                height: 10,
-                borderRadius: '4px',
-                bgcolor: index === currentIndex ? 'primary.main' : 'text.muted',
-                border: 'none',
-                cursor: 'pointer',
-                p: 1.75,
-                m: -1.75,
-                transition: prefersReducedMotion
-                  ? 'none'
-                  : 'all 300ms cubic-bezier(0.25, 1, 0.5, 1)',
-              }}
-            />
-          ))}
-        </Box>
+        <SlideIndicators
+          count={images.length}
+          currentIndex={currentIndex}
+          onSelect={setCurrentIndex}
+          labelPrefix="Go to slide"
+        />
       )}
     </Box>
   );

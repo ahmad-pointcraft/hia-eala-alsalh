@@ -4,6 +4,10 @@ import { mosqueConfigSchema } from '@/shared/types/schema';
 const DEVICE_TOKEN_KEY = 'hia-device-token';
 const CACHED_CONFIG_KEY = 'hia-cached-config';
 
+/** localStorage key for the pairing token — exported so cross-tab storage
+ * listeners can filter for exactly this write. */
+export const DEVICE_TOKEN_STORAGE_KEY = DEVICE_TOKEN_KEY;
+
 const deviceTokenSchema = z.object({
   deviceId: z.string(),
   masjidId: z.string(),

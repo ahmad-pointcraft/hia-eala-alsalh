@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { ImageCarousel } from './ImageCarousel';
+import { SlideIndicators } from './SlideIndicators';
 import type { Language, EventSlide } from '@/display/types';
 import { getFontFamily, getDirection } from '@/display/utils';
 
@@ -33,7 +34,9 @@ export function EventSlideshow({ events, images, interval = 5000, language }: Ev
     return <ImageCarousel images={images} interval={interval} />;
   }
 
-  const event = events[currentIndex];
+  // CLAMP FOR SHRUNK LISTS — a stale index past the last slide (e.g. events
+  // deactivated in admin) must fall back to the first slide, not a blank panel
+  const event = events[currentIndex] ?? events[0];
   if (!event) return null;
 
   const bgImage = event.imageUrl;
@@ -265,41 +268,12 @@ export function EventSlideshow({ events, images, interval = 5000, language }: Ev
       </Box>
 
       {events.length > 1 && (
-        <Box
-          sx={{
-            position: 'absolute',
-            bottom: 5,
-            insetInline: 0,
-            height: { xs: 36, sm: 42, md: 48, lg: 48 },
-            display: 'flex',
-            alignItems: 'flex-end',
-            justifyContent: 'center',
-            pb: 1.5,
-            gap: 5,
-          }}
-        >
-          {events.map((_, index) => (
-            <Box
-              component="button"
-              key={index}
-              onClick={() => setCurrentIndex(index)}
-              aria-label={`Go to event ${index + 1}`}
-              sx={{
-                width: index === currentIndex ? 28 : 10,
-                height: 10,
-                borderRadius: 50,
-                bgcolor: index === currentIndex ? 'primary.main' : 'text.muted',
-                border: 'none',
-                cursor: 'pointer',
-                p: 1,
-                m: -1.75,
-                transition: prefersReducedMotion
-                  ? 'none'
-                  : 'all 300ms cubic-bezier(0.25, 1, 0.5, 1)',
-              }}
-            />
-          ))}
-        </Box>
+        <SlideIndicators
+          count={events.length}
+          currentIndex={currentIndex}
+          onSelect={setCurrentIndex}
+          labelPrefix="Go to event"
+        />
       )}
     </Box>
   );

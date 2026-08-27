@@ -23,7 +23,7 @@ export function useCrudList<
   updateOptimistic: (id: string, patch: P) => Promise<void>;
   remove: (id: string) => Promise<void>;
   reorder?: (orderedIds: string[]) => Promise<void>;
-  refresh: () => void;
+  refresh: () => Promise<void>;
 } {
   const [items, setItems] = useState<T[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,46 +32,51 @@ export function useCrudList<
   const fnsRef = useRef(fns);
   fnsRef.current = fns;
 
-  const refresh = useCallback(() => {
+  // STALE-RESPONSE GUARD — only the most recent list request may write state
+  const listReqIdRef = useRef(0);
+
+  const refresh = useCallback((): Promise<void> => {
     if (!masjidId) {
+      listReqIdRef.current++;
       setLoading(false);
       setError(null);
-      return;
+      return Promise.resolve();
     }
+    const reqId = ++listReqIdRef.current;
     setLoading(true);
     setError(null);
-    fnsRef.current
+    return fnsRef.current
       .list(masjidId)
       .then((result) => {
-        setItems(result);
+        if (reqId !== listReqIdRef.current) return;
+        setItems([...result]);
         setLoading(false);
       })
       .catch((err) => {
+        if (reqId !== listReqIdRef.current) return;
         setError(err instanceof Error ? err.message : 'Failed to load');
         setLoading(false);
       });
   }, [masjidId]);
 
   useEffect(() => {
-    refresh();
+    void refresh();
   }, [refresh]);
 
   const create = useCallback(
     async (input: Omit<T, 'id' | 'masjidId'>) => {
       await fnsRef.current.create(masjidId, input);
-      const fresh = await fnsRef.current.list(masjidId);
-      setItems([...fresh]);
+      await refresh();
     },
-    [masjidId],
+    [masjidId, refresh],
   );
 
   const update = useCallback(
     async (id: string, patch: P) => {
       await fnsRef.current.update(id, patch);
-      const fresh = await fnsRef.current.list(masjidId);
-      setItems([...fresh]);
+      await refresh();
     },
-    [masjidId],
+    [refresh],
   );
 
   const updateOptimistic = useCallback(
@@ -91,10 +96,9 @@ export function useCrudList<
   const remove = useCallback(
     async (id: string) => {
       await fnsRef.current.remove(id);
-      const fresh = await fnsRef.current.list(masjidId);
-      setItems([...fresh]);
+      await refresh();
     },
-    [masjidId],
+    [refresh],
   );
 
   const reorder = useCallback(

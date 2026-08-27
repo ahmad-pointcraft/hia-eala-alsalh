@@ -82,6 +82,9 @@ export function useCachedData<T>(
         });
 
       cacheStore.setPending(ck, promise);
+      // MARK THE INITIAL CHAIN AS HANDLED — the error already surfaces via the
+      // `error` state; without this the mount-time call rejects unhandled.
+      promise.catch(() => undefined);
     },
     [ttlMs],
   );
@@ -103,6 +106,8 @@ export function useCachedData<T>(
       }
 
       setData(fallback);
+      setError(undefined);
+      setIsLoading(false);
       triggerFetch(cacheKey);
       return;
     }

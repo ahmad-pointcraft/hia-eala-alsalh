@@ -104,7 +104,7 @@ export function FundraisingOverlay({ onClose, language, translations, currentTim
   }, [handleKeyDown]);
 
   const countdown = useMemo(() => {
-    const elapsed = Math.floor((Date.now() - openedAtRef.current) / 1000);
+    const elapsed = Math.floor((currentTime.getTime() - openedAtRef.current) / 1000);
     return Math.max(0, AUTO_CLOSE_SECONDS - elapsed);
   }, [currentTime]);
 

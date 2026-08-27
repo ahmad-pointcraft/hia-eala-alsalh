@@ -32,7 +32,6 @@ function normalizeStore(store: MockStore): MockStore {
     masjids: store.masjids ?? {},
     devices: store.devices ?? {},
     pairingCodes: store.pairingCodes ?? {},
-    sessions: store.sessions ?? {},
     users: store.users ?? {},
     inviteCodes: store.inviteCodes ?? {},
     realtimeSubscribers: store.realtimeSubscribers ?? new Set(),

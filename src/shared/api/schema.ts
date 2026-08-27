@@ -35,9 +35,13 @@ export const inviteCodeSchema = z.object({
 
 // ==================== SIGN UP INPUTS ====================
 
-const baseSignUpSchema = z.object({
+/**
+ * Shared sign-up field rules — the admin sign-up form schema extends these so
+ * form and API validation can never drift apart.
+ */
+export const baseSignUpSchema = z.object({
   name: z.string().min(1, 'Name is required'),
-  email: z.string().email('Invalid email address'),
+  email: z.email('Invalid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
 });
 

@@ -7,7 +7,6 @@ import {
   donationCampaignSchema,
   storedImageSchema,
   deviceSchema,
-  sessionSchema,
   userSchema,
   inviteCodeSchema,
 } from '../schema';
@@ -17,8 +16,6 @@ import type {
   MasjidEvent,
   DonationCampaign,
   StoredImage,
-  Session,
-  User,
   InviteCode,
   ContentChangePayload,
 } from '../types';
@@ -37,16 +34,17 @@ export interface MasjidData {
  * Plaintext passwords by design for mock development data.
  * Real password hashing and secure token handling are implemented in the Backend Integration spec.
  */
-export interface MockUserRecord {
-  user: User;
-  password: string;
-}
+export const mockUserRecordSchema = z.object({
+  user: userSchema,
+  password: z.string(),
+});
+
+export type MockUserRecord = z.infer<typeof mockUserRecordSchema>;
 
 export interface MockStore {
   masjids: Record<string, MasjidData>;
   devices: Record<string, Device>;
   pairingCodes: Record<string, { deviceId: string; expiresAt: number }>;
-  sessions: Record<string, { session: Session; masjidId: string }>;
   users: Record<string, MockUserRecord>;
   inviteCodes: Record<string, InviteCode>;
   realtimeSubscribers: Set<{
@@ -255,7 +253,6 @@ export function createInitialStore(): MockStore {
     },
     devices,
     pairingCodes: {},
-    sessions: {},
     users,
     inviteCodes: {},
     realtimeSubscribers: new Set(),
@@ -279,8 +276,7 @@ const persistedStoreSchema = z.object({
   masjids: z.record(z.string(), masjidDataSchema),
   devices: z.record(z.string(), deviceSchema),
   pairingCodes: z.record(z.string(), z.object({ deviceId: z.string(), expiresAt: z.number() })),
-  sessions: z.record(z.string(), z.object({ session: sessionSchema, masjidId: z.string() })),
-  users: z.record(z.string(), z.object({ user: userSchema, password: z.string() })).optional(),
+  users: z.record(z.string(), mockUserRecordSchema).optional(),
   inviteCodes: z.record(z.string(), inviteCodeSchema).optional(),
 });
 
@@ -314,8 +310,7 @@ export function loadStore(): MockStore {
           masjids: mergeMasjids(seed.masjids, parsed.masjids),
           devices: { ...seed.devices, ...parsed.devices },
           pairingCodes: { ...seed.pairingCodes, ...parsed.pairingCodes },
-          sessions: { ...seed.sessions, ...parsed.sessions },
-          users: { ...seed.users, ...(parsed.users as Record<string, MockUserRecord> | undefined) },
+          users: { ...seed.users, ...parsed.users },
           inviteCodes: { ...seed.inviteCodes, ...parsed.inviteCodes },
           realtimeSubscribers: new Set(),
         };

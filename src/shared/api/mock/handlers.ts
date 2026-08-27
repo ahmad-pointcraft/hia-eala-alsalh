@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import { DEMO_MASJID_ID, createInitialStore } from './seed';
-import { generateId } from '@/shared/utils';
+import { generateId, generateNumericCode } from '@/shared/utils';
 
 // NOTE (Spec 015): This REST surface is STAGED for the Real adapter (Spec 017).
 // In dev the app talks to MockApiClient directly (it implements ApiClient on an
@@ -27,7 +27,7 @@ export const handlers = [
   http.post('/api/devices/register', () =>
     HttpResponse.json({
       deviceId: generateId('device'),
-      pairingCode: String(Math.floor(100000 + Math.random() * 900000)),
+      pairingCode: generateNumericCode(),
       expiresAt: Date.now() + 10 * 60 * 1000,
     }),
   ),
