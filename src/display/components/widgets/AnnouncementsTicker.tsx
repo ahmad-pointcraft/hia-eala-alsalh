@@ -5,8 +5,8 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import MosqueIcon from '@mui/icons-material/Mosque';
-import { getFontFamily, isRTL, getDirection } from '@/display/utils/helpers';
-import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
+import { getFontFamily, isRTL, getDirection } from '@/display/utils';
+import { useMosqueConfigStore } from '@/display/store';
 
 const SEPARATOR_GLYPH = '\u2726';
 

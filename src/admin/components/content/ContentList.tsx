@@ -22,9 +22,8 @@ import {
   EditOutlined as EditIcon,
   DeleteOutline as DeleteIcon,
 } from '@mui/icons-material';
-import { AsyncState } from '@/admin/components/states/AsyncState';
-import type { EmptyStateAction } from '@/admin/components/states/EmptyState';
-import { useIsMobile } from '@/admin/hooks/useIsMobile';
+import { AsyncState, type EmptyStateAction } from '@/admin/components/states';
+import { useIsMobile } from '@/admin/hooks';
 import { UpDownReorder } from './UpDownReorder';
 
 export interface Column<T> {

@@ -3,8 +3,8 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material/styles';
 import type { Language, Translations } from '@/display/types';
-import type { PrayerWidgetState } from '@/display/hooks/usePrayerState';
-import { getFontFamily, getDirection, toArabicNumerals } from '@/display/utils/helpers';
+import type { PrayerWidgetState } from '@/display/hooks';
+import { getFontFamily, getDirection, toArabicNumerals } from '@/display/utils';
 
 interface PrayerStatusWidgetProps {
   widgetState: PrayerWidgetState;
@@ -31,7 +31,8 @@ export function PrayerStatusWidget({
   }
 
   const { prayerName, timeRemainingSec, totalDurationSec } = widgetState;
-  const progress = totalDurationSec > 0 ? Math.min(1, Math.max(0, timeRemainingSec / totalDurationSec)) : 0;
+  const progress =
+    totalDurationSec > 0 ? Math.min(1, Math.max(0, timeRemainingSec / totalDurationSec)) : 0;
 
   // PROGRESS BAR TRANSITION STYLE
   const progressWidth = `${progress * 100}%`;
@@ -46,9 +47,10 @@ export function PrayerStatusWidget({
 
   if (widgetState.phase === 'azan') {
     // DYNAMIC FORMAT FOR ADHAN
-    phaseTitle = language === 'ar'
-      ? `${translations.prayerWidget.adhanLabel} ${prayerName}`
-      : `${prayerName} ${translations.prayerWidget.adhanLabel}`;
+    phaseTitle =
+      language === 'ar'
+        ? `${translations.prayerWidget.adhanLabel} ${prayerName}`
+        : `${prayerName} ${translations.prayerWidget.adhanLabel}`;
     phaseSubtitle = translations.prayerWidget.pleasePrepare;
     Icon = Volume2;
     showTimer = false;
@@ -56,9 +58,10 @@ export function PrayerStatusWidget({
   } else if (widgetState.phase === 'countdown') {
     phaseTitle = translations.prayerWidget.iqamaIn;
     // DYNAMIC FORMAT FOR IQAMA
-    phaseSubtitle = language === 'ar'
-      ? `${translations.prayerWidget.iqamaPrayerLabel} ${prayerName}`
-      : `${prayerName} ${translations.prayerWidget.iqamaPrayerLabel}`;
+    phaseSubtitle =
+      language === 'ar'
+        ? `${translations.prayerWidget.iqamaPrayerLabel} ${prayerName}`
+        : `${prayerName} ${translations.prayerWidget.iqamaPrayerLabel}`;
     Icon = Clock;
     timerText = formatMMSS(timeRemainingSec);
   } else if (widgetState.phase === 'standing') {
@@ -144,9 +147,10 @@ export function PrayerStatusWidget({
           // BOLDER WEIGHT IN ADHAN PHASE
           fontWeight: widgetState.phase === 'azan' ? 900 : 800,
           // LARGER SIZE IN ADHAN PHASE
-          fontSize: widgetState.phase === 'azan'
-            ? { xs: '26px', sm: '36px', md: '44px' }
-            : { xs: '20px', sm: '24px', md: '28px' },
+          fontSize:
+            widgetState.phase === 'azan'
+              ? { xs: '26px', sm: '36px', md: '44px' }
+              : { xs: '20px', sm: '24px', md: '28px' },
           fontFamily: getFontFamily(language),
           zIndex: 1,
           lineHeight: 1.2,

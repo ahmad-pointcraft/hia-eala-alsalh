@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 import { MosqueOutlined as MosqueIcon } from '@mui/icons-material';
 import type { UseFormRegister, FieldErrors } from 'react-hook-form';
-import type { SignUpFormData } from '@/admin/utils/auth';
+import type { SignUpFormData } from '@/admin/utils';
 
 export interface CreateMosqueFieldsProps {
   register: UseFormRegister<SignUpFormData>;

@@ -1,6 +1,6 @@
 import { Button, Tooltip } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { useSession } from '@/admin/store/useSession';
+import { useSession } from '@/admin/store';
 
 /**
  * Sticky/header action to open the live kiosk display in a new tab.

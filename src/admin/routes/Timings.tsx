@@ -15,22 +15,21 @@ import {
 } from '@mui/icons-material';
 import { api } from '@/shared/api';
 import type { MosqueConfig } from '@/shared/types';
-import { useSession } from '@/admin/store/useSession';
-import { useTimingsForm } from '@/admin/store/useTimingsForm';
-import { useDirtyGuard } from '@/admin/hooks/useDirtyGuard';
-import { useFocusHeading } from '@/admin/hooks/useFocusHeading';
-import { AsyncState } from '@/admin/components/states/AsyncState';
-import { useToast } from '@/admin/components/ToastProvider';
-import { UnsavedChangesDialog } from '@/admin/components/UnsavedChangesDialog';
-import { validateConfig, isValid } from '@/admin/utils/timings/validation';
-
-import { LocationFields } from '@/admin/components/timings/LocationFields';
-import { MethodSelect } from '@/admin/components/timings/MethodSelect';
-import { MadhabToggle } from '@/admin/components/timings/MadhabToggle';
-import { HighLatRuleSelect } from '@/admin/components/timings/HighLatRuleSelect';
-import { TimezoneField } from '@/admin/components/timings/TimezoneField';
-import { HijriOffsetControl } from '@/admin/components/timings/HijriOffsetControl';
-import { IqamaEditor } from '@/admin/components/timings/IqamaEditor';
+import { useSession, useTimingsForm } from '@/admin/store';
+import { useDirtyGuard, useFocusHeading } from '@/admin/hooks';
+import { validateConfig, isValid } from '@/admin/utils';
+import {
+  AsyncState,
+  useToast,
+  UnsavedChangesDialog,
+  LocationFields,
+  MethodSelect,
+  MadhabToggle,
+  HighLatRuleSelect,
+  TimezoneField,
+  HijriOffsetControl,
+  IqamaEditor,
+} from '@/admin/components';
 
 export function Timings() {
   const masjidId = useSession((s) => s.session?.masjidId ?? '');

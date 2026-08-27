@@ -3,7 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { Box, Typography } from '@mui/material';
 import { Sidebar } from './Sidebar';
 import { AdminHeader } from './Header';
-import { useIsMobile } from '@/admin/hooks/useIsMobile';
+import { useIsMobile } from '@/admin/hooks';
 import appLogo from '@/assets/app-logo.png';
 import pointcraftLogo from '@/assets/logo.png';
 

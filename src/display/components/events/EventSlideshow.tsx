@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { ImageCarousel } from './ImageCarousel';
 import type { Language, EventSlide } from '@/display/types';
-import { getFontFamily, getDirection } from '@/display/utils/helpers';
+import { getFontFamily, getDirection } from '@/display/utils';
 
 export type { EventSlide };
 

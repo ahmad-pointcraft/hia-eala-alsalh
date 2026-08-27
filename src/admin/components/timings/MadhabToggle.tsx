@@ -1,5 +1,5 @@
 import { ToggleButton, ToggleButtonGroup, Stack, Typography } from '@mui/material';
-import { useTimingsForm } from '@/admin/store/useTimingsForm';
+import { useTimingsForm } from '@/admin/store';
 import type { Madhab } from '@/shared/types';
 
 export function MadhabToggle() {

@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { useLanguageStore } from '@/display/store/languageStore';
+import { useLanguageStore } from '@/display/store';
 
 export function PairingCodeScreen({ code }: { code: string | null }) {
   const language = useLanguageStore((s) => s.language);

@@ -1,6 +1,6 @@
 import { MenuItem, TextField, Stack, Typography } from '@mui/material';
-import { useTimingsForm } from '@/admin/store/useTimingsForm';
-import { ADHAN_METHOD_LABELS } from '@/admin/utils/timings/methodLabels';
+import { useTimingsForm } from '@/admin/store';
+import { ADHAN_METHOD_LABELS } from '@/admin/utils';
 
 export function MethodSelect() {
   const draft = useTimingsForm((s) => s.draft);

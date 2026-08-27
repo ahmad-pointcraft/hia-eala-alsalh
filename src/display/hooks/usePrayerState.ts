@@ -1,16 +1,21 @@
 import { useMemo } from 'react';
 import { Coordinates, PrayerTimes } from 'adhan';
 import type { PrayerTime, NextPrayer, IqamaPrayerConfig } from '@/shared/types';
-import { getCurrentPrayer, getNextPrayer } from '@/display/utils/prayerTimes';
-import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
-import { getCalculationParams, getMadhab, getHighLatitudeRule } from '@/display/utils/adhanMethodFactory';
+import { useMosqueConfigStore } from '@/display/store';
+import {
+  getCalculationParams,
+  getMadhab,
+  getHighLatitudeRule,
+  getCurrentPrayer,
+  getNextPrayer,
+  getWallClockSeconds,
+} from '@/display/utils';
 import {
   AZAN_MAX_DURATION_SEC,
   STANDING_DURATION_SEC,
   PRAYER_WINDOW_SEC,
   SILENCE_DURATION_SEC,
-} from '@/display/constants/prayerPhases';
-
+} from '@/display/constants';
 
 const DEFAULT_SUNSET_TIME = '19:28';
 
@@ -25,10 +30,10 @@ interface ActivePhaseState {
 // PRAYER WIDGET DISCRIMINATED UNION
 export type PrayerWidgetState =
   | { phase: 'none' }
-  | { phase: 'azan' } & ActivePhaseState
-  | { phase: 'countdown' } & ActivePhaseState
-  | { phase: 'standing' } & ActivePhaseState
-  | { phase: 'silence' } & ActivePhaseState;
+  | ({ phase: 'azan' } & ActivePhaseState)
+  | ({ phase: 'countdown' } & ActivePhaseState)
+  | ({ phase: 'standing' } & ActivePhaseState)
+  | ({ phase: 'silence' } & ActivePhaseState);
 
 interface PrayerNames {
   [key: string]: string;
@@ -46,10 +51,7 @@ interface PrayerStateResult {
   widgetState: PrayerWidgetState;
 }
 
-function computeIqamaTime(
-  adhanTime: string,
-  config: IqamaPrayerConfig,
-): string {
+function computeIqamaTime(adhanTime: string, config: IqamaPrayerConfig): string {
   if (config.mode === 'fixed') return config.value;
 
   const parts = adhanTime.split(':').map(Number);
@@ -69,10 +71,7 @@ function formatAdhanTime(date: Date | null, timeZone: string): string {
   });
 }
 
-export function usePrayerState(
-  currentTime: Date,
-  prayerNames: PrayerNames,
-): PrayerStateResult {
+export function usePrayerState(currentTime: Date, prayerNames: PrayerNames): PrayerStateResult {
   const config = useMosqueConfigStore((s) => s.config);
 
   const prayers = useMemo<PrayerTime[]>(() => {
@@ -87,15 +86,10 @@ export function usePrayerState(
 
     return keys.map((key) => {
       const timeField = key.toLowerCase() as keyof PrayerTimes;
-      const adhanTime = formatAdhanTime(
-        prayerTimes[timeField] as Date | null,
-        config.timeZone,
-      );
+      const adhanTime = formatAdhanTime(prayerTimes[timeField] as Date | null, config.timeZone);
 
       const iqamaTime =
-        key === 'Sunrise'
-          ? '\u2014'
-          : computeIqamaTime(adhanTime, config.iqamaConfigs[key]);
+        key === 'Sunrise' ? '\u2014' : computeIqamaTime(adhanTime, config.iqamaConfigs[key]);
 
       return {
         key,
@@ -116,17 +110,26 @@ export function usePrayerState(
     prayerNames,
   ]);
 
-  const { activePrayer, nextPrayer, isPraying, prayingPrayer, prayerPrayers, sunrisePrayer, sunsetTime, widgetState } =
-    useMemo(() => {
-      const activePrayer = getCurrentPrayer(prayers, currentTime);
-      const nextPrayer = getNextPrayer(prayers, currentTime);
+  const {
+    activePrayer,
+    nextPrayer,
+    isPraying,
+    prayingPrayer,
+    prayerPrayers,
+    sunrisePrayer,
+    sunsetTime,
+    widgetState,
+  } = useMemo(() => {
+    const activePrayer = getCurrentPrayer(prayers, currentTime, config.timeZone);
+    const nextPrayer = getNextPrayer(prayers, currentTime, config.timeZone);
 
-      const prayerPrayers = prayers.filter((p) => p.key !== 'Sunrise');
-      const sunrisePrayer = prayers.find((p) => p.key === 'Sunrise');
-      const sunsetTime = prayers.find((p) => p.key === 'Maghrib')?.time ?? DEFAULT_SUNSET_TIME;
+    const prayerPrayers = prayers.filter((p) => p.key !== 'Sunrise');
+    const sunrisePrayer = prayers.find((p) => p.key === 'Sunrise');
+    const sunsetTime = prayers.find((p) => p.key === 'Maghrib')?.time ?? DEFAULT_SUNSET_TIME;
 
-      const nowMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
-      const prayingPrayer = prayerPrayers.find((p) => {
+    const nowMinutes = getWallClockSeconds(currentTime, config.timeZone) / 60;
+    const prayingPrayer =
+      prayerPrayers.find((p) => {
         if (p.iqamaTime === '\u2014') return false;
         const parts = p.iqamaTime.split(':').map(Number);
         const ih = parts[0] ?? 0;
@@ -134,92 +137,109 @@ export function usePrayerState(
         const iqamaMinutes = ih * 60 + im;
         return nowMinutes >= iqamaMinutes && nowMinutes < iqamaMinutes + 8;
       }) ?? null;
-      const isPraying = !!prayingPrayer;
+    const isPraying = !!prayingPrayer;
 
-      // PARSE HH:MM TO SECONDS
-      const parseTimeToSeconds = (timeStr: string): number => {
-        const parts = timeStr.split(':').map(Number);
-        return (parts[0] ?? 0) * 3600 + (parts[1] ?? 0) * 60;
-      };
+    // PARSE HH:MM TO SECONDS
+    const parseTimeToSeconds = (timeStr: string): number => {
+      const parts = timeStr.split(':').map(Number);
+      return (parts[0] ?? 0) * 3600 + (parts[1] ?? 0) * 60;
+    };
 
-      const nowSec =
-        currentTime.getHours() * 3600 +
-        currentTime.getMinutes() * 60 +
-        currentTime.getSeconds();
+    // CURRENT INSTANT IN MASJID WALL-CLOCK TIME (SECONDS SINCE MIDNIGHT)
+    const nowSec = getWallClockSeconds(currentTime, config.timeZone);
 
-      // CALCULATE WIDGET STATE
-      let widgetState: PrayerWidgetState = { phase: 'none' };
+    // CALCULATE WIDGET STATE
+    let widgetState: PrayerWidgetState = { phase: 'none' };
 
-      // LOOP ASSUMES CHRONOLOGICAL Fajr -> Isha ORDER
-      for (const p of prayerPrayers) {
-        if (p.iqamaTime === '\u2014') continue;
+    // LOOP ASSUMES CHRONOLOGICAL Fajr -> Isha ORDER
+    for (const p of prayerPrayers) {
+      if (p.iqamaTime === '\u2014') continue;
 
-        const adhanSec = parseTimeToSeconds(p.time);
-        const iqamaSec = parseTimeToSeconds(p.iqamaTime);
-        const gapToIqama = iqamaSec - adhanSec;
+      const adhanSec = parseTimeToSeconds(p.time);
+      const iqamaSec = parseTimeToSeconds(p.iqamaTime);
+      const gapToIqama = iqamaSec - adhanSec;
 
-        // PHASE 4: SILENCE
-        if (nowSec >= iqamaSec + STANDING_DURATION_SEC && nowSec < iqamaSec + PRAYER_WINDOW_SEC) {
-          widgetState = {
-            phase: 'silence',
-            prayerName: p.name,
-            prayerKey: p.key,
-            timeRemainingSec: iqamaSec + PRAYER_WINDOW_SEC - nowSec,
-            totalDurationSec: SILENCE_DURATION_SEC,
-          };
-          break;
-        }
-
-        // PHASE 3: STANDING
-        if (nowSec >= iqamaSec && nowSec < iqamaSec + STANDING_DURATION_SEC) {
-          widgetState = {
-            phase: 'standing',
-            prayerName: p.name,
-            prayerKey: p.key,
-            timeRemainingSec: iqamaSec + STANDING_DURATION_SEC - nowSec,
-            totalDurationSec: STANDING_DURATION_SEC,
-          };
-          break;
-        }
-
-        // PHASES 1 AND 2: ADHAN AND COUNTDOWN
-        if (nowSec >= adhanSec && nowSec < iqamaSec) {
-          const adhanDuration = Math.min(AZAN_MAX_DURATION_SEC, gapToIqama);
-
-          if (gapToIqama <= AZAN_MAX_DURATION_SEC) {
-            // ADHAN FILLS ENTIRE WINDOW
-            widgetState = {
-              phase: 'azan',
-              prayerName: p.name,
-              prayerKey: p.key,
-              timeRemainingSec: iqamaSec - nowSec,
-              totalDurationSec: gapToIqama,
-            };
-          } else if (nowSec < adhanSec + adhanDuration) {
-            // ACTIVE ADHAN PHASE
-            widgetState = {
-              phase: 'azan',
-              prayerName: p.name,
-              prayerKey: p.key,
-              timeRemainingSec: adhanSec + adhanDuration - nowSec,
-              totalDurationSec: adhanDuration,
-            };
-          } else {
-            // IQAMA COUNTDOWN PHASE
-            widgetState = {
-              phase: 'countdown',
-              prayerName: p.name,
-              prayerKey: p.key,
-              timeRemainingSec: iqamaSec - nowSec,
-              totalDurationSec: gapToIqama - adhanDuration,
-            };
-          }
-          break;
-        }
+      // PHASE 4: SILENCE
+      if (nowSec >= iqamaSec + STANDING_DURATION_SEC && nowSec < iqamaSec + PRAYER_WINDOW_SEC) {
+        widgetState = {
+          phase: 'silence',
+          prayerName: p.name,
+          prayerKey: p.key,
+          timeRemainingSec: iqamaSec + PRAYER_WINDOW_SEC - nowSec,
+          totalDurationSec: SILENCE_DURATION_SEC,
+        };
+        break;
       }
 
-      return { activePrayer, nextPrayer, isPraying, prayingPrayer, prayerPrayers, sunrisePrayer, sunsetTime, widgetState };
-    }, [prayers, currentTime]);
+      // PHASE 3: STANDING
+      if (nowSec >= iqamaSec && nowSec < iqamaSec + STANDING_DURATION_SEC) {
+        widgetState = {
+          phase: 'standing',
+          prayerName: p.name,
+          prayerKey: p.key,
+          timeRemainingSec: iqamaSec + STANDING_DURATION_SEC - nowSec,
+          totalDurationSec: STANDING_DURATION_SEC,
+        };
+        break;
+      }
 
-  return { prayers, activePrayer, nextPrayer, isPraying, prayingPrayer, prayerPrayers, sunrisePrayer, sunsetTime, widgetState };
+      // PHASES 1 AND 2: ADHAN AND COUNTDOWN
+      if (nowSec >= adhanSec && nowSec < iqamaSec) {
+        const adhanDuration = Math.min(AZAN_MAX_DURATION_SEC, gapToIqama);
+
+        if (gapToIqama <= AZAN_MAX_DURATION_SEC) {
+          // ADHAN FILLS ENTIRE WINDOW
+          widgetState = {
+            phase: 'azan',
+            prayerName: p.name,
+            prayerKey: p.key,
+            timeRemainingSec: iqamaSec - nowSec,
+            totalDurationSec: gapToIqama,
+          };
+        } else if (nowSec < adhanSec + adhanDuration) {
+          // ACTIVE ADHAN PHASE
+          widgetState = {
+            phase: 'azan',
+            prayerName: p.name,
+            prayerKey: p.key,
+            timeRemainingSec: adhanSec + adhanDuration - nowSec,
+            totalDurationSec: adhanDuration,
+          };
+        } else {
+          // IQAMA COUNTDOWN PHASE
+          widgetState = {
+            phase: 'countdown',
+            prayerName: p.name,
+            prayerKey: p.key,
+            timeRemainingSec: iqamaSec - nowSec,
+            totalDurationSec: gapToIqama - adhanDuration,
+          };
+        }
+        break;
+      }
+    }
+
+    return {
+      activePrayer,
+      nextPrayer,
+      isPraying,
+      prayingPrayer,
+      prayerPrayers,
+      sunrisePrayer,
+      sunsetTime,
+      widgetState,
+    };
+  }, [prayers, currentTime, config.timeZone]);
+
+  return {
+    prayers,
+    activePrayer,
+    nextPrayer,
+    isPraying,
+    prayingPrayer,
+    prayerPrayers,
+    sunrisePrayer,
+    sunsetTime,
+    widgetState,
+  };
 }

@@ -1,7 +1,7 @@
 import type { Language, WisdomContent } from '@/display/types';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { getFontFamily, getDirection, toArabicNumerals } from '@/display/utils/helpers';
+import { getFontFamily, getDirection, toArabicNumerals } from '@/display/utils';
 
 interface WisdomPanelProps {
   language: Language;

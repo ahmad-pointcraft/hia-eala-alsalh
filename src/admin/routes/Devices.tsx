@@ -3,18 +3,17 @@ import { Box, Button, Typography } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 import { api } from '@/shared/api';
 import type { Device } from '@/shared/api';
-import { useSession } from '@/admin/store/useSession';
+import { useSession } from '@/admin/store';
 import { useBoolean } from '@/shared/hooks/useBoolean';
-import { useFocusHeading } from '@/admin/hooks/useFocusHeading';
-import { useIsMobile } from '@/admin/hooks/useIsMobile';
-import { AsyncState } from '@/admin/components/states/AsyncState';
+import { useFocusHeading, useIsMobile } from '@/admin/hooks';
 import {
+  AsyncState,
   DeviceTable,
   DeviceCardList,
   AddDeviceDialog,
   RenameDeviceDialog,
   UnpairDeviceDialog,
-} from '@/admin/components/devices';
+} from '@/admin/components';
 
 export function Devices() {
   const session = useSession((s) => s.session);

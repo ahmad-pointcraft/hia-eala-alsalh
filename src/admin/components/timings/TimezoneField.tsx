@@ -1,6 +1,6 @@
 import { Stack, TextField, Button, Box, Typography } from '@mui/material';
 import { LocationSearching as LocationSearchingIcon } from '@mui/icons-material';
-import { useTimingsForm } from '@/admin/store/useTimingsForm';
+import { useTimingsForm } from '@/admin/store';
 
 export function TimezoneField() {
   const draft = useTimingsForm((s) => s.draft);

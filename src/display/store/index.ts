@@ -1,7 +1,7 @@
 import { useLanguageStore, getTranslations, getDirection } from './languageStore';
 
-export { useLanguageStore } from './languageStore';
-export { useMosqueConfigStore } from './mosqueConfigStore';
+export * from './languageStore';
+export * from './mosqueConfigStore';
 
 export function useLanguage() {
   const language = useLanguageStore((s) => s.language);

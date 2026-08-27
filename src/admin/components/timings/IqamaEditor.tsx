@@ -1,5 +1,5 @@
 import { Stack, Box } from '@mui/material';
-import { useTimingsForm } from '@/admin/store/useTimingsForm';
+import { useTimingsForm } from '@/admin/store';
 import type { PrayerKey } from '@/shared/types';
 import { IqamaPrayerCard } from './IqamaPrayerCard';
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
+import { useMosqueConfigStore } from '@/display/store';
 
 interface ClockState {
   currentTime: Date;

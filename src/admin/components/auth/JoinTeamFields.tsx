@@ -1,7 +1,7 @@
 import { TextField, Divider, Typography, InputAdornment } from '@mui/material';
 import { VpnKeyOutlined as KeyIcon } from '@mui/icons-material';
 import type { UseFormRegister, FieldErrors } from 'react-hook-form';
-import type { SignUpFormData } from '@/admin/utils/auth';
+import type { SignUpFormData } from '@/admin/utils';
 
 export interface JoinTeamFieldsProps {
   register: UseFormRegister<SignUpFormData>;

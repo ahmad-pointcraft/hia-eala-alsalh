@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import { useSession } from '@/admin/store/useSession';
+import { useSession } from '@/admin/store';
 import { isExpired } from '@/shared/utils';
 
 export function AuthGate(): JSX.Element {

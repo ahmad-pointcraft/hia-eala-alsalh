@@ -16,7 +16,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { api } from '@/shared/api';
 import type { Device } from '@/shared/api';
-import { useDialogFullScreen } from '@/admin/hooks/useIsMobile';
+import { useDialogFullScreen } from '@/admin/hooks';
 
 const renameDeviceSchema = z.object({
   name: z.string().min(1, 'Name is required'),

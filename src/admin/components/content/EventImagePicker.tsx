@@ -2,9 +2,9 @@ import { useRef, useState } from 'react';
 import { Box, Button, Card, CardMedia, IconButton, Typography } from '@mui/material';
 import { CloudUpload as UploadIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { api } from '@/shared/api';
-import { validateImageFile } from '@/admin/utils/content/imageGuard';
-import { useToast } from '@/admin/components/ToastProvider';
-import { useSession } from '@/admin/store/useSession';
+import { validateImageFile } from '@/admin/utils';
+import { useToast } from '@/admin/components';
+import { useSession } from '@/admin/store';
 
 // EVENT IMAGE IS AN ATTRIBUTE — ASSIGNED VIA updateEvent({ imageUrl }) ON SAVE
 export interface EventImagePickerProps {

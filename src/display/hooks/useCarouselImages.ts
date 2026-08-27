@@ -1,7 +1,7 @@
-import { useCachedData } from '@/display/hooks/useCachedData';
+import { useCachedData } from './useCachedData';
 import { api } from '@/shared/api';
 import type { StoredImage } from '@/shared/api';
-import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
+import { useMosqueConfigStore } from '@/display/store';
 
 export interface UseCarouselImagesResult {
   carouselImages: string[];

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Outlet } from 'react-router-dom';
-import { useSession } from '@/admin/store/useSession';
-import { hasPermission, type Permission } from '@/admin/utils/permissions';
+import { useSession } from '@/admin/store';
+import { hasPermission, type Permission } from '@/admin/utils';
 import { NotAuthorized } from '@/admin/routes/NotAuthorized';
 
 export interface RoleGateProps {

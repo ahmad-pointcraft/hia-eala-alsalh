@@ -2,13 +2,10 @@ import { useState, useEffect, useCallback } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import { PersonAdd as InviteIcon, PeopleOutline as TeamIcon } from '@mui/icons-material';
 import { api, type User } from '@/shared/api';
-import { useSession } from '@/admin/store/useSession';
+import { useSession } from '@/admin/store';
 import { useBoolean } from '@/shared/hooks/useBoolean';
-import { useFocusHeading } from '@/admin/hooks/useFocusHeading';
-import { useIsMobile } from '@/admin/hooks/useIsMobile';
-import { AsyncState } from '@/admin/components/states/AsyncState';
-import { InviteDialog } from '@/admin/components/auth';
-import { TeamTable, TeamCardList } from '@/admin/components/team';
+import { useFocusHeading, useIsMobile } from '@/admin/hooks';
+import { AsyncState, InviteDialog, TeamTable, TeamCardList } from '@/admin/components';
 
 export function Team(): JSX.Element {
   const session = useSession((s) => s.session);

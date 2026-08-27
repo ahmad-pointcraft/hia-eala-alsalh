@@ -22,7 +22,7 @@ import {
   PersonAddOutlined as InviteIcon,
 } from '@mui/icons-material';
 import { api, type UserRole } from '@/shared/api';
-import { useDialogFullScreen } from '@/admin/hooks/useIsMobile';
+import { useDialogFullScreen } from '@/admin/hooks';
 
 export interface InviteDialogProps {
   open: boolean;

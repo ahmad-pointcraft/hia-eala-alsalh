@@ -15,10 +15,9 @@ import {
 } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import { useForm } from 'react-hook-form';
-import { useDirtyGuard } from '@/admin/hooks/useDirtyGuard';
-import { useDialogFullScreen } from '@/admin/hooks/useIsMobile';
+import { useDirtyGuard, useDialogFullScreen } from '@/admin/hooks';
 import { useBoolean } from '@/shared/hooks/useBoolean';
-import { UnsavedChangesDialog } from '@/admin/components/UnsavedChangesDialog';
+import { UnsavedChangesDialog } from '@/admin/components';
 
 export type FieldSchema =
   | { kind: 'bilingual'; key: string; label: string; required?: boolean; multiline?: boolean }

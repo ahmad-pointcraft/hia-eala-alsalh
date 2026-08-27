@@ -14,9 +14,9 @@ import {
   Delete as DeleteIcon,
   Mosque as MosqueIcon,
 } from '@mui/icons-material';
-import { useDisplaySettingsForm } from '@/admin/store/useDisplaySettingsForm';
-import { useToast } from '@/admin/components/ToastProvider';
-import { validateImageFile } from '@/admin/utils/content/imageGuard';
+import { useDisplaySettingsForm } from '@/admin/store';
+import { useToast } from '@/admin/components';
+import { validateImageFile } from '@/admin/utils';
 
 interface MosqueIdentityCardProps {
   errors: Record<string, string>;

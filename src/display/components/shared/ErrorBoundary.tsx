@@ -2,7 +2,7 @@ import { Component, type ReactNode } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { useLanguageStore, getDirection } from '@/display/store/languageStore';
+import { useLanguageStore, getDirection } from '@/display/store';
 
 interface ErrorBoundaryProps {
   children: ReactNode;

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
-import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
+import { useMosqueConfigStore } from '@/display/store';
 import type { PrayerTime } from '@/shared/types';
 import type { Language } from '@/display/types';
-import { getDirection } from '@/display/utils/helpers';
+import { getDirection } from '@/display/utils';
 import { Wrench, Minus } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -136,9 +136,9 @@ export function DevTimeController({ prayers, language }: DevTimeControllerProps)
               width: 48,
               height: 48,
               borderRadius: '50%',
-              bgcolor: (theme) => theme.palette.mode === 'dark' ? '#122612' : '#ffffff',
+              bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#122612' : '#ffffff'),
               border: '1px solid',
-              borderColor: (theme) => theme.palette.mode === 'dark' ? 'border.medium' : 'divider',
+              borderColor: (theme) => (theme.palette.mode === 'dark' ? 'border.medium' : 'divider'),
               boxShadow: 24,
               display: 'flex',
               alignItems: 'center',
@@ -148,7 +148,7 @@ export function DevTimeController({ prayers, language }: DevTimeControllerProps)
               transition: 'all 200ms ease',
               '&:hover': {
                 transform: 'scale(1.08)',
-                bgcolor: (theme) => theme.palette.mode === 'dark' ? '#1a381a' : '#f5f5f5',
+                bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#1a381a' : '#f5f5f5'),
               },
             }}
           >
@@ -168,9 +168,9 @@ export function DevTimeController({ prayers, language }: DevTimeControllerProps)
           <Box
             dir={getDirection(language)}
             sx={{
-              bgcolor: (theme) => theme.palette.mode === 'dark' ? '#122612' : '#ffffff',
+              bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#122612' : '#ffffff'),
               border: '1px solid',
-              borderColor: (theme) => theme.palette.mode === 'dark' ? 'border.medium' : 'divider',
+              borderColor: (theme) => (theme.palette.mode === 'dark' ? 'border.medium' : 'divider'),
               borderRadius: 2,
               p: 2,
               boxShadow: 24,
@@ -223,22 +223,48 @@ export function DevTimeController({ prayers, language }: DevTimeControllerProps)
             </Box>
 
             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1 }}>
-              <Button size="small" variant="contained" color="secondary" onClick={() => setTimeOffset('azan')}>
+              <Button
+                size="small"
+                variant="contained"
+                color="secondary"
+                onClick={() => setTimeOffset('azan')}
+              >
                 {t.phases.azan}
               </Button>
-              <Button size="small" variant="contained" color="secondary" onClick={() => setTimeOffset('countdown')}>
+              <Button
+                size="small"
+                variant="contained"
+                color="secondary"
+                onClick={() => setTimeOffset('countdown')}
+              >
                 {t.phases.countdown}
               </Button>
-              <Button size="small" variant="contained" color="secondary" onClick={() => setTimeOffset('standing')}>
+              <Button
+                size="small"
+                variant="contained"
+                color="secondary"
+                onClick={() => setTimeOffset('standing')}
+              >
                 {t.phases.standing}
               </Button>
-              <Button size="small" variant="contained" color="secondary" onClick={() => setTimeOffset('silence')}>
+              <Button
+                size="small"
+                variant="contained"
+                color="secondary"
+                onClick={() => setTimeOffset('silence')}
+              >
                 {t.phases.silence}
               </Button>
             </Box>
 
             <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-              <Button size="small" variant="outlined" color="error" onClick={() => setTimeOffset('reset')} sx={{ flex: 1 }}>
+              <Button
+                size="small"
+                variant="outlined"
+                color="error"
+                onClick={() => setTimeOffset('reset')}
+                sx={{ flex: 1 }}
+              >
                 {t.reset}
               </Button>
               <Typography variant="caption" sx={{ color: 'text.secondary' }}>

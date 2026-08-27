@@ -3,7 +3,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { createAppTheme } from './muiTheme';
 import type { ThemeMode } from './tokens';
-import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
+import { useMosqueConfigStore } from '@/display/store';
 
 interface ThemeProviderWrapperProps {
   children: ReactNode;

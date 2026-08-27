@@ -1,9 +1,8 @@
 import { useMemo } from 'react';
-import { useCachedData } from '@/display/hooks/useCachedData';
+import { useCachedData } from './useCachedData';
 import { api } from '@/shared/api';
 import type { Announcement } from '@/shared/api';
-import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
-import { useLanguageStore } from '@/display/store/languageStore';
+import { useMosqueConfigStore, useLanguageStore } from '@/display/store';
 
 export interface UseAnnouncementsResult {
   announcements: string[];

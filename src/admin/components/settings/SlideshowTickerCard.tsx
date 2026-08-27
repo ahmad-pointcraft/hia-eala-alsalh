@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@mui/material';
 import { Slideshow as SlideshowIcon } from '@mui/icons-material';
-import { useDisplaySettingsForm } from '@/admin/store/useDisplaySettingsForm';
+import { useDisplaySettingsForm } from '@/admin/store';
 import type { TickerSpeed } from '@/shared/types';
 
 const SLIDE_MARKS = [

@@ -20,8 +20,8 @@ import {
 } from '@mui/icons-material';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useSession } from '@/admin/store/useSession';
-import { signUpFormSchema, type SignUpFormData } from '@/admin/utils/auth';
+import { useSession } from '@/admin/store';
+import { signUpFormSchema, type SignUpFormData } from '@/admin/utils';
 import {
   AuthLayout,
   PasswordField,

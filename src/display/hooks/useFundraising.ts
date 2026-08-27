@@ -1,10 +1,8 @@
 import { useMemo } from 'react';
-import { useCachedData } from '@/display/hooks/useCachedData';
+import { useCachedData } from './useCachedData';
 import { api } from '@/shared/api';
 import type { DonationCampaign } from '@/shared/api';
-import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
-import { useLanguageStore } from '@/display/store/languageStore';
-import { getTranslations } from '@/display/store/languageStore';
+import { useMosqueConfigStore, useLanguageStore, getTranslations } from '@/display/store';
 import qrDonateImage from '@/assets/qr-donate.svg';
 
 export interface FundraisingData {

@@ -105,9 +105,14 @@ class CacheStore {
     this.pendingRequests.delete(key);
   }
 
-  buildKey(feature: string, dateScope?: Date): string {
+  /**
+   * Builds a cache key, optionally scoped to a calendar date. When `timeZone`
+   * is provided the date is the wall-clock date in that IANA zone (defaults to
+   * UTC) — daily content must roll over on the masjid's midnight, not UTC's.
+   */
+  buildKey(feature: string, dateScope?: Date, timeZone?: string): string {
     if (dateScope) {
-      const dateStr = dateScope.toISOString().slice(0, 10);
+      const dateStr = dateScope.toLocaleDateString('en-CA', { timeZone: timeZone ?? 'UTC' });
       return `${feature}:${dateStr}`;
     }
     return feature;

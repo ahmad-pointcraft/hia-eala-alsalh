@@ -1,9 +1,8 @@
 import { useMemo, useEffect } from 'react';
-import { useCachedData } from '@/display/hooks/useCachedData';
-import { fetchHijriDate } from '@/display/services/aladhan';
-import { computeHijriDate } from '@/display/utils/hijri';
-import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
-import { adhanMethodToAladhanId } from '@/display/utils/adhanMethodFactory';
+import { useCachedData } from './useCachedData';
+import { fetchHijriDate } from '@/display/services';
+import { useMosqueConfigStore } from '@/display/store';
+import { adhanMethodToAladhanId, computeHijriDate } from '@/display/utils';
 import type { HijriDateInfo } from '@/shared/types';
 
 export interface UseHijriDateResult {
@@ -58,15 +57,33 @@ function formatHijri(info: {
 }
 
 const HIJRI_MONTHS_EN = [
-  'Muharram', 'Safar', "Rabi' al-Awwal", "Rabi' al-Thani",
-  'Jumada al-Ula', 'Jumada al-Thania', 'Rajab', "Sha'ban",
-  'Ramadan', 'Shawwal', "Dhul Qi'dah", 'Dhul Hijjah',
+  'Muharram',
+  'Safar',
+  "Rabi' al-Awwal",
+  "Rabi' al-Thani",
+  'Jumada al-Ula',
+  'Jumada al-Thania',
+  'Rajab',
+  "Sha'ban",
+  'Ramadan',
+  'Shawwal',
+  "Dhul Qi'dah",
+  'Dhul Hijjah',
 ];
 
 const HIJRI_MONTHS_AR = [
-  '\u0645\u062D\u0631\u0645', '\u0635\u0641\u0631', '\u0631\u0628\u064A\u0639 \u0627\u0644\u0623\u0648\u0644', '\u0631\u0628\u064A\u0639 \u0627\u0644\u062B\u0627\u0646\u064A',
-  '\u062C\u0645\u0627\u062F\u0649 \u0627\u0644\u0623\u0648\u0644\u0649', '\u062C\u0645\u0627\u062F\u0649 \u0627\u0644\u062B\u0627\u0646\u064A\u0629', '\u0631\u062C\u0628', '\u0634\u0639\u0628\u0627\u0646',
-  '\u0631\u0645\u0636\u0627\u0646', '\u0634\u0648\u0627\u0644', '\u0630\u0648 \u0627\u0644\u0642\u0639\u062F\u0629', '\u0630\u0648 \u0627\u0644\u062D\u062C\u0629',
+  '\u0645\u062D\u0631\u0645',
+  '\u0635\u0641\u0631',
+  '\u0631\u0628\u064A\u0639 \u0627\u0644\u0623\u0648\u0644',
+  '\u0631\u0628\u064A\u0639 \u0627\u0644\u062B\u0627\u0646\u064A',
+  '\u062C\u0645\u0627\u062F\u0649 \u0627\u0644\u0623\u0648\u0644\u0649',
+  '\u062C\u0645\u0627\u062F\u0649 \u0627\u0644\u062B\u0627\u0646\u064A\u0629',
+  '\u0631\u062C\u0628',
+  '\u0634\u0639\u0628\u0627\u0646',
+  '\u0631\u0645\u0636\u0627\u0646',
+  '\u0634\u0648\u0627\u0644',
+  '\u0630\u0648 \u0627\u0644\u0642\u0639\u062F\u0629',
+  '\u0630\u0648 \u0627\u0644\u062D\u062C\u0629',
 ];
 
 export function useHijriDate(currentTime: Date): UseHijriDateResult {
@@ -88,7 +105,7 @@ export function useHijriDate(currentTime: Date): UseHijriDateResult {
         date: currentTime,
       }),
     24 * 60 * 60 * 1000,
-    { dateScoped: true, currentTime },
+    { dateScoped: true, timeZone: config.timeZone, currentTime },
   );
 
   const result = useMemo(() => {
@@ -140,7 +157,11 @@ export function useHijriDate(currentTime: Date): UseHijriDateResult {
 
   const clockOffsetMs = data?.clockOffsetMs;
   useEffect(() => {
-    if (clockOffsetMs !== undefined && clockOffsetMs !== 0 && clockOffsetMs !== config.clockOffsetMs) {
+    if (
+      clockOffsetMs !== undefined &&
+      clockOffsetMs !== 0 &&
+      clockOffsetMs !== config.clockOffsetMs
+    ) {
       setConfig({ clockOffsetMs });
     }
   }, [clockOffsetMs, config.clockOffsetMs, setConfig]);

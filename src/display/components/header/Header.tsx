@@ -1,17 +1,16 @@
 import { useState, useEffect } from 'react';
-import {
-  Box,
-  AppBar,
-  Toolbar,
-  ButtonBase,
-  Typography,
-} from '@mui/material';
+import { Box, AppBar, Toolbar, ButtonBase, Typography } from '@mui/material';
 
 import { Heart, WifiOff } from 'lucide-react';
 import type { Language, Translations } from '@/display/types';
 import type { HijriDateInfo } from '@/shared/types';
-import { getFontFamily, getDirection, toArabicNumerals } from '@/display/utils/helpers';
-import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
+import {
+  getFontFamily,
+  getDirection,
+  toArabicNumerals,
+  getWallClockSeconds,
+} from '@/display/utils';
+import { useMosqueConfigStore } from '@/display/store';
 
 interface HeaderProps {
   language: Language;
@@ -21,8 +20,6 @@ interface HeaderProps {
   hijriDate: HijriDateInfo;
   holidays?: string[];
 }
-
-
 
 export function Header({
   language,
@@ -34,7 +31,7 @@ export function Header({
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
   const timeFormat = useMosqueConfigStore((s) => s.config.timeFormat ?? '12h');
   const showSeconds = useMosqueConfigStore((s) => s.config.showSeconds ?? true);
-
+  const timeZone = useMosqueConfigStore((s) => s.config.timeZone);
 
   useEffect(() => {
     const goOffline = () => setIsOffline(true);
@@ -49,9 +46,12 @@ export function Header({
 
   const formatTime = (date: Date) => {
     const is12h = timeFormat === '12h';
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    const seconds = date.getSeconds();
+    // WALL-CLOCK PARTS IN THE MASJID TIME ZONE — prayer times are formatted in
+    // the same zone, so the displayed clock must match it, not the browser.
+    const totalSeconds = getWallClockSeconds(date, timeZone);
+    const hours = Math.floor(totalSeconds / 3600) % 24;
+    const minutes = Math.floor(totalSeconds / 60) % 60;
+    const seconds = totalSeconds % 60;
     const pad = (n: number) => n.toString().padStart(2, '0');
 
     let displayHours: string;
@@ -60,7 +60,8 @@ export function Header({
     if (is12h) {
       const h12 = hours % 12 || 12;
       displayHours = h12.toString();
-      const period = hours >= 12 ? (language === 'ar' ? ' م' : ' PM') : (language === 'ar' ? ' ص' : ' AM');
+      const period =
+        hours >= 12 ? (language === 'ar' ? ' م' : ' PM') : language === 'ar' ? ' ص' : ' AM';
       periodSuffix = period;
     } else {
       displayHours = pad(hours);
@@ -73,9 +74,9 @@ export function Header({
     return language === 'ar' ? toArabicNumerals(rawTime) : rawTime;
   };
 
-
   const getHijriDate = () => {
-    const dateStr = language === 'ar' ? toArabicNumerals(hijriDate.formatted_ar) : hijriDate.formatted_en;
+    const dateStr =
+      language === 'ar' ? toArabicNumerals(hijriDate.formatted_ar) : hijriDate.formatted_en;
     return dateStr;
   };
 
@@ -85,6 +86,7 @@ export function Header({
       year: 'numeric',
       month: 'long',
       day: 'numeric',
+      timeZone,
     });
     return language === 'ar' ? toArabicNumerals(dateStr) : dateStr;
   };
@@ -228,4 +230,3 @@ export function Header({
     </AppBar>
   );
 }
-

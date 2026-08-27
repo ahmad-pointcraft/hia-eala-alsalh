@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { api } from '@/shared/api';
-import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
-import { cacheStore } from '@/display/services/cache';
+import { useMosqueConfigStore } from '@/display/store';
+import { cacheStore } from '@/display/services';
 import {
   getDeviceToken,
   setDeviceToken,
@@ -9,7 +9,7 @@ import {
   getCachedConfig,
   setCachedConfig,
   type DeviceToken,
-} from '@/display/utils/deviceToken';
+} from '@/display/utils';
 import { PairingCodeScreen } from '@/display/components/PairingCodeScreen';
 import App from '@/display/App';
 
@@ -31,6 +31,8 @@ export function PairingGate() {
   const retryRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const unsubRef = useRef<(() => void) | null>(null);
   const mountedRef = useRef(true);
+  // TOKEN GUARD - prevents stale timers
+  const startRunRef = useRef(0);
 
   function updatePhase(p: Phase) {
     phaseRef.current = p;
@@ -62,7 +64,6 @@ export function PairingGate() {
       if (currentToken) {
         void validateAndLoad(currentToken);
       } else if (phaseRef.current === 'content' || phaseRef.current === 'offline') {
-        clearTimers();
         void startPairing();
       }
     };
@@ -95,18 +96,31 @@ export function PairingGate() {
   }
 
   async function startPairing() {
+    // ALWAYS START FROM A CLEAN SLATE — no leaked intervals from a previous run
+    const runId = ++startRunRef.current;
+    clearTimers();
     try {
       const result = await api.registerDevice();
-      if (!mountedRef.current) return;
+      if (!mountedRef.current || runId !== startRunRef.current) return;
       setCode(result.pairingCode);
       updatePhase('pairing');
 
-      pollRef.current = setInterval(async () => {
+      const pollId = setInterval(async () => {
+        // SUPERSEDED BY A NEWER RUN — stop this poll loop entirely
+        if (!mountedRef.current || runId !== startRunRef.current) {
+          clearInterval(pollId);
+          return;
+        }
         try {
           const status = await api.getDeviceStatus(result.deviceId);
-          if (status.paired && status.masjidId && mountedRef.current) {
-            if (pollRef.current) clearInterval(pollRef.current);
-            pollRef.current = null;
+          if (
+            status.paired &&
+            status.masjidId &&
+            mountedRef.current &&
+            runId === startRunRef.current
+          ) {
+            clearInterval(pollId);
+            if (pollRef.current === pollId) pollRef.current = null;
             setDeviceToken({
               deviceId: result.deviceId,
               masjidId: status.masjidId,
@@ -119,25 +133,32 @@ export function PairingGate() {
           /* keep polling */
         }
       }, POLL_INTERVAL_MS);
+      pollRef.current = pollId;
 
       regenRef.current = setTimeout(() => {
         if (
           mountedRef.current &&
+          runId === startRunRef.current &&
           (phaseRef.current === 'unpaired' || phaseRef.current === 'pairing')
         ) {
-          if (pollRef.current) clearInterval(pollRef.current);
           void startPairing();
         }
       }, CODE_TTL_MS);
     } catch {
+      if (!mountedRef.current || runId !== startRunRef.current) return;
       retryRef.current = setTimeout(() => {
-        if (mountedRef.current) void startPairing();
+        if (mountedRef.current && runId === startRunRef.current) void startPairing();
       }, OFFLINE_RETRY_MS);
     }
   }
 
   async function loadContent(masjidId: string) {
     try {
+      // PREVENT DOUBLE SUBSCRIPTION WHEN loadContent RUNS TWICE (storage events)
+      if (unsubRef.current) {
+        unsubRef.current();
+        unsubRef.current = null;
+      }
       const config = await api.getMasjidConfig(masjidId);
       if (!mountedRef.current) return;
       setConfig(config);
@@ -154,7 +175,6 @@ export function PairingGate() {
                 const status = await api.getDeviceStatus(token.deviceId);
                 if (!status.paired) {
                   clearDeviceToken();
-                  clearTimers();
                   void startPairing();
                   return;
                 }
@@ -167,7 +187,6 @@ export function PairingGate() {
           }
         },
         onContentChange: (payload) => {
-          
           if (payload.announcements) cacheStore.invalidate(`announcements-${masjidId}`);
           if (payload.events) cacheStore.invalidate(`events-${masjidId}`);
           if (payload.donations) cacheStore.invalidate(`donations-${masjidId}`);

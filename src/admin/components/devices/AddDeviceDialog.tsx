@@ -15,7 +15,8 @@ import { Tv as TvIcon } from '@mui/icons-material';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { api } from '@/shared/api';
-import { useDialogFullScreen } from '@/admin/hooks/useIsMobile';
+import { useSession } from '@/admin/store';
+import { useDialogFullScreen } from '@/admin/hooks';
 
 const addDeviceSchema = z.object({
   code: z.string().regex(/^\d{6}$/, 'Enter the 6-digit code'),
@@ -29,6 +30,7 @@ export interface AddDeviceDialogProps {
 }
 
 export function AddDeviceDialog({ open, onClose, onPaired }: AddDeviceDialogProps) {
+  const masjidId = useSession((s) => s.session?.masjidId ?? '');
   const {
     control,
     register,
@@ -53,7 +55,7 @@ export function AddDeviceDialog({ open, onClose, onPaired }: AddDeviceDialogProp
     setLoading(true);
     setError('');
     try {
-      await api.pairDevice(data.code, data.name.trim() || undefined);
+      await api.pairDevice(masjidId, data.code, data.name.trim() || undefined);
       onPaired();
       handleClose();
     } catch (e) {

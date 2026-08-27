@@ -7,8 +7,8 @@ import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 import Close from '@mui/icons-material/Close';
 import type { Language, Translations } from '@/display/types';
-import type { FundraisingData } from '@/display/hooks/useFundraising';
-import { toArabicNumerals, getFontFamily, getDirection } from '@/display/utils/helpers';
+import type { FundraisingData } from '@/display/hooks';
+import { toArabicNumerals, getFontFamily, getDirection } from '@/display/utils';
 
 const FOCUSABLE_SELECTOR =
   'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';

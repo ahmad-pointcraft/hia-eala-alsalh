@@ -21,8 +21,8 @@ import {
 } from '@mui/icons-material';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useSession } from '@/admin/store/useSession';
-import { authFormSchema, type AuthFormData } from '@/admin/utils/auth';
+import { useSession } from '@/admin/store';
+import { authFormSchema, type AuthFormData } from '@/admin/utils';
 import { AuthLayout, PasswordField } from '@/admin/components/auth';
 
 const IS_MOCK_ENV =

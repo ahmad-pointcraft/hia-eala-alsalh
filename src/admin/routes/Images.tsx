@@ -2,13 +2,16 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Box } from '@mui/material';
 import { api } from '@/shared/api';
 import type { StoredImage } from '@/shared/api';
-import { useSession } from '@/admin/store/useSession';
-import { useToast } from '@/admin/components/ToastProvider';
-import { useFocusHeading } from '@/admin/hooks/useFocusHeading';
-import { AsyncState } from '@/admin/components/states/AsyncState';
-import { validateImageFile } from '@/admin/utils/content/imageGuard';
-import { ConfirmDeleteDialog } from '@/admin/components/content/ConfirmDeleteDialog';
-import { PhotoGrid, PhotoUploadHeader } from '@/admin/components/images';
+import { useSession } from '@/admin/store';
+import { useFocusHeading } from '@/admin/hooks';
+import { validateImageFile } from '@/admin/utils';
+import {
+  useToast,
+  AsyncState,
+  ConfirmDeleteDialog,
+  PhotoGrid,
+  PhotoUploadHeader,
+} from '@/admin/components';
 
 export function Images() {
   const masjidId = useSession((s) => s.session?.masjidId ?? '');

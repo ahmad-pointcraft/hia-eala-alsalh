@@ -2,7 +2,7 @@ import { Sunrise, Sunset } from 'lucide-react';
 import type { Language, Translations } from '@/display/types';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { toArabicNumerals, getDirection } from '@/display/utils/helpers';
+import { toArabicNumerals, getDirection } from '@/display/utils';
 import { floatingCardSx } from '@/display/theme/sharedStyles';
 import type { Theme } from '@mui/material/styles';
 

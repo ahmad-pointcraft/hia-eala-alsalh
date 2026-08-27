@@ -1,6 +1,6 @@
 import { Stack, TextField, Button, Box, Typography } from '@mui/material';
 import { MyLocation as MyLocationIcon } from '@mui/icons-material';
-import { useTimingsForm } from '@/admin/store/useTimingsForm';
+import { useTimingsForm } from '@/admin/store';
 
 interface LocationFieldsProps {
   errors?: Record<string, string>;

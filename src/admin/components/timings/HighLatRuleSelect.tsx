@@ -1,5 +1,5 @@
 import { MenuItem, TextField, Stack, Typography } from '@mui/material';
-import { useTimingsForm } from '@/admin/store/useTimingsForm';
+import { useTimingsForm } from '@/admin/store';
 import type { HighLatitudeRule } from '@/shared/types';
 
 export function HighLatRuleSelect() {

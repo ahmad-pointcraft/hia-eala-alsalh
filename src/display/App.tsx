@@ -13,8 +13,7 @@ import { FundraisingOverlay, SilenceOverlay } from './components/overlays';
 import { EventSlide, EventSlideshow } from './components/events';
 import { DevTimeController } from './components/DevTimeController';
 import type { WisdomContent } from '@/display/types';
-import { useLanguage, useLanguageStore } from '@/display/store';
-import { useMosqueConfigStore } from '@/display/store/mosqueConfigStore';
+import { useLanguage, useLanguageStore, useMosqueConfigStore } from '@/display/store';
 import { translations as allTranslations } from '@/display/data/translations';
 import {
   useClock,
@@ -60,8 +59,16 @@ export default function App() {
     document.documentElement.lang = language;
   }, [dir, language]);
 
-  const { prayers, activePrayer, nextPrayer, prayingPrayer, prayerPrayers, sunrisePrayer, sunsetTime, widgetState } =
-    usePrayerState(currentTime, t.prayers);
+  const {
+    prayers,
+    activePrayer,
+    nextPrayer,
+    prayingPrayer,
+    prayerPrayers,
+    sunrisePrayer,
+    sunsetTime,
+    widgetState,
+  } = usePrayerState(currentTime, t.prayers);
   const { showFundraising, onShowFundraising, onCloseFundraising } = useFundraisingScheduler(
     prayers,
     currentTime,
@@ -74,19 +81,24 @@ export default function App() {
   const { events: dynamicEvents } = useEvents(currentTime);
   const { fundraising: fundraisingData } = useFundraising(currentTime);
   const { carouselImages: apiCarouselImages } = useCarouselImages(currentTime);
-  const carouselImages = apiCarouselImages.length > 0 ? apiCarouselImages : STATIC_CAROUSEL_FALLBACK;
+  const carouselImages =
+    apiCarouselImages.length > 0 ? apiCarouselImages : STATIC_CAROUSEL_FALLBACK;
 
-  const fallbackHadith = useMemo(() => ({
-    kind: 'hadith' as const,
-    data: {
-      text_ar: allTranslations.ar.hadithText,
-      text_en: allTranslations.en.hadithText,
-      source: language === 'ar' ? allTranslations.ar.hadithSource : allTranslations.en.hadithSource,
-      narrator: '',
-      book: '',
-      hadithNumber: 0,
-    },
-  }), [language]);
+  const fallbackHadith = useMemo(
+    () => ({
+      kind: 'hadith' as const,
+      data: {
+        text_ar: allTranslations.ar.hadithText,
+        text_en: allTranslations.en.hadithText,
+        source:
+          language === 'ar' ? allTranslations.ar.hadithSource : allTranslations.en.hadithSource,
+        narrator: '',
+        book: '',
+        hadithNumber: 0,
+      },
+    }),
+    [language],
+  );
 
   const wisdom: WisdomContent | undefined = useMemo(() => {
     if (hijriDate.day % 2 === 1) {
@@ -99,16 +111,20 @@ export default function App() {
     return undefined;
   }, [hijriDate.day, hadith, verse]);
 
-  const eventSlides: EventSlide[] = useMemo(() => dynamicEvents.map((e) => ({
-    title: e.title,
-    speakerName: e.speakerName,
-    dateValue: e.dateValue,
-    timeValue: e.timeValue,
-    locationValue: e.locationValue,
-    badge: e.badge,
-    cta: e.cta,
-    imageUrl: e.imageUrl,
-  })), [dynamicEvents]);
+  const eventSlides: EventSlide[] = useMemo(
+    () =>
+      dynamicEvents.map((e) => ({
+        title: e.title,
+        speakerName: e.speakerName,
+        dateValue: e.dateValue,
+        timeValue: e.timeValue,
+        locationValue: e.locationValue,
+        badge: e.badge,
+        cta: e.cta,
+        imageUrl: e.imageUrl,
+      })),
+    [dynamicEvents],
+  );
 
   return (
     <Box
@@ -153,7 +169,6 @@ export default function App() {
           hijriDate={hijriDate}
           holidays={holidays}
         />
-
 
         {/* -------- THE SILENCE OVERLAY -------- */}
         <AnimatePresence>
@@ -250,12 +265,11 @@ export default function App() {
                           interval={(slideDurationSec || 10) * 1000}
                           language={language}
                         />
-
                       </motion.div>
                     )}
                   </AnimatePresence>
                 </Box>
-                
+
                 {/* -------- THE COUNTDOWN BAR -------- */}
                 <Box
                   sx={(theme) => ({
@@ -292,7 +306,11 @@ export default function App() {
                   })}
                 >
                   {/* -------- THE WISDOM PANEL -------- */}
-                  <WisdomPanel language={language} wisdom={wisdom ?? fallbackHadith} fallbackTitle={t.hadithOfTheDay} />
+                  <WisdomPanel
+                    language={language}
+                    wisdom={wisdom ?? fallbackHadith}
+                    fallbackTitle={t.hadithOfTheDay}
+                  />
                 </Box>
                 <Box
                   sx={{
@@ -358,7 +376,6 @@ export default function App() {
         {/* -------- THE ANNOUNCEMENTS TICKER -------- */}
         <AnnouncementsTicker language={language} announcements={dynamicAnnouncements} />
       </Stack>
-
 
       {/* -------- THE FUNDRAISING OVERLAY -------- */}
       {showFundraising && (

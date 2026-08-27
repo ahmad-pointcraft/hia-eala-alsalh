@@ -8,7 +8,7 @@ import {
   Typography,
 } from '@mui/material';
 import { DeleteOutline as DeleteIcon } from '@mui/icons-material';
-import { useDialogFullScreen } from '@/admin/hooks/useIsMobile';
+import { useDialogFullScreen } from '@/admin/hooks';
 
 /**
  * Confirmation dialog shown before every delete

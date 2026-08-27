@@ -286,8 +286,8 @@ export function createMockApiClient(): ApiClient {
     return { paired: device.status === 'paired', masjidId: device.masjidId };
   }
 
-  // PAIR DEVICE USING 6-DIGIT CODE ENTERED IN ADMIN PORTAL (optional name labels it)
-  async function pairDevice(pairingCode: string, name?: string): Promise<{ device: Device; masjid: MasjidSummary }> {
+  // PAIR DEVICE INTO THE CALLER'S MASJID USING THE 6-DIGIT CODE ENTERED IN ADMIN (optional name labels it)
+  async function pairDevice(masjidId: string, pairingCode: string, name?: string): Promise<{ device: Device; masjid: MasjidSummary }> {
     const entry = store.pairingCodes[pairingCode];
     if (!entry || isExpired(entry.expiresAt)) {
       throw new Error('Invalid or expired pairing code');
@@ -297,7 +297,6 @@ export function createMockApiClient(): ApiClient {
       throw new Error('Device not found for pairing code');
     }
 
-    const masjidId = currentSession?.masjidId ?? DEMO_MASJID_ID;
     const masjidData = store.masjids[masjidId];
     if (!masjidData) {
       throw new Error('Masjid not found');

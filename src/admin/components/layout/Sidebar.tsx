@@ -21,11 +21,11 @@ import {
   Mosque as MosqueIcon,
   Logout as LogoutIcon,
 } from '@mui/icons-material';
-import { useSession } from '@/admin/store/useSession';
+import { useSession } from '@/admin/store';
 import { api } from '@/shared/api';
 import type { MosqueConfig } from '@/shared/types';
-import { useIsMobile } from '@/admin/hooks/useIsMobile';
-import { hasPermission, type Permission } from '@/admin/utils/permissions';
+import { useIsMobile } from '@/admin/hooks';
+import { hasPermission, type Permission } from '@/admin/utils';
 
 const DRAWER_WIDTH = 250;
 

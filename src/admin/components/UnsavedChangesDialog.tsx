@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 import { WarningAmberRounded as WarningIcon } from '@mui/icons-material';
 import type { Blocker } from 'react-router-dom';
-import { useDialogFullScreen } from '@/admin/hooks/useIsMobile';
+import { useDialogFullScreen } from '@/admin/hooks';
 
 export interface UnsavedChangesDialogProps {
   /** The router navigation blocker returned from useDirtyGuard or useBlocker (for page routes). */

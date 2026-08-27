@@ -8,21 +8,18 @@ import {
 import SaveIcon from '@mui/icons-material/Save';
 import { api } from '@/shared/api';
 import type { MosqueConfig } from '@/shared/types';
-import { useSession } from '@/admin/store/useSession';
-import { useDisplaySettingsForm } from '@/admin/store/useDisplaySettingsForm';
-import { useDirtyGuard } from '@/admin/hooks/useDirtyGuard';
-import { useFocusHeading } from '@/admin/hooks/useFocusHeading';
-import { AsyncState } from '@/admin/components/states/AsyncState';
-import { useToast } from '@/admin/components/ToastProvider';
-import { UnsavedChangesDialog } from '@/admin/components/UnsavedChangesDialog';
-import { validateDisplaySettings, isValid } from '@/admin/utils/settings/validation';
-
+import { useSession, useDisplaySettingsForm } from '@/admin/store';
+import { useDirtyGuard, useFocusHeading } from '@/admin/hooks';
+import { validateDisplaySettings, isValid } from '@/admin/utils';
 import {
+  AsyncState,
+  useToast,
+  UnsavedChangesDialog,
   MosqueIdentityCard,
   ClockTimeCard,
   LanguageThemeCard,
   SlideshowTickerCard,
-} from '@/admin/components/settings';
+} from '@/admin/components';
 
 export function DisplaySettings() {
   const masjidId = useSession((s) => s.session?.masjidId ?? '');

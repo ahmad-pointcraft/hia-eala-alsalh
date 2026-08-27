@@ -5,10 +5,8 @@ import {
   EventOutlined as EventsIcon,
   VolunteerActivismOutlined as DonationsIcon,
 } from '@mui/icons-material';
-import { useFocusHeading } from '@/admin/hooks/useFocusHeading';
-import { AnnouncementsTab } from '@/admin/components/content/AnnouncementsTab';
-import { EventsTab } from '@/admin/components/content/EventsTab';
-import { DonationsTab } from '@/admin/components/content/DonationsTab';
+import { useFocusHeading } from '@/admin/hooks';
+import { AnnouncementsTab, EventsTab, DonationsTab } from '@/admin/components';
 
 export function Content() {
   const [tab, setTab] = useState(0);

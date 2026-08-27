@@ -13,7 +13,7 @@ import {
   Collections as GalleryIcon,
 } from '@mui/icons-material';
 import type { StoredImage } from '@/shared/api';
-import { UpDownReorder } from '@/admin/components/content/UpDownReorder';
+import { UpDownReorder } from '@/admin/components/content';
 
 export interface PhotoCardProps {
   image: StoredImage;

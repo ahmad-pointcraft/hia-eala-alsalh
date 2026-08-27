@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 import { AccessTime as TimeIcon } from '@mui/icons-material';
-import { useDisplaySettingsForm } from '@/admin/store/useDisplaySettingsForm';
+import { useDisplaySettingsForm } from '@/admin/store';
 import type { TimeFormat } from '@/shared/types';
 
 export function ClockPresentationCard() {

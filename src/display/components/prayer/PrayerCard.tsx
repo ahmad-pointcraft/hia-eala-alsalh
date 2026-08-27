@@ -5,8 +5,7 @@ import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material/styles';
 import { Moon, Sun, Sunrise, Sunset, CloudSun, Star } from 'lucide-react';
 import type { Language } from '@/display/types';
-import { toArabicNumerals, getFontFamily, getDirection } from '@/display/utils/helpers';
-import type { PrayerKey } from '@/display/utils/prayerTimes';
+import { toArabicNumerals, getFontFamily, getDirection, type PrayerKey } from '@/display/utils';
 
 interface PrayerCardProps {
   name: string;

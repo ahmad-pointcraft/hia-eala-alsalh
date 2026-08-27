@@ -12,7 +12,7 @@ import {
 import { DeleteOutline as DeleteIcon } from '@mui/icons-material';
 import { api } from '@/shared/api';
 import type { Device } from '@/shared/api';
-import { useDialogFullScreen } from '@/admin/hooks/useIsMobile';
+import { useDialogFullScreen } from '@/admin/hooks';
 
 export interface UnpairDeviceDialogProps {
   device: Device | null;

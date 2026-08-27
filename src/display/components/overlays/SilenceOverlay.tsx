@@ -7,8 +7,8 @@ import { Sunrise, Sun, CloudSun, Sunset, Moon, Star, type LucideIcon } from 'luc
 import { IslamicGeometricOverlay } from './IslamicGeometricOverlay';
 import type { Language, Translations } from '@/display/types';
 import type { PrayerTime } from '@/shared/types';
-import { getFontFamily } from '@/display/utils/helpers';
-import { STANDING_DURATION_SEC, SILENCE_DURATION_SEC } from '@/display/constants/prayerPhases';
+import { getFontFamily } from '@/display/utils';
+import { STANDING_DURATION_SEC, SILENCE_DURATION_SEC } from '@/display/constants';
 
 interface SilenceOverlayProps {
   language: Language;

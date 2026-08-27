@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { cacheStore } from '@/display/services/cache';
+import { cacheStore } from '@/display/services';
 
 interface UseCachedDataOptions<T> {
   dateScoped?: boolean;
+  /** IANA time zone used to resolve the date-scope boundary (masjid midnight). */
+  timeZone?: string;
   fallback?: T;
   currentTime: Date;
 }
@@ -19,10 +21,10 @@ export function useCachedData<T>(
   ttlMs: number,
   options: UseCachedDataOptions<T>,
 ): UseCachedDataResult<T> {
-  const { dateScoped = false, fallback, currentTime } = options;
+  const { dateScoped = false, timeZone, fallback, currentTime } = options;
 
   const cacheKey = dateScoped
-    ? cacheStore.buildKey(key, currentTime)
+    ? cacheStore.buildKey(key, currentTime, timeZone)
     : cacheStore.buildKey(key);
 
   const [data, setData] = useState<T | undefined>(() => {

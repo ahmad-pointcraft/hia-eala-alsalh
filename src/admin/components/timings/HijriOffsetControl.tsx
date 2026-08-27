@@ -1,5 +1,5 @@
 import { ToggleButton, ToggleButtonGroup, Stack, Typography } from '@mui/material';
-import { useTimingsForm } from '@/admin/store/useTimingsForm';
+import { useTimingsForm } from '@/admin/store';
 
 const OFFSETS = [-2, -1, 0, 1, 2] as const;
 

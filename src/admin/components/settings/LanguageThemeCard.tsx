@@ -8,7 +8,7 @@ import {
   Typography,
 } from '@mui/material';
 import { PaletteOutlined as ThemeIcon } from '@mui/icons-material';
-import { useDisplaySettingsForm } from '@/admin/store/useDisplaySettingsForm';
+import { useDisplaySettingsForm } from '@/admin/store';
 import type { LanguageOrder, ThemeMode } from '@/shared/types';
 
 export function LanguageThemeCard() {
