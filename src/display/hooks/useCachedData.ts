@@ -107,13 +107,11 @@ export function useCachedData<T>(
       return;
     }
 
-    // STALE-WHILE-REVALIDATE ON MOUNT — serve the persisted cache instantly,
-    // then always refetch once so a page refresh never shows expired data.
+    // STALE-WHILE-REVALIDATE ON MOUNT — serve persisted cache instantly,
+    // and always fetch on mount so cold-start or fresh pairing loads immediately.
     if (!didMountRef.current) {
       didMountRef.current = true;
-      if (cacheStore.get<T>(cacheKey) !== undefined) {
-        triggerFetch(cacheKey);
-      }
+      triggerFetch(cacheKey);
       return;
     }
 
