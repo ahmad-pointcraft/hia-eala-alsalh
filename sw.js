@@ -1,8 +1,8 @@
 var CACHE_NAME = 'masjid-v1';
 
 var PRECACHE_URLS = [
-  '/',
-  '/index.html',
+  './',
+  './index.html',
 ];
 
 self.addEventListener('install', function (event) {
@@ -31,6 +31,12 @@ self.addEventListener('activate', function (event) {
 
 self.addEventListener('fetch', function (event) {
   var url = new URL(event.request.url);
+
+  // Skip admin entry — don't intercept or cache /admin/* requests
+  if (url.pathname.match(/\/admin(\/|$)/)) {
+    return;
+  }
+
   var isStaticAsset = /\.(js|css|jpg|jpeg|png|svg|woff2)$/i.test(url.pathname);
 
   if (isStaticAsset) {
